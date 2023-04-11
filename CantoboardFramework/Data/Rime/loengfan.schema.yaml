@@ -48,8 +48,11 @@ engine:
     - simplifier@variants_hk
     - simplifier@simp_hk2s
     - simplifier
-    - uniquifier
     - reverse_lookup_filter@jyut6ping3_reverse_lookup
+    - dictionary_lookup_filter
+
+dictionary_lookup_filter:
+    dictionary: jyut6ping3_scholar
 
 speller:
   alphabet: zyxwvutsrqponmlkjihgfedcba`

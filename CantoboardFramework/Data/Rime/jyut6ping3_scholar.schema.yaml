@@ -1,0 +1,26 @@
+# Rime schema
+# encoding: utf-8
+
+schema:
+  schema_id: jyut6ping3_scholar
+  version: "0.0"
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+
+engine:
+  processors:
+    - ascii_composer
+  segmentors:
+    - ascii_segmentor
+  translators:
+    - table_translator
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba
+  delimiter: " '"
+
+translator:
+  dictionary: jyut6ping3_scholar

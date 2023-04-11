@@ -44,8 +44,11 @@ engine:
     - punct_translator
     - table_translator
   filters:
-    - uniquifier
     - reverse_lookup_filter@jyut6ping3_reverse_lookup
+    - dictionary_lookup_filter
+
+dictionary_lookup_filter:
+    dictionary: jyut6ping3_scholar
 
 speller:
   alphabet: zyxwvutsrqponmlkjihgfedcba
