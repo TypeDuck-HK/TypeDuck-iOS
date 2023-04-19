@@ -87,6 +87,49 @@ public enum FullWidthSpaceMode: String, Codable {
     case shift = "shift"
 }
 
+public struct DisplayLanguage: OptionSet, Codable {
+    public let rawValue: Int
+    
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+    
+    public static let eng = Self(rawValue: 1)
+    public static let hin = Self(rawValue: 2)
+    public static let ind = Self(rawValue: 4)
+    public static let nep = Self(rawValue: 8)
+    public static let urd = Self(rawValue: 16)
+    
+    public func toggle(_ other: Self, include: Bool) -> Self {
+        include ? self.intersection(other) : self.subtracting(other)
+    }
+}
+
+public enum MainLanguage: String, Codable {
+    case eng = "eng"
+    case hin = "hin"
+    case ind = "ind"
+    case nep = "nep"
+    case urd = "urd"
+    
+    var toDisplayLanguage: DisplayLanguage {
+        switch self {
+        case .eng: return .eng
+        case .hin: return .hin
+        case .ind: return .ind
+        case .nep: return .nep
+        case .urd: return .urd
+        }
+    }
+    
+    var isLatin: Bool {
+        switch self {
+        case .eng, .ind: return true
+        default: return false
+        }
+    }
+}
+
 // If any of these settings is changed, we have to redeploy Rime.
 public struct RimeSettings: Codable, Equatable {
     public var enableCorrector: Bool
@@ -114,7 +157,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultToneInputMode: ToneInputMode = .longPress
     private static let defaultRimeSettings: RimeSettings = RimeSettings()
     private static let defaultEnglishLocale: EnglishLocale = .us
-    private static let defaultShowRomanizationMode: ShowRomanizationMode = .onlyInNonCantoneseMode
+    private static let defaultShowRomanizationMode: ShowRomanizationMode = .always
     private static let defaultAudioFeedbackEnabled: Bool = true
     private static let defaultTapHapticFeedbackEnabled: Bool = false
     private static let defaultShowEnglishExactMatch: Bool = true
@@ -129,6 +172,8 @@ public struct Settings: Codable, Equatable {
     private static let defaultPadLeftSysKeyAsKeyboardType: Bool = false
     private static let defaultShowBottomLeftSwitchLangButton: Bool = false
     private static let defaultCangjieVersion: CangjieVersion = .cangjie5
+    private static let defaultDisplayLanguages: DisplayLanguage = .eng
+    private static let defaultMainLanguage: MainLanguage = .eng
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
@@ -156,6 +201,8 @@ public struct Settings: Codable, Equatable {
     public var padLeftSysKeyAsKeyboardType: Bool
     public var showBottomLeftSwitchLangButton: Bool
     public var cangjieVersion: CangjieVersion
+    public var displayLanguages: DisplayLanguage
+    public var mainLanguage: MainLanguage
     
     public init() {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
@@ -184,6 +231,8 @@ public struct Settings: Codable, Equatable {
         padLeftSysKeyAsKeyboardType = Self.defaultPadLeftSysKeyAsKeyboardType
         showBottomLeftSwitchLangButton = Self.defaultShowBottomLeftSwitchLangButton
         cangjieVersion = Self.defaultCangjieVersion
+        displayLanguages = Self.defaultDisplayLanguages
+        mainLanguage = Self.defaultMainLanguage
     }
     
     public init(from decoder: Decoder) throws {
@@ -214,6 +263,8 @@ public struct Settings: Codable, Equatable {
         self.padLeftSysKeyAsKeyboardType = try container.decodeIfPresent(Bool.self, forKey: .padLeftSysKeyAsKeyboardType) ?? Settings.defaultPadLeftSysKeyAsKeyboardType
         self.showBottomLeftSwitchLangButton = try container.decodeIfPresent(Bool.self, forKey: .showBottomLeftSwitchLangButton) ?? Settings.defaultShowBottomLeftSwitchLangButton
         self.cangjieVersion = try container.decodeIfPresent(CangjieVersion.self, forKey: .cangjieVersion) ?? Settings.defaultCangjieVersion
+        self.displayLanguages = try container.decodeIfPresent(DisplayLanguage.self, forKey: .displayLanguages) ?? Settings.defaultDisplayLanguages
+        self.mainLanguage = try container.decodeIfPresent(MainLanguage.self, forKey: .mainLanguage) ?? Settings.defaultMainLanguage
     }
     
     private static var _cached: Settings?

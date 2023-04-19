@@ -698,15 +698,15 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
             return .zero
         }
         
-        let comment = showComment ? candidateOrganizer?.getCandidateComment(indexPath: candidateIndexPath) : nil
+        let comment = showRomanization ? candidateOrganizer?.getCandidateComment(indexPath: candidateIndexPath) : nil
         
         let numOfSingleCharCandidateInRow = CGFloat(layoutConstants.numOfSingleCharCandidateInRow)
         return CandidateCell.computeCellSize(
             cellHeight: rowHeight, minWidth: (bounds.width - expandButtonWidth) / numOfSingleCharCandidateInRow,
-            candidateText: text, comment: comment)
+            candidateText: text, comment: comment, showRomanization: showRomanization)
     }
     
-    private var showComment: Bool {
+    private var showRomanization: Bool {
         switch Settings.cached.showRomanizationMode {
         case .never: return keyboardState.reverseLookupSchema != nil
         case .always: return true
@@ -745,7 +745,7 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
             guard let candidate = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else { return }
             let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
             cell.frame = CGRect(origin: cell.frame.origin, size: computeCellSize(candidateIndexPath: candidateIndexPath))
-            cell.setup(candidate, comment, showComment: showComment)
+            cell.setup(candidate, comment, showRomanization: showRomanization)
         }
     }
     

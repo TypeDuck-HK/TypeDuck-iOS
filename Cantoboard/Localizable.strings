@@ -62,6 +62,19 @@
 "padSettings.leftSysKey.default" = "預設";
 "padSettings.leftSysKey.keyboardType" = "符號鍵盤掣";
 
+"languageDisplaySettings" = "語言顯示設定 (Language Display Settings)";
+"languageDisplaySettings.eng" = "英語 (English)";
+"languageDisplaySettings.hin" = "印地語 (Hindi)";
+"languageDisplaySettings.ind" = "印尼語 (Indonesian)";
+"languageDisplaySettings.nep" = "尼泊爾語 (Nepali)";
+"languageDisplaySettings.urd" = "烏爾都語 (Urdu)";
+"languageDisplaySettings.mainLanguage" = "主要語言";
+"languageDisplaySettings.mainLanguage.eng" = "英語";
+"languageDisplaySettings.mainLanguage.hin" = "印地語";
+"languageDisplaySettings.mainLanguage.ind" = "印尼語";
+"languageDisplaySettings.mainLanguage.nep" = "尼泊爾語";
+"languageDisplaySettings.mainLanguage.urd" = "烏爾都語";
+
 "chineseInputSettings" = "中文輸入設定";
 "chineseInputSettings.enablePredictiveText" = "關聯字";
 "chineseInputSettings.enablePredictiveText.description" = "打完字之後預測同埋建議下一個字。";

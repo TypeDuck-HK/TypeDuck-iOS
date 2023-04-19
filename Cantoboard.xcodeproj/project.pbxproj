@@ -19,6 +19,7 @@
 		142AA60A274C0A8F00D7EE39 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA609274C0A8F00D7EE39 /* AboutViewController.swift */; };
 		142AA60C274C9B1C00D7EE39 /* DescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */; };
 		142AA60E274CB73F00D7EE39 /* DescriptionPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */; };
+		1474441829E68FE8009E4468 /* CandidateCellInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1474441729E68FE8009E4468 /* CandidateCellInfo.swift */; };
 		14B9E1392742EC2B007E8679 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */; };
 		7904A1DC2771481200963CAB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7904A1DB2771481200963CAB /* main.cpp */; };
 		7904A1E127714ACE00963CAB /* libmarisa.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7904A1E027714A9900963CAB /* libmarisa.tbd */; };
@@ -332,6 +333,7 @@
 		142AA609274C0A8F00D7EE39 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionViewController.swift; sourceTree = "<group>"; };
 		142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionPresentationController.swift; sourceTree = "<group>"; };
+		1474441729E68FE8009E4468 /* CandidateCellInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCellInfo.swift; sourceTree = "<group>"; };
 		14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		7904A1D92771481200963CAB /* NGramBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NGramBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
 		7904A1DB2771481200963CAB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -998,6 +1000,7 @@
 				79B9B59F25F34A1200238E80 /* CandidatePaneView.swift */,
 				79BE975826D748260059E58A /* CandidateSectionHeader.swift */,
 				79BE976226D749720059E58A /* CandidateSegmentControlCell.swift */,
+				1474441729E68FE8009E4468 /* CandidateCellInfo.swift */,
 			);
 			path = Candidate;
 			sourceTree = "<group>";
@@ -1494,6 +1497,7 @@
 				79B9B5FD25F34A1200238E80 /* Character+Extension.swift in Sources */,
 				796E53FB26E71CEA00C9B187 /* PadFull5RowsKeyboardViewLayout.swift in Sources */,
 				79B9B5F525F34A1200238E80 /* EnglishInputEngine.swift in Sources */,
+				1474441829E68FE8009E4468 /* CandidateCellInfo.swift in Sources */,
 				798032A52645F6AF008DC703 /* Logging.swift in Sources */,
 				79515A7E2609AA1500D29A5C /* LevelDbTable.mm in Sources */,
 				79B9B5F425F34A1200238E80 /* RimeApi.swift in Sources */,
