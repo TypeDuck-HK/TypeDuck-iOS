@@ -136,27 +136,6 @@ extension Settings {
         set { rimeSettings.enableCorrector = newValue }
     }
     
-    private var displayLanguageEng: Bool {
-        get { displayLanguages.contains(.eng) }
-        set { displayLanguages = displayLanguages.toggle(.eng, include: newValue) }
-    }
-    private var displayLanguageHin: Bool {
-        get { displayLanguages.contains(.hin) }
-        set { displayLanguages = displayLanguages.toggle(.hin, include: newValue) }
-    }
-    private var displayLanguageInd: Bool {
-        get { displayLanguages.contains(.ind) }
-        set { displayLanguages = displayLanguages.toggle(.ind, include: newValue) }
-    }
-    private var displayLanguageNep: Bool {
-        get { displayLanguages.contains(.eng) }
-        set { displayLanguages = displayLanguages.toggle(.nep, include: newValue) }
-    }
-    private var displayLanguageUrd: Bool {
-        get { displayLanguages.contains(.urd) }
-        set { displayLanguages = displayLanguages.toggle(.urd, include: newValue) }
-    }
-    
     static func buildSections() -> [Section] {
         let padSection = Section(
             LocalizedStrings.padSettings,
@@ -202,23 +181,6 @@ extension Settings {
                 ]
             ),
             UIDevice.current.userInterfaceIdiom == .pad ? padSection : nil,
-            Section(
-                LocalizedStrings.languageDisplaySettings,
-                [
-                    Switch(LocalizedStrings.languageDisplaySettings_eng, \.displayLanguageEng),
-                    Switch(LocalizedStrings.languageDisplaySettings_hin, \.displayLanguageHin),
-                    Switch(LocalizedStrings.languageDisplaySettings_ind, \.displayLanguageInd),
-                    Switch(LocalizedStrings.languageDisplaySettings_nep, \.displayLanguageNep),
-                    Switch(LocalizedStrings.languageDisplaySettings_urd, \.displayLanguageUrd),
-                    Segment(LocalizedStrings.mainLanguage, \.mainLanguage, [
-                        LocalizedStrings.mainLanguage_eng: .eng,
-                        LocalizedStrings.mainLanguage_hin: .hin,
-                        LocalizedStrings.mainLanguage_ind: .ind,
-                        LocalizedStrings.mainLanguage_nep: .nep,
-                        LocalizedStrings.mainLanguage_urd: .urd,
-                    ]),
-                ]
-            ),
             Section(
                 LocalizedStrings.mixedInputSettings,
                 [

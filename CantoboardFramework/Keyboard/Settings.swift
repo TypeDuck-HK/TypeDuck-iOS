@@ -87,46 +87,85 @@ public enum FullWidthSpaceMode: String, Codable {
     case shift = "shift"
 }
 
-public struct DisplayLanguage: OptionSet, Codable {
-    public let rawValue: Int
-    
-    public init(rawValue: Int) {
-        self.rawValue = rawValue
-    }
-    
-    public static let eng = Self(rawValue: 1)
-    public static let hin = Self(rawValue: 2)
-    public static let ind = Self(rawValue: 4)
-    public static let nep = Self(rawValue: 8)
-    public static let urd = Self(rawValue: 16)
-    
-    public func toggle(_ other: Self, include: Bool) -> Self {
-        include ? self.intersection(other) : self.subtracting(other)
-    }
-}
-
-public enum MainLanguage: String, Codable {
+public enum Language: String, Codable, Comparable, CaseIterable {
     case eng = "eng"
     case hin = "hin"
     case ind = "ind"
     case nep = "nep"
     case urd = "urd"
     
-    var toDisplayLanguage: DisplayLanguage {
-        switch self {
-        case .eng: return .eng
-        case .hin: return .hin
-        case .ind: return .ind
-        case .nep: return .nep
-        case .urd: return .urd
-        }
-    }
-    
     var isLatin: Bool {
         switch self {
         case .eng, .ind: return true
         default: return false
         }
+    }
+    
+    var order: Int {
+        switch self {
+        case .eng: return 0
+        case .hin: return 1
+        case .ind: return 2
+        case .nep: return 3
+        case .urd: return 4
+        }
+    }
+    
+    public static func <(lhs: Language, rhs: Language) -> Bool {
+        return lhs.order < rhs.order
+    }
+}
+
+public struct LanguageState: Codable, Equatable {
+    public var selected: [Language]
+    public var deselected: [Language]
+    public var main: Language
+    
+    public init() {
+        selected = [.eng]
+        deselected = [.hin, .ind, .nep, .urd]
+        main = .eng
+    }
+    
+    enum CodingKeys: CodingKey {
+        case languages
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        var languages = try container.decodeIfPresent([Language].self, forKey: .languages) ?? [.eng]
+        if languages.isEmpty {
+            languages = [.eng]
+        }
+        main = languages.removeFirst()
+        languages.insert(main, at: languages.binarySearch(element: main))
+        selected = languages
+        deselected = Language.allCases.filter { !languages.contains($0) }
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var languages = selected
+        if let index = languages.firstIndex(of: main) {
+            languages.remove(at: index)
+        }
+        languages.insert(main, at: 0)
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(languages, forKey: .languages)
+    }
+    
+    mutating public func insert(at index: Int) -> Int {
+        let element = deselected.remove(at: index)
+        let newIndex = selected.binarySearch(element: element)
+        selected.insert(element, at: newIndex)
+        return newIndex
+    }
+    
+    mutating public func delete(at index: Int) -> Int {
+        let element = selected.remove(at: index)
+        let newIndex = deselected.binarySearch(element: element)
+        deselected.insert(element, at: newIndex)
+        return newIndex
     }
 }
 
@@ -172,8 +211,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultPadLeftSysKeyAsKeyboardType: Bool = false
     private static let defaultShowBottomLeftSwitchLangButton: Bool = false
     private static let defaultCangjieVersion: CangjieVersion = .cangjie5
-    private static let defaultDisplayLanguages: DisplayLanguage = .eng
-    private static let defaultMainLanguage: MainLanguage = .eng
+    private static let defaultLanguageState: LanguageState = LanguageState()
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
@@ -201,8 +239,7 @@ public struct Settings: Codable, Equatable {
     public var padLeftSysKeyAsKeyboardType: Bool
     public var showBottomLeftSwitchLangButton: Bool
     public var cangjieVersion: CangjieVersion
-    public var displayLanguages: DisplayLanguage
-    public var mainLanguage: MainLanguage
+    public var languageState: LanguageState
     
     public init() {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
@@ -231,8 +268,7 @@ public struct Settings: Codable, Equatable {
         padLeftSysKeyAsKeyboardType = Self.defaultPadLeftSysKeyAsKeyboardType
         showBottomLeftSwitchLangButton = Self.defaultShowBottomLeftSwitchLangButton
         cangjieVersion = Self.defaultCangjieVersion
-        displayLanguages = Self.defaultDisplayLanguages
-        mainLanguage = Self.defaultMainLanguage
+        languageState = Self.defaultLanguageState
     }
     
     public init(from decoder: Decoder) throws {
@@ -263,8 +299,7 @@ public struct Settings: Codable, Equatable {
         self.padLeftSysKeyAsKeyboardType = try container.decodeIfPresent(Bool.self, forKey: .padLeftSysKeyAsKeyboardType) ?? Settings.defaultPadLeftSysKeyAsKeyboardType
         self.showBottomLeftSwitchLangButton = try container.decodeIfPresent(Bool.self, forKey: .showBottomLeftSwitchLangButton) ?? Settings.defaultShowBottomLeftSwitchLangButton
         self.cangjieVersion = try container.decodeIfPresent(CangjieVersion.self, forKey: .cangjieVersion) ?? Settings.defaultCangjieVersion
-        self.displayLanguages = try container.decodeIfPresent(DisplayLanguage.self, forKey: .displayLanguages) ?? Settings.defaultDisplayLanguages
-        self.mainLanguage = try container.decodeIfPresent(MainLanguage.self, forKey: .mainLanguage) ?? Settings.defaultMainLanguage
+        self.languageState = try container.decodeIfPresent(LanguageState.self, forKey: .languageState) ?? Settings.defaultLanguageState
     }
     
     private static var _cached: Settings?

@@ -8,9 +8,6 @@
 import Foundation
 
 struct CandidateCellInfo {
-    // (?<=^|,)(".*?(?<!\\)(\\\\)*"|[^,]*)
-    // (?<=^|,)(".*?(?<!")("")*"(?!")|[^,]*)
-
     var honzi: String?
     var jyutping: String?
     var pronOrder: String?
@@ -87,7 +84,7 @@ struct CandidateCellInfo {
     }
     
     var mainLanguage: String? {
-        switch Settings.cached.mainLanguage {
+        switch Settings.cached.languageState.main {
         case .eng: return self.definition.eng
         case .hin: return self.definition.languages.hin
         case .ind: return self.definition.languages.ind

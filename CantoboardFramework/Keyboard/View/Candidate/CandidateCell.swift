@@ -253,10 +253,10 @@ class CandidateCell: UICollectionViewCell {
                 let candidateCommentFontSizeUnrounded = candidateCommentHeight * Self.fontSizePerHeight
                 let candidateCommentFontSize = candidateCommentFontSizeUnrounded.roundTo(q: 4)
                 
-                let commentWidth = Settings.cached.mainLanguage.isLatin ?
+                let commentWidth = Settings.cached.languageState.main.isLatin ?
                     estimateStringWidth(mainLanguage, ofSize: candidateCommentFontSize) :
                     mainLanguage.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
-                cellWidth = max(cellWidth, min(cellWidth + 80, commentWidth))
+                cellWidth = max(cellWidth, min(cellWidth + 70, commentWidth))
             }
         }
         

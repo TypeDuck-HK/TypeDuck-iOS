@@ -20,6 +20,17 @@
 "testKeyboard" = "測試鍵盤";
 "testKeyboard.placeholder" = "撳呢度打字，試下個鍵盤⋯⋯";
 
+"displayLanguages" = "顯示語言 (Display Languages)";
+"displayLanguages.eng" = "英語 (English)";
+"displayLanguages.hin" = "印地語 (Hindi)";
+"displayLanguages.ind" = "印尼語 (Indonesian)";
+"displayLanguages.nep" = "尼泊爾語 (Nepali)";
+"displayLanguages.urd" = "烏爾都語 (Urdu)";
+"displayLanguages.description" =
+"撳一下項目以設為主要語言。
+Click on an item to set as the main language.";
+"moreLanguages" = "更多語言 (More Languages)";
+
 "inputMethodSettings" = "輸入法設定";
 "inputMethodSettings.mixedMode" = "粵英混合輸入";
 "inputMethodSettings.mixedMode.description" = "熄咗呢個選項，打粵文嗰陣就唔會顯示英文候選詞。";
@@ -42,7 +53,7 @@
 閂咗混合模式嘅話，喺英文輸入法輸入半形符號，中文輸入法輸入全形符號。
 開咗混合模式嘅話會根據前文判斷係咩句子，喺英文句子輸入半形符號，中文句子輸入全形符號。";
 "inputMethodSettings.showBottomLeftSwitchLangButton" = "左下角中英切換掣";
-"inputMethodSettings.showBottomLeftSwitchLangButton.description" = "喺iPhone同某啲iPad型號，喺鍵盤左下角顯示中英切換掣。";
+"inputMethodSettings.showBottomLeftSwitchLangButton.description" = "喺 iPhone 同某啲 iPad 型號，喺鍵盤左下角顯示中英切換掣。";
 "inputMethodSettings.enableCharPreview" = "文字預覽";
 
 "mixedInputSettings" = "粵英混合輸入設定";
@@ -61,19 +72,6 @@
 "padSettings.leftSysKey.description" = "喺某啲 iPad 型號，iOS 系統鍵盤最左下角個掣並唔係符號鍵盤掣，同其他 iPad 型號唔一致。啟用呢個設定可以放符號鍵盤掣喺左下角。";
 "padSettings.leftSysKey.default" = "預設";
 "padSettings.leftSysKey.keyboardType" = "符號鍵盤掣";
-
-"languageDisplaySettings" = "語言顯示設定 (Language Display Settings)";
-"languageDisplaySettings.eng" = "英語 (English)";
-"languageDisplaySettings.hin" = "印地語 (Hindi)";
-"languageDisplaySettings.ind" = "印尼語 (Indonesian)";
-"languageDisplaySettings.nep" = "尼泊爾語 (Nepali)";
-"languageDisplaySettings.urd" = "烏爾都語 (Urdu)";
-"languageDisplaySettings.mainLanguage" = "主要語言";
-"languageDisplaySettings.mainLanguage.eng" = "英語";
-"languageDisplaySettings.mainLanguage.hin" = "印地語";
-"languageDisplaySettings.mainLanguage.ind" = "印尼語";
-"languageDisplaySettings.mainLanguage.nep" = "尼泊爾語";
-"languageDisplaySettings.mainLanguage.urd" = "烏爾都語";
 
 "chineseInputSettings" = "中文輸入設定";
 "chineseInputSettings.enablePredictiveText" = "關聯字";
