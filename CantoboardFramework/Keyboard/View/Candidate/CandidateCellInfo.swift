@@ -8,7 +8,6 @@
 import Foundation
 
 struct CandidateCellInfo {
-    var honzi: String?
     var jyutping: String?
     var pronOrder: String?
     var sandhi: String?
@@ -36,7 +35,7 @@ struct CandidateCellInfo {
     }
     
     static let columns: [WritableKeyPath<Self, String?>] = [
-        \.honzi, \.jyutping, \.pronOrder, \.sandhi, \.litColReading, \.freq, \.freq2,
+        \.jyutping, \.pronOrder, \.sandhi, \.litColReading, \.freq, \.freq2,
         \.definition.eng, \.definition.disambiguation, \.definition.pos, \.definition.register, \.definition.label, \.definition.written, \.definition.colloquial,
         \.definition.languages.urd, \.definition.languages.nep, \.definition.languages.hin, \.definition.languages.ind,
     ]
@@ -51,6 +50,17 @@ struct CandidateCellInfo {
         var isQuoted = false
         var column = columnIterator.next()!
         var value = ""
+        while let char = charIterator.next(), char != "," {
+            value += String(char)
+            if char.isDigit && charIterator.peek() != "," {
+                value += " "
+            }
+        }
+        if value != "" {
+            self[keyPath: column] = value
+        }
+        column = columnIterator.next()!
+        value = ""
         while let char = charIterator.next() {
             if isQuoted {
                 if char == "\"" {
