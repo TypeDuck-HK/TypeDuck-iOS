@@ -342,12 +342,21 @@ class LayoutConstants: Copyable {
     let compositionViewHeight: CGFloat
     let filterBarViewHeight: CGFloat
     
-    var numOfSingleCharCandidateInRow: Double {
-        switch idiom {
-        case .phone:
-            return isPortrait ? 7.75 : 15
-        case .pad:
-            return isPortrait ? 16 : 22
+    func numOfSingleCharCandidateInRow(twoComments: Bool) -> CGFloat {
+        if twoComments {
+            switch idiom {
+            case .phone:
+                return isPortrait ? 8.5 : 16.5
+            case .pad:
+                return isPortrait ? 17.5 : 24
+            }
+        } else {
+            switch idiom {
+            case .phone:
+                return isPortrait ? 7.75 : 15
+            case .pad:
+                return isPortrait ? 16 : 22
+            }
         }
     }
     

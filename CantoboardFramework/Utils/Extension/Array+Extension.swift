@@ -15,6 +15,26 @@ extension Array {
         }
         return result
     }
+    
+    subscript<T>(safe index: Index) -> T? where Element == T? {
+        get { indices ~= index ? self[index] : nil }
+        set {
+            while !(indices ~= index) {
+                self.append(nil)
+            }
+            self[index] = newValue
+        }
+    }
+    
+    subscript<T>(weak index: Index) -> T? where Element == Weak<T> {
+        get { indices ~= index ? self[index].ref : nil }
+        set {
+            while !(indices ~= index) {
+                self.append(Weak())
+            }
+            self[index].ref = newValue
+        }
+    }
 }
 
 extension Sequence where Iterator.Element: Hashable {

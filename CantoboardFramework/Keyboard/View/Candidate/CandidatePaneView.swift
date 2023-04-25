@@ -425,7 +425,7 @@ class CandidatePaneView: UIControl {
             middleSeparator.isHidden = true
         } else {
             middleSeparator.isHidden = false
-            middleSeparator.frame = separatorFrame.with(x: candidateViewWidth - leftRightInset)
+            middleSeparator.frame = separatorFrame.with(x: candidateViewWidth - leftRightInset + Self.separatorWidth)
         }
         
         if mode == .table || isFullPadCandidateBar {
@@ -698,12 +698,14 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
             return .zero
         }
         
-        let comment = showRomanization ? candidateOrganizer?.getCandidateComment(indexPath: candidateIndexPath) : nil
+        var info: CandidateCellInfo?
+        if let comment = candidateOrganizer?.getCandidateComment(indexPath: candidateIndexPath) {
+            info = CandidateCellInfo(fromCSV: comment)
+        }
         
-        let numOfSingleCharCandidateInRow = CGFloat(layoutConstants.numOfSingleCharCandidateInRow)
-        return CandidateCell.computeCellSize(
-            cellHeight: rowHeight, minWidth: (bounds.width - expandButtonWidth) / numOfSingleCharCandidateInRow,
-            candidateText: text, comment: comment, showRomanization: showRomanization)
+        return CandidateCell
+            .computeCellSize(cellHeight: rowHeight, candidateText: text, info: info, showRomanization: showRomanization, mode: mode)
+            .with(minWidth: (bounds.width - expandButtonWidth) / layoutConstants.numOfSingleCharCandidateInRow(twoComments: showRomanization), maxWidth: bounds.width)
     }
     
     private var showRomanization: Bool {
@@ -745,7 +747,7 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
             guard let candidate = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else { return }
             let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
             cell.frame = CGRect(origin: cell.frame.origin, size: computeCellSize(candidateIndexPath: candidateIndexPath))
-            cell.setup(candidate, comment, showRomanization: showRomanization)
+            cell.setup(candidate, comment, showRomanization: showRomanization, mode: mode)
         }
     }
     

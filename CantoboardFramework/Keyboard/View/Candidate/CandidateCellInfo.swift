@@ -93,14 +93,23 @@ struct CandidateCellInfo {
         }
     }
     
-    var mainLanguage: String? {
-        switch Settings.cached.languageState.main {
+    private func getDefinition(of language: Language) -> String? {
+        switch language {
         case .eng: return self.definition.eng
         case .hin: return self.definition.languages.hin
         case .ind: return self.definition.languages.ind
         case .nep: return self.definition.languages.nep
         case .urd: return self.definition.languages.urd
         }
+    }
+    
+    var mainLanguage: String? {
+        getDefinition(of: Settings.cached.languageState.main)
+    }
+    
+    var otherLanguages: [String] {
+        let main = Settings.cached.languageState.main
+        return Settings.cached.languageState.selected.compactMap { $0 == main ? nil : getDefinition(of: $0) }
     }
 }
 

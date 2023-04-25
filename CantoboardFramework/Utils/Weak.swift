@@ -10,7 +10,7 @@ import Foundation
 class Weak<Type: AnyObject> {
     weak var ref: Type?
 
-    init(_ object: Type) {
+    init(_ object: Type? = nil) {
         self.ref = object
     }
 }

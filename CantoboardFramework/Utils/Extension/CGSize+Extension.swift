@@ -25,8 +25,8 @@ extension CGSize {
         return CGSize(width: newWidth, height: height)
     }
     
-    func with(minWidth: CGFloat) -> CGSize {
-        return CGSize(width: max(width, minWidth), height: height)
+    func with(minWidth: CGFloat, maxWidth: CGFloat) -> CGSize {
+        return CGSize(width: min(max(width, minWidth), maxWidth), height: height)
     }
     
     var isPortrait: Bool {

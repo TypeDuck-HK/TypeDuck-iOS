@@ -14,8 +14,11 @@ class CandidateCell: UICollectionViewCell {
     
     private static let margin = UIEdgeInsets(top: 3, left: 8, bottom: 0, right: 8)
     private static let fontSizePerHeight: CGFloat = 18 / "＠".size(withFont: UIFont.systemFont(ofSize: 20)).height
+    private static let paddingBetweenLanguages: CGFloat = 10
     
+    var text: String = ""
     var showRomanization: Bool = false
+    var mode: CandidatePaneView.Mode = .row
     var isFilterCell: Bool = false
     override var isSelected: Bool {
         didSet {
@@ -40,7 +43,7 @@ class CandidateCell: UICollectionViewCell {
     weak var keyHintLayer: KeyHintLayer?
     weak var romanizationLayer: CATextLayer?
     weak var translationLayer: CATextLayer?
-    weak var commentLayer: CATextLayer?
+    var commentLayers: [Weak<CATextLayer>] = []
     weak var selectedRectLayer: CALayer?
     
     var info: CandidateCellInfo?
@@ -52,8 +55,10 @@ class CandidateCell: UICollectionViewCell {
         super.init(frame: .zero)
     }
     
-    func setup(_ text: String, _ comment: String?, showRomanization: Bool) {
+    func setup(_ text: String, _ comment: String?, showRomanization: Bool, mode: CandidatePaneView.Mode) {
+        self.text = text
         self.showRomanization = showRomanization
+        self.mode = mode
         
         if label == nil {
             let label = UILabel()
@@ -88,16 +93,7 @@ class CandidateCell: UICollectionViewCell {
             self.info = info
             
             if showRomanization, let jyutping = info.jyutping {
-                if romanizationLayer == nil {
-                    let romanizationLayer = CATextLayer()
-                    self.romanizationLayer = romanizationLayer
-                    layer.addSublayer(romanizationLayer)
-                    romanizationLayer.alignmentMode = .center
-                    romanizationLayer.allowsFontSubpixelQuantization = true
-                    romanizationLayer.contentsScale = UIScreen.main.scale
-                    romanizationLayer.foregroundColor = labelColor
-                    romanizationLayer.font = font
-                }
+                romanizationLayer ??= createAndAddTextLayer(color: labelColor, font: font)
                 romanizationLayer?.string = jyutping
             } else {
                 romanizationLayer?.removeFromSuperlayer()
@@ -105,25 +101,40 @@ class CandidateCell: UICollectionViewCell {
             }
             
             if let mainLanguage = info.mainLanguage {
-                if translationLayer == nil {
-                    let translationLayer = CATextLayer()
-                    self.translationLayer = translationLayer
-                    layer.addSublayer(translationLayer)
-                    translationLayer.alignmentMode = .center
-                    translationLayer.allowsFontSubpixelQuantization = true
-                    translationLayer.contentsScale = UIScreen.main.scale
-                    translationLayer.foregroundColor = labelColor
-                    translationLayer.font = font
-                    translationLayer.truncationMode = .end
-                }
+                translationLayer ??= createAndAddTextLayer(color: labelColor, font: font, truncationMode: .end)
                 translationLayer?.string = mainLanguage
             } else {
                 translationLayer?.removeFromSuperlayer()
                 translationLayer = nil
             }
+            
+            if mode == .table {
+                for (i, language) in info.otherLanguages.enumerated() {
+                    commentLayers[weak: i] ??= createAndAddTextLayer(color: labelColor, font: font, truncationMode: .end)
+                    commentLayers[i].ref?.string = language
+                }
+                if info.otherLanguages.endIndex > commentLayers.endIndex {
+                    for i in info.otherLanguages.endIndex..<commentLayers.endIndex {
+                        commentLayers[i].ref?.removeFromSuperlayer()
+                        commentLayers[i].ref = nil
+                    }
+                }
+            }
         }
         
         layout(bounds)
+    }
+    
+    private func createAndAddTextLayer(color: CGColor?, font: UIFont?, truncationMode: CATextLayerTruncationMode = .none) -> CATextLayer {
+        let textLayer = CATextLayer()
+        textLayer.alignmentMode = .center
+        textLayer.allowsFontSubpixelQuantization = true
+        textLayer.contentsScale = UIScreen.main.scale
+        textLayer.foregroundColor = color
+        textLayer.font = font
+        textLayer.truncationMode = truncationMode
+        layer.addSublayer(textLayer)
+        return textLayer
     }
     
     func free() {
@@ -140,8 +151,10 @@ class CandidateCell: UICollectionViewCell {
         translationLayer?.removeFromSuperlayer()
         translationLayer = nil
         
-        commentLayer?.removeFromSuperlayer()
-        commentLayer = nil
+        for commentLayer in commentLayers {
+            commentLayer.ref?.removeFromSuperlayer()
+            commentLayer.ref = nil
+        }
         
         selectedRectLayer?.removeFromSuperlayer()
         selectedRectLayer = nil
@@ -170,12 +183,13 @@ class CandidateCell: UICollectionViewCell {
         guard let label = label else { return }
         
         let margin = Self.margin
+        let mainSize = mode == .row ? bounds.size : Self.computeCellSize(cellHeight: bounds.height, candidateText: text, info: info, showRomanization: showRomanization, mode: .row)
         let availableHeight = bounds.height - margin.top - margin.bottom
-        let availableWidth = bounds.width - margin.left - margin.right
+        let availableWidth = mainSize.width - margin.left - margin.right
         let fontSizeScale = Settings.cached.candidateFontSize.scale
         
         if showRomanization {
-            let candidateLabelHeight = availableHeight * (isFilterCell ? 0.7 : 0.5)
+            let candidateLabelHeight = availableHeight * 0.5 // assert(!isFilterCell)
             let candidateFontSize = candidateLabelHeight * Self.fontSizePerHeight
             
             label.font = .systemFont(ofSize: candidateFontSize * fontSizeScale)
@@ -212,6 +226,17 @@ class CandidateCell: UICollectionViewCell {
             label.frame = textFrame
             translationLayer?.frame = translationFrame
         }
+        
+        if mode == .table, let info = info, !info.otherLanguages.isEmpty {
+            let startX = margin.left + availableWidth + Self.paddingBetweenLanguages
+            let labelHeight = label.frame.height
+            let maxCommentWidthWithPadding = (bounds.width - mainSize.width) / CGFloat(info.otherLanguages.count)
+            let maxCommentWidth = maxCommentWidthWithPadding - Self.paddingBetweenLanguages
+            for (i, comment) in commentLayers.enumerated() { // .prefix(info.otherLanguages.count)
+                comment.ref?.font = label.font
+                comment.ref?.frame = CGRect(x: startX + CGFloat(i) * maxCommentWidthWithPadding, y: margin.top, width: maxCommentWidth, height: labelHeight)
+            }
+        }
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -221,13 +246,15 @@ class CandidateCell: UICollectionViewCell {
         keyHintLayer?.foregroundColor = labelColor
         romanizationLayer?.foregroundColor = labelColor
         translationLayer?.foregroundColor = labelColor
-        commentLayer?.foregroundColor = labelColor
+        for commentLayer in commentLayers {
+            commentLayer.ref?.foregroundColor = labelColor
+        }
         selectedRectLayer?.backgroundColor = ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
     }
     
-    private static var unitFontWidthCache: [CGFloat:(halfWidths: [CGFloat], fullWidth: CGFloat)] = [:]
+    private static var unitFontWidthCache: [CGFloat: (halfWidths: [CGFloat], fullWidth: CGFloat)] = [:]
     
-    static func computeCellSize(cellHeight: CGFloat, minWidth: CGFloat, candidateText: String, comment: String?, showRomanization: Bool) -> CGSize {
+    static func computeCellSize(cellHeight: CGFloat, candidateText: String, info: CandidateCellInfo?, showRomanization: Bool, mode: CandidatePaneView.Mode) -> CGSize {
         let fontSizeScale = Settings.cached.candidateFontSize.scale
         
         let candidateLabelHeight = cellHeight * (showRomanization ? 0.5 : 0.6)
@@ -236,40 +263,36 @@ class CandidateCell: UICollectionViewCell {
         
         var cellWidth = estimateStringWidth(candidateText, ofSize: candidateFontSize)
         
-        if let comment = comment {
-            let info = CandidateCellInfo(fromCSV: comment)
+        if let info = info {
+            let candidateCommentHeight = cellHeight * (showRomanization ? 0.25 : 0.3)
+            let candidateCommentFontSizeUnrounded = candidateCommentHeight * Self.fontSizePerHeight
+            let candidateCommentFontSize = candidateCommentFontSizeUnrounded.roundTo(q: 4)
             
             if showRomanization, let jyutping = info.jyutping {
-                let candidateCommentHeight = cellHeight * 0.25
-                let candidateCommentFontSizeUnrounded = candidateCommentHeight * Self.fontSizePerHeight
-                let candidateCommentFontSize = candidateCommentFontSizeUnrounded.roundTo(q: 4)
-                
                 let commentWidth = estimateStringWidth(jyutping, ofSize: candidateCommentFontSize)
                 cellWidth = max(cellWidth, commentWidth)
             }
             
             if let mainLanguage = info.mainLanguage {
-                let candidateCommentHeight = cellHeight * (showRomanization ? 0.25 : 0.3)
-                let candidateCommentFontSizeUnrounded = candidateCommentHeight * Self.fontSizePerHeight
-                let candidateCommentFontSize = candidateCommentFontSizeUnrounded.roundTo(q: 4)
-                
-                let commentWidth = Settings.cached.languageState.main.isLatin ?
-                    estimateStringWidth(mainLanguage, ofSize: candidateCommentFontSize) :
-                    mainLanguage.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
+                let commentWidth = mainLanguage.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
                 cellWidth = max(cellWidth, min(cellWidth + 70, commentWidth))
+            }
+            
+            if mode == .table {
+                for language in info.otherLanguages {
+                    cellWidth += Self.paddingBetweenLanguages + language.size(withFont: UIFont.systemFont(ofSize: candidateFontSize)).width
+                }
             }
         }
         
-        return Self.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight)).with(minWidth: minWidth)
+        return Self.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))
     }
     
     static func estimateStringWidth(_ s: String, ofSize fontSize: CGFloat) -> CGFloat {
         var unitWidth = unitFontWidthCache[fontSize]
         if unitWidth == nil {
-            var halfWidths = Array(repeating: CGFloat.zero, count: 256)
-            for b in UInt8.min...UInt8.max {
-                let c = Character(UnicodeScalar(b))
-                halfWidths[Int(b)] = String(c).size(withFont: UIFont.systemFont(ofSize: fontSize)).width
+            let halfWidths = (UInt8.min...UInt8.max).map {
+                String(UnicodeScalar($0)).size(withFont: UIFont.systemFont(ofSize: fontSize)).width
             }
             let fullWidth = "　".size(withFont: UIFont.systemFont(ofSize: fontSize)).width
             unitWidth = (halfWidths: halfWidths, fullWidth: fullWidth)
