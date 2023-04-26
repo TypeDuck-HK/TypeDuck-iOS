@@ -1,27 +1,19 @@
 //
-//  CandidateCell.swift
+//  FilterBarCell.swift
 //  CantoboardFramework
 //
-//  Created by Alex Man on 8/25/21.
+//  Created by Alex Man on 4/25/23.
 //
 
 import Foundation
 import UIKit
 import CocoaLumberjackSwift
 
-protocol CandidateCellProtocol: CandidateCell {
-    static var reuseId: String { get }
-    func setup(_ text: String, _ comment: String?, showRomanization: Bool)
-    static func computeCellSize(cellHeight: CGFloat, candidateText: String, info: CandidateCellInfo?, showRomanization: Bool) -> CGSize
-}
-
-class CandidateCell: UICollectionViewCell {
-    internal static let margin = UIEdgeInsets(top: 3, left: 8, bottom: 0, right: 8)
-    internal static let fontSizePerHeight: CGFloat = 18 / "＠".size(withFont: UIFont.systemFont(ofSize: 20)).height
+class FilterBarCell: UICollectionViewCell {
+    static var reuseId: String = "FilterBarCell"
     
-    var text: String = ""
-    var showRomanization: Bool = false
-    var info: CandidateCellInfo?
+    private static let margin = UIEdgeInsets(top: 3, left: 8, bottom: 0, right: 8)
+    private static let fontSizePerHeight: CGFloat = 18 / "＠".size(withFont: UIFont.systemFont(ofSize: 20)).height
     
     override var isSelected: Bool {
         didSet {
@@ -46,22 +38,24 @@ class CandidateCell: UICollectionViewCell {
     weak var selectedRectLayer: CALayer?
     
     // Uncomment this to debug memory leak.
-    private let c = InstanceCounter<CandidateCell>()
+    private let c = InstanceCounter<FilterBarCell>()
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
     }
     
-    internal final func createAndAddTextLayer(color: CGColor?, font: UIFont?, alignmentMode: CATextLayerAlignmentMode = .center, truncationMode: CATextLayerTruncationMode = .none) -> CATextLayer {
-        let textLayer = CATextLayer()
-        textLayer.alignmentMode = alignmentMode
-        textLayer.allowsFontSubpixelQuantization = true
-        textLayer.contentsScale = UIScreen.main.scale
-        textLayer.foregroundColor = color
-        textLayer.font = font
-        textLayer.truncationMode = truncationMode
-        layer.addSublayer(textLayer)
-        return textLayer
+    func setup(_ text: String) {
+        if label == nil {
+            let label = UILabel()
+            label.textAlignment = .center
+            label.baselineAdjustment = .alignBaselines
+            label.isUserInteractionEnabled = false
+
+            self.contentView.addSubview(label)
+            self.label = label
+        }
+        label?.attributedText = text.toHKAttributedString
+        layout(bounds)
     }
     
     func free() {
@@ -89,7 +83,7 @@ class CandidateCell: UICollectionViewCell {
         }
     }
     
-    internal func layout(_ bounds: CGRect) {
+    private func layout(_ bounds: CGRect) {
         guard let label = label else { return }
         
         let margin = Self.margin
@@ -109,28 +103,15 @@ class CandidateCell: UICollectionViewCell {
         
         selectedRectLayer?.backgroundColor = ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
     }
-}
-
-extension CandidateCell {
-    private static var unitFontWidthCache: [CGFloat: (halfWidths: [UInt8: CGFloat], fullWidth: CGFloat)] = [:]
     
-    internal static func estimateStringWidth(_ s: String, ofSize fontSize: CGFloat) -> CGFloat {
-        var unitWidth = unitFontWidthCache[fontSize]
-        if unitWidth == nil {
-            let halfWidths = Dictionary(uniqueKeysWithValues: (32...126).map {
-                ($0, String(UnicodeScalar($0)).size(withFont: UIFont.systemFont(ofSize: fontSize)).width)
-            })
-            let fullWidth = "　".size(withFont: UIFont.systemFont(ofSize: fontSize)).width
-            unitWidth = (halfWidths: halfWidths, fullWidth: fullWidth)
-            unitFontWidthCache[fontSize] = unitWidth
-        }
+    static func computeCellSize(cellHeight: CGFloat, candidateText: String) -> CGSize {
+        let fontSizeScale = Settings.cached.candidateFontSize.scale
         
-        return s.reduce(CGFloat.zero) { r, c in
-            if c.isASCII {
-                return r + (unitWidth!.halfWidths[c.asciiValue!] ?? 0)
-            } else {
-                return r + unitWidth!.fullWidth
-            }
-        }
+        let candidateLabelHeight = cellHeight * 0.7
+        let candidateFontSizeUnrounded = candidateLabelHeight * Self.fontSizePerHeight * fontSizeScale
+        let candidateFontSize = candidateFontSizeUnrounded.roundTo(q: 4)
+        
+        let cellWidth = CandidateCell.estimateStringWidth(candidateText, ofSize: candidateFontSize)
+        return Self.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))
     }
 }

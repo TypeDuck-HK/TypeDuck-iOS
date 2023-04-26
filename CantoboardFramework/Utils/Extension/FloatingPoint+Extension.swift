@@ -9,6 +9,6 @@ import Foundation
 
 extension FloatingPoint {
     func roundTo(q: Self) -> Self {
-        return (self * q).rounded() / q
+        return (self * q).rounded(.up) / q
     }
 }

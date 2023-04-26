@@ -68,7 +68,7 @@ class FilterBarView: UIView {
             filterCollectionView.translatesAutoresizingMaskIntoConstraints = false
             filterCollectionView.dataSource = self
             filterCollectionView.delegate = self
-            filterCollectionView.register(CandidateCell.self, forCellWithReuseIdentifier: CandidateCell.reuseId)
+            filterCollectionView.register(FilterBarCell.self, forCellWithReuseIdentifier: FilterBarCell.reuseId)
             filterCollectionView.backgroundColor = .clear
             filterCollectionView.allowsSelection = true
             self.filterCollectionView = filterCollectionView
@@ -105,15 +105,13 @@ extension FilterBarView: UICollectionViewDataSource, UICollectionViewDelegate, U
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CandidateCell.reuseId, for: indexPath) as! CandidateCell
-        cell.isFilterCell = true
-        return cell
+        return collectionView.dequeueReusableCell(withReuseIdentifier: FilterBarCell.reuseId, for: indexPath)
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let text = keyboardState.tenKeysState.specializationCandidates[safe: indexPath.row],
-           let cell = cell as? CandidateCell {
-            cell.setup(text, nil, showRomanization: false, mode: .row)
+           let cell = cell as? FilterBarCell {
+            cell.setup(text)
             if indexPath.row == keyboardState.tenKeysState.selectedSpecializationCandidateIndex {
                 cell.isSelected = true
             }
@@ -121,15 +119,15 @@ extension FilterBarView: UICollectionViewDataSource, UICollectionViewDelegate, U
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let cell = cell as? CandidateCell {
+        if let cell = cell as? FilterBarCell {
             cell.free()
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if let text = keyboardState.tenKeysState.specializationCandidates[safe: indexPath.row] {
-            return CandidateCell
-                .computeCellSize(cellHeight: bounds.height, candidateText: text, info: nil, showRomanization: false, mode: .row)
+            return FilterBarCell
+                .computeCellSize(cellHeight: bounds.height, candidateText: text)
                 .with(minWidth: bounds.height * 1.25, maxWidth: bounds.width)
         }
         return .zero

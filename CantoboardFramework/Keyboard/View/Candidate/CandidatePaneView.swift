@@ -29,6 +29,13 @@ class CandidatePaneView: UIControl {
     
     enum Mode {
         case row, table
+        
+        var cellClass: CandidateCellProtocol.Type {
+            switch self {
+            case .row: return CandidateCellRowMode.self
+            case .table: return CandidateCellTableMode.self
+            }
+        }
     }
     
     enum StatusIndicatorMode {
@@ -311,7 +318,8 @@ class CandidatePaneView: UIControl {
         collectionView.backgroundColor = .clear
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(CandidateCell.self, forCellWithReuseIdentifier: CandidateCell.reuseId)
+        collectionView.register(CandidateCellRowMode.self, forCellWithReuseIdentifier: CandidateCellRowMode.reuseId)
+        collectionView.register(CandidateCellTableMode.self, forCellWithReuseIdentifier: CandidateCellTableMode.reuseId)
         collectionView.register(CandidateSegmentControlCell.self, forCellWithReuseIdentifier: CandidateSegmentControlCell.reuseId)
         collectionView.register(CandidateSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CandidateSectionHeader.reuseId)
         collectionView.allowsSelection = true
@@ -535,7 +543,11 @@ extension CandidatePaneView {
             }
         }
         
-        collectionView.collectionViewLayout.invalidateLayout()
+        UIView.performWithoutAnimation { [self] in
+            collectionView.reloadData()
+            collectionView.collectionViewLayout.invalidateLayout()
+            collectionView.layoutIfNeeded()
+        }
         layoutSubviews()
         
         if newMode == .row {
@@ -611,7 +623,7 @@ extension CandidatePaneView: UICollectionViewDataSource {
     }
     
     private func dequeueCandidateCell(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CandidateCell.reuseId, for: indexPath) as! CandidateCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: mode.cellClass.reuseId, for: indexPath) as! CandidateCellProtocol
         guard let candidateOrganizer = candidateOrganizer else { return cell }
         
         let candidateCount = self.collectionView.numberOfItems(inSection: translateCollectionViewSectionToCandidateSection(indexPath.section))
@@ -703,8 +715,8 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
             info = CandidateCellInfo(fromCSV: comment)
         }
         
-        return CandidateCell
-            .computeCellSize(cellHeight: rowHeight, candidateText: text, info: info, showRomanization: showRomanization, mode: mode)
+        return mode.cellClass
+            .computeCellSize(cellHeight: rowHeight, candidateText: text, info: info, showRomanization: showRomanization)
             .with(minWidth: (bounds.width - expandButtonWidth) / layoutConstants.numOfSingleCharCandidateInRow(twoComments: showRomanization), maxWidth: bounds.width)
     }
     
@@ -742,17 +754,17 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
         
         if let cell = cell as? CandidateSegmentControlCell {
             cell.update(selectedGroupByMode: candidateOrganizer.groupByMode)
-        } else if let cell = cell as? CandidateCell {
+        } else if let cell = cell as? CandidateCellProtocol {
             let candidateIndexPath = translateCollectionViewIndexPathToCandidateIndexPath(indexPath)
             guard let candidate = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else { return }
             let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
             cell.frame = CGRect(origin: cell.frame.origin, size: computeCellSize(candidateIndexPath: candidateIndexPath))
-            cell.setup(candidate, comment, showRomanization: showRomanization, mode: mode)
+            cell.setup(candidate, comment, showRomanization: showRomanization)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let cell = cell as? CandidateCell {
+        if let cell = cell as? CandidateCellProtocol {
             cell.free()
         }
     }
