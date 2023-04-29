@@ -154,9 +154,11 @@ class CandidatePaneView: UIControl {
     private weak var expandButton, inputModeButton: StatusButton!
     private weak var leftSeparator, middleSeparator, rightSeparator: UIView!
     weak var delegate: CandidatePaneViewDelegate?
+    private weak var dictionaryView: DictionaryView!
     
     private(set) var mode: Mode = .row
     private var shouldPreserveCandidateOffset: Bool = false
+    private(set) var dictionaryCandidateInfo: CandidateCellInfo?
     
     var statusIndicatorMode: StatusIndicatorMode {
         get {
@@ -241,9 +243,9 @@ class CandidatePaneView: UIControl {
     }
     
     func setupButtons() {
-        let expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
+        let expandButtonImage = dictionaryCandidateInfo != nil ? ButtonImage.close : mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
         expandButton.setImage(adjustImageFontSize(expandButtonImage), for: .normal)
-        expandButton.shouldShowMenuIndicator = mode == .row
+        expandButton.shouldShowMenuIndicator = mode == .row && dictionaryCandidateInfo == nil
         expandButton.isEnabled = keyboardState.enableState == .enabled
         
         var title: String?
@@ -279,7 +281,12 @@ class CandidatePaneView: UIControl {
         charFormButton.setTitle(charFormText, for: .normal)
         charFormButton.isEnabled = keyboardState.enableState == .enabled
         
-        if mode == .table {
+        if dictionaryCandidateInfo != nil {
+            expandButton.isHidden = false
+            inputModeButton.isHidden = true
+            backspaceButton.isHidden = true
+            charFormButton.isHidden = true
+        } else if mode == .table {
             expandButton.isHidden = false
             inputModeButton.isHidden = false || title == nil
             inputModeButton.isMini = false
@@ -313,7 +320,7 @@ class CandidatePaneView: UIControl {
         collectionViewLayout.scrollDirection = mode == .row ? .horizontal : .vertical
         collectionViewLayout.minimumLineSpacing = rowPadding
         
-        let collectionView = CandidateCollectionView(frame :.zero, collectionViewLayout: collectionViewLayout)
+        let collectionView = CandidateCollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .clear
         collectionView.dataSource = self
@@ -329,6 +336,10 @@ class CandidatePaneView: UIControl {
         self.addSubview(collectionView)
         self.collectionView = collectionView
         
+        let dictionaryView = DictionaryView(frame: .zero)
+        self.addSubview(dictionaryView)
+        self.dictionaryView = dictionaryView
+        
         let leftSeparator = UIView()
         leftSeparator.backgroundColor = .separator
         self.addSubview(leftSeparator)
@@ -336,6 +347,10 @@ class CandidatePaneView: UIControl {
         
         let middleSeparator = UIView()
         middleSeparator.backgroundColor = .separator
+        middleSeparator.layer.shadowOffset = CGSize(width: -1, height: 0)
+        middleSeparator.layer.shadowColor = UIColor.separator.resolvedColor(with: traitCollection).cgColor
+        middleSeparator.layer.shadowOpacity = 0.5
+        middleSeparator.layer.shadowRadius = 2
         self.addSubview(middleSeparator)
         self.middleSeparator = middleSeparator
         
@@ -343,6 +358,12 @@ class CandidatePaneView: UIControl {
         rightSeparator.backgroundColor = .separator
         self.addSubview(rightSeparator)
         self.rightSeparator = rightSeparator
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        middleSeparator.layer.shadowColor = UIColor.separator.resolvedColor(with: traitCollection).cgColor
     }
     
     override func didMoveToSuperview() {
@@ -365,7 +386,11 @@ class CandidatePaneView: UIControl {
     @objc private func expandButtonClick() {
         FeedbackProvider.rigidImpact.impactOccurred()
         
-        changeMode(mode == .row ? .table : .row)
+        if dictionaryCandidateInfo == nil {
+            changeMode(mode == .row ? .table : .row)
+        } else {
+            toggleDictionary(candidateInfo: nil)
+        }
     }
     
     @objc private func filterButtonClick() {
@@ -406,14 +431,25 @@ class CandidatePaneView: UIControl {
     override func layoutSubviews() {
         guard let superview = superview else { return }
         
-        let height = mode == .row ? rowHeight : superview.bounds.height
+        let height = mode == .row && dictionaryCandidateInfo == nil ? rowHeight : superview.bounds.height
         let candidateViewWidth = superview.bounds.width - expandButtonWidth - Self.separatorWidth
         let leftRightInset = isFullPadCandidateBar ? 0 : layoutConstants.ref.candidatePaneViewLeftRightInset
         
-        let collectionViewFrame = CGRect(x: leftRightInset, y: 0, width: candidateViewWidth - leftRightInset * 2, height: height)
-        if collectionView.frame != collectionViewFrame {
-            collectionView.frame = collectionViewFrame
-            collectionView.collectionViewLayout.invalidateLayout()
+        let mainViewFrame = CGRect(x: leftRightInset, y: 0, width: candidateViewWidth - leftRightInset * 2, height: height)
+        if dictionaryCandidateInfo == nil {
+            collectionView.isHidden = false
+            dictionaryView.isHidden = true
+            if collectionView.frame != mainViewFrame {
+                collectionView.frame = mainViewFrame
+                collectionView.collectionViewLayout.invalidateLayout()
+            }
+        } else {
+            collectionView.isHidden = true
+            dictionaryView.isHidden = false
+            if dictionaryView.frame != mainViewFrame {
+                dictionaryView.frame = mainViewFrame
+                dictionaryView.layoutSubviews()
+            }
         }
         
         super.layoutSubviews()
@@ -429,7 +465,7 @@ class CandidatePaneView: UIControl {
             leftSeparator.frame = separatorFrame.with(x: leftRightInset - Self.separatorWidth)
         }
         
-        if expandButton.isHidden {
+        if expandButton.isHidden || dictionaryCandidateInfo != nil {
             middleSeparator.isHidden = true
         } else {
             middleSeparator.isHidden = false
@@ -556,6 +592,26 @@ extension CandidatePaneView {
             delegate?.candidatePaneViewExpanded()
         }
         // DDLogInfo("CandidatePaneView.changeMode end")
+    }
+    
+    func toggleDictionary(candidateInfo: CandidateCellInfo?) {
+        let oldCandidateInfo = dictionaryCandidateInfo
+        
+        dictionaryCandidateInfo = candidateInfo
+        if let candidateInfo = candidateInfo {
+            dictionaryView.setup(info: candidateInfo)
+        }
+        
+        guard (candidateInfo == nil) != (oldCandidateInfo == nil) else { return }
+        
+        setupButtons()
+        layoutSubviews()
+        
+        if candidateInfo == nil {
+            delegate?.candidatePaneViewCollapsed()
+        } else {
+            delegate?.candidatePaneViewExpanded()
+        }
     }
     
     func getFirstVisibleIndexPath() -> IndexPath? {
@@ -710,13 +766,11 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
             return .zero
         }
         
-        var info: CandidateCellInfo?
-        if let comment = candidateOrganizer?.getCandidateComment(indexPath: candidateIndexPath) {
-            info = CandidateCellInfo(fromCSV: comment)
-        }
+        let comment = candidateOrganizer?.getCandidateComment(indexPath: candidateIndexPath)
+        let info = CandidateCellInfo(honzi: text, fromCSV: comment)
         
         return mode.cellClass
-            .computeCellSize(cellHeight: rowHeight, candidateText: text, info: info, showRomanization: showRomanization)
+            .computeCellSize(cellHeight: rowHeight, candidateInfo: info, showRomanization: showRomanization)
             .with(minWidth: (bounds.width - expandButtonWidth) / layoutConstants.numOfSingleCharCandidateInRow(twoComments: showRomanization), maxWidth: bounds.width)
     }
     
@@ -746,7 +800,21 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didLongPressItemAt indexPath: IndexPath) {
-        delegate?.handleKey(.longPressCandidate(translateCollectionViewIndexPathToCandidateIndexPath(indexPath)))
+        guard let candidateOrganizer = candidateOrganizer else { return }
+        
+        let candidateIndexPath = translateCollectionViewIndexPathToCandidateIndexPath(indexPath)
+        guard let text = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else {
+            delegate?.handleKey(.longPressCandidate(candidateIndexPath))
+            return
+        }
+        
+        let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
+        let candidateInfo = CandidateCellInfo(honzi: text, fromCSV: comment)
+        if candidateInfo.isDictionaryEntry {
+            toggleDictionary(candidateInfo: candidateInfo)
+        } else {
+            delegate?.handleKey(.longPressCandidate(candidateIndexPath))
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

@@ -111,6 +111,16 @@ public enum Language: String, Codable, Comparable, CaseIterable {
         }
     }
     
+    var name: String {
+        switch self {
+        case .eng: return "English"
+        case .hin: return "Hindi"
+        case .ind: return "Indonesian"
+        case .nep: return "Nepali"
+        case .urd: return "Urdu"
+        }
+    }
+    
     public static func <(lhs: Language, rhs: Language) -> Bool {
         return lhs.order < rhs.order
     }

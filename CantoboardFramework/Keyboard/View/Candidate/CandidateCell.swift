@@ -12,7 +12,7 @@ import CocoaLumberjackSwift
 protocol CandidateCellProtocol: CandidateCell {
     static var reuseId: String { get }
     func setup(_ text: String, _ comment: String?, showRomanization: Bool)
-    static func computeCellSize(cellHeight: CGFloat, candidateText: String, info: CandidateCellInfo?, showRomanization: Bool) -> CGSize
+    static func computeCellSize(cellHeight: CGFloat, candidateInfo info: CandidateCellInfo, showRomanization: Bool) -> CGSize
 }
 
 class CandidateCell: UICollectionViewCell {
@@ -44,6 +44,9 @@ class CandidateCell: UICollectionViewCell {
     
     weak var label: UILabel?
     weak var selectedRectLayer: CALayer?
+    weak var iconLayer: CALayer?
+    
+    private static let infoImage = ButtonImage.info.cgImage
     
     // Uncomment this to debug memory leak.
     private let c = InstanceCounter<CandidateCell>()
@@ -64,6 +67,14 @@ class CandidateCell: UICollectionViewCell {
         return textLayer
     }
     
+    internal final func createAndAddIconLayer() {
+        let iconLayer = CALayer()
+        iconLayer.contents = Self.infoImage
+        iconLayer.contentsGravity = .resizeAspect
+        layer.addSublayer(iconLayer)
+        self.iconLayer = iconLayer
+    }
+    
     func free() {
         label?.text = nil
         label?.removeFromSuperview()
@@ -71,6 +82,9 @@ class CandidateCell: UICollectionViewCell {
         
         selectedRectLayer?.removeFromSuperlayer()
         selectedRectLayer = nil
+        
+        iconLayer?.removeFromSuperlayer()
+        iconLayer = nil
     }
     
     required init?(coder aDecoder: NSCoder) {

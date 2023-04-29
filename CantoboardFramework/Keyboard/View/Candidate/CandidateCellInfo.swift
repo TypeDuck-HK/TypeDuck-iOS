@@ -8,6 +8,7 @@
 import Foundation
 
 struct CandidateCellInfo {
+    let honzi: String
     var jyutping: String?
     var pronOrder: String?
     var sandhi: String?
@@ -40,11 +41,22 @@ struct CandidateCellInfo {
         \.definition.languages.urd, \.definition.languages.nep, \.definition.languages.hin, \.definition.languages.ind,
     ]
     
-    init(fromCSV csv: String) {
-        guard csv.contains(",") else {
-            jyutping = csv
+    private let isJyutpingOnly: Bool
+    
+    static let checkColumns: [WritableKeyPath<Self, String?>] = [
+        \.sandhi, \.litColReading, \.definition.pos, \.definition.register, \.definition.label, \.definition.written, \.definition.colloquial,
+    ]
+    
+    init(honzi: String, fromCSV csv: String? = nil) {
+        self.honzi = honzi
+        guard let csv = csv, csv.contains(",") else {
+            if csv != "" {
+                jyutping = csv
+            }
+            isJyutpingOnly = true
             return
         }
+        isJyutpingOnly = false
         var charIterator = PeekableIterator(csv.makeIterator())
         var columnIterator = Self.columns.makeIterator()
         var isQuoted = false
@@ -110,6 +122,26 @@ struct CandidateCellInfo {
     var otherLanguages: [String] {
         let main = Settings.cached.languageState.main
         return Settings.cached.languageState.selected.compactMap { $0 == main ? nil : getDefinition(of: $0) }
+    }
+    
+    var otherLanguagesWithNames: [(name: String, value: String)] {
+        let main = Settings.cached.languageState.main
+        return Settings.cached.languageState.selected.compactMap {
+            guard $0 != main, let definition = getDefinition(of: $0) else { return nil }
+            return ($0.name, definition)
+        }
+    }
+    
+    var isDictionaryEntry: Bool {
+        if isJyutpingOnly {
+            return false
+        }
+        for column in Self.checkColumns {
+            if self[keyPath: column] != nil {
+                return true
+            }
+        }
+        return mainLanguage != nil || !otherLanguages.isEmpty
     }
 }
 

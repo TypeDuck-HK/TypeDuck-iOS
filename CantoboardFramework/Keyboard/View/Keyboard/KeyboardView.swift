@@ -192,7 +192,7 @@ class KeyboardView: UIView, BaseKeyboardView {
     
     private func layoutCandidateSubviews(_ layoutConstants: LayoutConstants) {
         guard let candidatePaneView = candidatePaneView else { return }
-        let height = candidatePaneView.mode == .row ? layoutConstants.autoCompleteBarHeight : bounds.height
+        let height = candidatePaneView.mode == .row && candidatePaneView.dictionaryCandidateInfo == nil ? layoutConstants.autoCompleteBarHeight : bounds.height
         candidatePaneView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0,
                                                                              leading: layoutConstants.keyboardViewInsets.left,
                                                                              bottom: 0,
@@ -216,7 +216,7 @@ class KeyboardView: UIView, BaseKeyboardView {
     }
     
     private func refreshKeyRowsVisibility() {
-        if state.keyboardType == .emojis || candidatePaneView?.mode ?? .row == .table {
+        if state.keyboardType == .emojis || candidatePaneView?.mode ?? .row == .table || candidatePaneView?.dictionaryCandidateInfo != nil {
             keyRows.forEach { $0.isHidden = true }
         } else {
             keyRows.forEach { $0.isHidden = false }

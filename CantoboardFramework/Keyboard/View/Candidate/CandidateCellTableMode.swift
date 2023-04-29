@@ -57,7 +57,7 @@ class CandidateCellTableMode: CandidateCell, CandidateCellProtocol {
         }
         
         if let comment = comment {
-            let info = CandidateCellInfo(fromCSV: comment)
+            let info = CandidateCellInfo(honzi: text, fromCSV: comment)
             self.info = info
             
             if showRomanization, let jyutping = info.jyutping {
@@ -85,6 +85,13 @@ class CandidateCellTableMode: CandidateCell, CandidateCellProtocol {
                     commentLayers[i].ref?.removeFromSuperlayer()
                     commentLayers[i].ref = nil
                 }
+            }
+            
+            if info.isDictionaryEntry {
+                createAndAddIconLayer()
+            } else {
+                iconLayer?.removeFromSuperlayer()
+                iconLayer = nil
             }
         }
         
@@ -116,8 +123,14 @@ class CandidateCellTableMode: CandidateCell, CandidateCellProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        guard let keyHintLayer = keyHintLayer else { return }
-        layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.hintInsets)
+        if let keyHintLayer = keyHintLayer {
+            layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.hintInsets)
+        }
+        if let iconLayer = iconLayer, !iconLayer.isHidden {
+            let margin = Self.margin
+            let dimension = bounds.height * 0.4
+            iconLayer.frame = CGRect(x: bounds.width - dimension - margin.right, y: (bounds.height - dimension) / 2, width: dimension, height: dimension)
+        }
     }
     
     override internal func layout(_ bounds: CGRect) {
@@ -125,7 +138,7 @@ class CandidateCellTableMode: CandidateCell, CandidateCellProtocol {
         
         let margin = Self.margin
         let availableHeight = bounds.height - margin.top - margin.bottom
-        let availableWidth = bounds.width - margin.left - margin.right
+        let availableWidth = bounds.width - margin.left - margin.right - (iconLayer?.isHidden ?? true ? 0 : bounds.height * 0.4 + 4)
         let fontSizeScale = Settings.cached.candidateFontSize.scale
         
         let candidateLabelHeight = availableHeight * (showRomanization ? 0.5 : 0.6)
@@ -191,35 +204,33 @@ class CandidateCellTableMode: CandidateCell, CandidateCellProtocol {
         }
     }
     
-    static func computeCellSize(cellHeight: CGFloat, candidateText: String, info: CandidateCellInfo?, showRomanization: Bool) -> CGSize {
+    static func computeCellSize(cellHeight: CGFloat, candidateInfo info: CandidateCellInfo, showRomanization: Bool) -> CGSize {
         let fontSizeScale = Settings.cached.candidateFontSize.scale
         
         let candidateLabelHeight = cellHeight * (showRomanization ? 0.5 : 0.6)
         let candidateFontSizeUnrounded = candidateLabelHeight * Self.fontSizePerHeight * fontSizeScale
         let candidateFontSize = candidateFontSizeUnrounded.roundTo(q: 4)
         
-        var cellWidth = Self.estimateStringWidth(candidateText, ofSize: candidateFontSize)
+        var cellWidth = Self.estimateStringWidth(info.honzi, ofSize: candidateFontSize)
         
-        if let info = info {
-            if let mainLanguage = info.mainLanguage {
-                cellWidth += Self.paddingText + mainLanguage.size(withFont: UIFont.systemFont(ofSize: candidateFontSize)).width
+        if let mainLanguage = info.mainLanguage {
+            cellWidth += Self.paddingText + mainLanguage.size(withFont: UIFont.systemFont(ofSize: candidateFontSize)).width
+        }
+        
+        let candidateCommentHeight = cellHeight * (showRomanization ? 0.25 : 0.3)
+        let candidateCommentFontSizeUnrounded = candidateCommentHeight * Self.fontSizePerHeight
+        let candidateCommentFontSize = candidateCommentFontSizeUnrounded.roundTo(q: 4)
+        
+        if showRomanization, let jyutping = info.jyutping {
+            let commentWidth = Self.estimateStringWidth(jyutping, ofSize: candidateCommentFontSize)
+            cellWidth = max(cellWidth, commentWidth)
+        }
+        
+        if !info.otherLanguages.isEmpty {
+            let commentWidth = info.otherLanguages.reduce(-Self.paddingComment) { sum, language in
+                sum + Self.paddingComment + language.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
             }
-            
-            let candidateCommentHeight = cellHeight * (showRomanization ? 0.25 : 0.3)
-            let candidateCommentFontSizeUnrounded = candidateCommentHeight * Self.fontSizePerHeight
-            let candidateCommentFontSize = candidateCommentFontSizeUnrounded.roundTo(q: 4)
-            
-            if showRomanization, let jyutping = info.jyutping {
-                let commentWidth = Self.estimateStringWidth(jyutping, ofSize: candidateCommentFontSize)
-                cellWidth = max(cellWidth, commentWidth)
-            }
-            
-            if !info.otherLanguages.isEmpty {
-                let commentWidth = info.otherLanguages.reduce(-Self.paddingComment) { sum, language in
-                    sum + Self.paddingComment + language.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
-                }
-                cellWidth = max(cellWidth, commentWidth)
-            }
+            cellWidth = max(cellWidth, commentWidth)
         }
         
         return Self.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))
