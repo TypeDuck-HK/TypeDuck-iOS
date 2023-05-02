@@ -14,7 +14,8 @@ class CandidateCell: UICollectionViewCell {
     
     private static let margin = UIEdgeInsets(top: 3, left: 8, bottom: 0, right: 8)
     private static let fontSizePerHeight: CGFloat = 18 / "＠".size(withFont: UIFont.systemFont(ofSize: 20)).height
-    private static let paddingBetweenLanguages: CGFloat = 10
+    private static let paddingText: CGFloat = 10
+    private static let paddingComment: CGFloat = 5
     
     var showRomanization: Bool = false
     var mode: CandidatePaneView.Mode = .row
@@ -40,11 +41,13 @@ class CandidateCell: UICollectionViewCell {
         }
     }
     
+    weak var mainStack, textStack, commentStack: UIStackView?
+    weak var textStackSpacer, commentStackSpacer: UIView?
     weak var label: UILabel?
     weak var keyHintLayer: KeyHintLayer?
-    weak var romanizationLayer: CATextLayer?
-    weak var translationLayer: CATextLayer?
-    var commentLayers: [Weak<CATextLayer>] = []
+    weak var romanizationLabel: UILabel?
+    weak var translationLabel: UILabel?
+    var commentLabels: [Weak<UILabel>] = []
     weak var selectedRectLayer: CALayer?
     
     // Uncomment this to debug memory leak.
@@ -58,32 +61,84 @@ class CandidateCell: UICollectionViewCell {
         self.showRomanization = showRomanization
         self.mode = mode
         
-        if label == nil {
-            let label = UILabel()
-            label.textAlignment = .center
-            label.baselineAdjustment = .alignBaselines
-            label.isUserInteractionEnabled = false
-
-            self.contentView.addSubview(label)
-            self.label = label
+        let mainStack, textStack, commentStack: UIStackView?
+        
+        if let oldMainStack = self.mainStack {
+            for view in oldMainStack.arrangedSubviews {
+                oldMainStack.removeArrangedSubview(view)
+            }
+            mainStack = oldMainStack
+        } else {
+            mainStack = UIStackView()
+            mainStack!.translatesAutoresizingMaskIntoConstraints = false
+            mainStack!.axis = .vertical
+            contentView.addSubview(mainStack!)
+            NSLayoutConstraint.activate([
+                mainStack!.topAnchor.constraint(equalTo: topAnchor, constant: Self.margin.top),
+                // bottomAnchor.constraint(equalTo: mainStack!.bottomAnchor, constant: Self.margin.bottom),
+                mainStack!.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Self.margin.left),
+                trailingAnchor.constraint(equalTo: mainStack!.trailingAnchor, constant: Self.margin.right),
+            ])
+            self.mainStack = mainStack
         }
         
-        label?.attributedText = text.toHKAttributedString
+        if let oldTextStack = self.textStack {
+            for view in oldTextStack.arrangedSubviews {
+                oldTextStack.removeArrangedSubview(view)
+            }
+            textStack = oldTextStack
+        } else if mode == .table {
+            textStack = UIStackView()
+            textStack!.translatesAutoresizingMaskIntoConstraints = false
+            textStack!.spacing = Self.paddingText
+            self.textStack = textStack
+        } else {
+            textStack = self.textStack
+        }
         
-        let labelColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
-        let font = UIFont.systemFont(ofSize: 10 /* ignored */)
+        if let oldCommentStack = self.commentStack {
+            for view in oldCommentStack.arrangedSubviews {
+                oldCommentStack.removeArrangedSubview(view)
+            }
+            commentStack = oldCommentStack
+        } else if mode == .table {
+            commentStack = UIStackView()
+            commentStack!.translatesAutoresizingMaskIntoConstraints = false
+            commentStack!.spacing = Self.paddingComment
+            self.commentStack = commentStack
+        } else {
+            commentStack = self.commentStack
+        }
+        
+        if mode == .row {
+            self.textStack?.removeFromSuperview()
+            self.textStack = nil
+            
+            self.textStackSpacer?.removeFromSuperview()
+            self.textStackSpacer = nil
+            
+            self.commentStack?.removeFromSuperview()
+            self.commentStack = nil
+            
+            self.commentStackSpacer?.removeFromSuperview()
+            self.commentStackSpacer = nil
+        }
+        
+        let label = self.label ?? UILabel()
+        label.textAlignment = mode == .row ? .center : .left
+        label.attributedText = text.toHKAttributedString
+        self.label = label
         
         let keyCap = KeyCap(stringLiteral: text)
         if let hintText = keyCap.barHint {
             if keyHintLayer == nil {
                 let keyHintLayer = KeyHintLayer()
-                self.keyHintLayer = keyHintLayer
-                layer.addSublayer(keyHintLayer)
                 keyHintLayer.layoutSublayers()
-                keyHintLayer.foregroundColor = labelColor
+                keyHintLayer.foregroundColor = label.textColor.resolvedColor(with: traitCollection).cgColor
+                layer.addSublayer(keyHintLayer)
+                self.keyHintLayer = keyHintLayer
             }
-            
-            keyHintLayer?.setup(keyCap: keyCap, hintText: hintText)
+            self.keyHintLayer?.setup(keyCap: keyCap, hintText: hintText)
         }
         
         if let comment = comment {
@@ -91,68 +146,109 @@ class CandidateCell: UICollectionViewCell {
             self.info = info
             
             if showRomanization, let jyutping = info.jyutping {
-                romanizationLayer ??= createAndAddTextLayer(color: labelColor, font: font)
-                romanizationLayer?.string = jyutping
+                let romanizationLabel = self.romanizationLabel ?? UILabel()
+                romanizationLabel.textAlignment = mode == .row ? .center : .left
+                romanizationLabel.text = jyutping
+                mainStack!.addArrangedSubview(romanizationLabel)
+                self.romanizationLabel = romanizationLabel
             } else {
-                romanizationLayer?.removeFromSuperlayer()
-                romanizationLayer = nil
+                self.romanizationLabel?.text = nil
+                self.romanizationLabel?.removeFromSuperview()
+                self.romanizationLabel = nil
             }
             
+            let targetStack = mode == .row ? mainStack : textStack
+            targetStack!.addArrangedSubview(label)
+            
             if let mainLanguage = info.mainLanguage {
-                translationLayer ??= createAndAddTextLayer(color: labelColor, font: font, truncationMode: .end)
-                translationLayer?.string = mainLanguage
+                let translationLabel = self.translationLabel ?? UILabel()
+                translationLabel.textAlignment = mode == .row ? .center : .left
+                translationLabel.text = mainLanguage
+                targetStack!.addArrangedSubview(translationLabel)
+                self.translationLabel = translationLabel
             } else {
-                translationLayer?.removeFromSuperlayer()
-                translationLayer = nil
+                self.translationLabel?.text = nil
+                self.translationLabel?.removeFromSuperview()
+                self.translationLabel = nil
             }
             
             if mode == .table {
-                for (i, language) in info.otherLanguages.enumerated() {
-                    commentLayers[weak: i] ??= createAndAddTextLayer(color: labelColor, font: font, truncationMode: .end)
-                    commentLayers[i].ref?.string = language
+                let otherLanguages = info.otherLanguages
+                for (i, language) in otherLanguages.enumerated() {
+                    let commentLabel = self.commentLabels[weak: i] ?? UILabel()
+                    commentLabel.textAlignment = .left
+                    commentLabel.text = language
+                    commentStack!.addArrangedSubview(commentLabel)
+                    self.commentLabels[weak: i] = commentLabel
                 }
-                if info.otherLanguages.endIndex > commentLayers.endIndex {
-                    for i in info.otherLanguages.endIndex..<commentLayers.endIndex {
-                        commentLayers[i].ref?.removeFromSuperlayer()
-                        commentLayers[i].ref = nil
+                if otherLanguages.endIndex > self.commentLabels.endIndex {
+                    for i in otherLanguages.endIndex..<self.commentLabels.endIndex {
+                        self.commentLabels[i].ref?.removeFromSuperview()
+                        self.commentLabels[i].ref = nil
                     }
+                    self.commentLabels.removeLast(self.commentLabels.endIndex - otherLanguages.endIndex)
                 }
+                
+                let textStackSpacer, commentStackSpacer: UIView
+                textStackSpacer = self.textStackSpacer ?? UIView.createSpacer()
+                textStack!.addArrangedSubview(textStackSpacer)
+                mainStack!.addArrangedSubview(textStack!)
+                self.textStackSpacer = textStackSpacer
+                if !otherLanguages.isEmpty {
+                    commentStackSpacer = self.commentStackSpacer ?? UIView.createSpacer()
+                    commentStack!.addArrangedSubview(commentStackSpacer)
+                    mainStack!.addArrangedSubview(commentStack!)
+                    self.commentStackSpacer = commentStackSpacer
+                }
+            } else {
+                for commentLabel in self.commentLabels {
+                    commentLabel.ref?.text = nil
+                    commentLabel.ref?.removeFromSuperview()
+                    commentLabel.ref = nil
+                }
+                self.commentLabels.removeAll()
             }
         }
         
         layout(bounds)
     }
     
-    private func createAndAddTextLayer(color: CGColor?, font: UIFont?, truncationMode: CATextLayerTruncationMode = .none) -> CATextLayer {
-        let textLayer = CATextLayer()
-        textLayer.alignmentMode = .center
-        textLayer.allowsFontSubpixelQuantization = true
-        textLayer.contentsScale = UIScreen.main.scale
-        textLayer.foregroundColor = color
-        textLayer.font = font
-        textLayer.truncationMode = truncationMode
-        layer.addSublayer(textLayer)
-        return textLayer
-    }
-    
     func free() {
+        textStack?.arrangedSubviews.forEach { view in
+            mainStack?.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+        
+        commentStack?.arrangedSubviews.forEach { view in
+            mainStack?.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+        
+        mainStack?.arrangedSubviews.forEach { view in
+            mainStack?.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+        
         label?.text = nil
-        label?.removeFromSuperview()
         label = nil
         
         keyHintLayer?.removeFromSuperlayer()
         keyHintLayer = nil
         
-        romanizationLayer?.removeFromSuperlayer()
-        romanizationLayer = nil
+        romanizationLabel?.text = nil
+        romanizationLabel = nil
         
-        translationLayer?.removeFromSuperlayer()
-        translationLayer = nil
+        translationLabel?.text = nil
+        translationLabel = nil
         
-        for commentLayer in commentLayers {
-            commentLayer.ref?.removeFromSuperlayer()
-            commentLayer.ref = nil
+        for commentLabel in commentLabels {
+            commentLabel.ref?.text = nil
+            commentLabel.ref = nil
         }
+        commentLabels.removeAll()
+        
+        textStackSpacer = nil
+        commentStackSpacer = nil
         
         selectedRectLayer?.removeFromSuperlayer()
         selectedRectLayer = nil
@@ -178,63 +274,27 @@ class CandidateCell: UICollectionViewCell {
     }
     
     private func layout(_ bounds: CGRect) {
-        guard let label = label else { return }
+        let availableHeight = bounds.height - Self.margin.top - Self.margin.bottom
         
-        let margin = Self.margin
-        let availableHeight = bounds.height - margin.top - margin.bottom
-        let availableWidth = bounds.width - margin.left - margin.right
-        let fontSizeScale = Settings.cached.candidateFontSize.scale
+        let candidateTextHeight = availableHeight * (isFilterCell ? 0.7 : showRomanization ? 0.5 : 0.6)
+        let candidateTextFont = UIFont.systemFont(ofSize: candidateTextHeight * Self.fontSizePerHeight * Settings.cached.candidateFontSize.scale)
         
-        if showRomanization {
-            let candidateLabelHeight = availableHeight * 0.5 // assert(!isFilterCell)
-            let candidateFontSize = candidateLabelHeight * Self.fontSizePerHeight
-            
-            label.font = .systemFont(ofSize: candidateFontSize * fontSizeScale)
-            
-            let candidateCommentHeight = availableHeight * 0.25
-            let candidateCommentFontSize = candidateCommentHeight * Self.fontSizePerHeight
-            
-            romanizationLayer?.fontSize = candidateCommentFontSize
-            translationLayer?.fontSize = candidateCommentFontSize
-            
-            let romanizationFrame = CGRect(x: margin.left, y: margin.top, width: availableWidth, height: candidateCommentHeight)
-            let textFrame = CGRect(x: margin.left, y: romanizationFrame.maxY, width: availableWidth, height: candidateLabelHeight)
-            let translationFrame = CGRect(x: margin.left, y: textFrame.maxY, width: availableWidth, height: candidateCommentHeight)
-            
-            romanizationLayer?.frame = romanizationFrame
-            label.frame = textFrame
-            translationLayer?.frame = translationFrame
-            
-        } else {
-            let candidateLabelHeight = availableHeight * (isFilterCell ? 0.7 : 0.6)
-            let candidateFontSize = candidateLabelHeight * Self.fontSizePerHeight
-            
-            label.font = .systemFont(ofSize: candidateFontSize * fontSizeScale)
-            
-            let candidateCommentHeight = availableHeight * 0.3
-            let candidateCommentFontSize = candidateCommentHeight * Self.fontSizePerHeight
-            let translationTopPadding = availableHeight * 0.03
-            
-            translationLayer?.fontSize = candidateCommentFontSize
-            
-            let textFrame = CGRect(x: margin.left, y: margin.top, width: availableWidth, height: candidateLabelHeight)
-            let translationFrame = CGRect(x: margin.left, y: textFrame.maxY + translationTopPadding, width: availableWidth, height: candidateCommentHeight)
-            
-            label.frame = textFrame
-            translationLayer?.frame = translationFrame
+        let candidateCommentHeight = availableHeight * (showRomanization ? 0.25 : 0.3)
+        let candidateCommentFont = UIFont.systemFont(ofSize: candidateCommentHeight * Self.fontSizePerHeight)
+        
+        label?.font = candidateTextFont
+        romanizationLabel?.font = candidateCommentFont
+        translationLabel?.font = mode == .row ? candidateCommentFont : candidateTextFont
+        
+        for commentLabel in commentLabels {
+            commentLabel.ref?.font = candidateCommentFont
         }
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        let labelColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
-        keyHintLayer?.foregroundColor = labelColor
-        romanizationLayer?.foregroundColor = labelColor
-        translationLayer?.foregroundColor = labelColor
-        for commentLayer in commentLayers {
-            commentLayer.ref?.foregroundColor = labelColor
-        }
+        keyHintLayer?.foregroundColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
         selectedRectLayer?.backgroundColor = ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
     }
     
@@ -259,8 +319,18 @@ class CandidateCell: UICollectionViewCell {
         }
         
         if let mainLanguage = info.mainLanguage {
-            let commentWidth = mainLanguage.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
-            cellWidth = max(cellWidth, min(cellWidth + 70, commentWidth))
+            let commentWidth = mainLanguage.size(withFont: UIFont.systemFont(ofSize: mode == .row ? candidateCommentFontSize : candidateFontSize)).width
+            cellWidth = mode == .row ? max(cellWidth, min(cellWidth + 70, commentWidth)) : cellWidth + Self.paddingText + commentWidth
+        }
+        
+        if mode == .table {
+            let otherLanguages = info.otherLanguages
+            if !otherLanguages.isEmpty {
+                let commentWidth = info.otherLanguages.reduce(-Self.paddingComment) { sum, language in
+                    sum + Self.paddingComment + language.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
+                }
+                cellWidth = max(cellWidth, commentWidth)
+            }
         }
         
         return Self.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))

@@ -104,7 +104,7 @@ class DictionaryView: UIScrollView {
             pronunciationTypeLabel.text = "(\(pronunciationType.joined(separator: ", ")))"
             titleStack.addArrangedSubview(pronunciationTypeLabel)
         }
-        titleStack.addArrangedSubview(Self.createSpacer())
+        titleStack.addArrangedSubview(UIView.createSpacer())
         outerStack.addArrangedSubview(titleStack)
         
         definitionStack = UIStackView()
@@ -123,7 +123,7 @@ class DictionaryView: UIScrollView {
             definitionStack.addArrangedSubview(definitionLabel)
         }
         if !definitionStack.arrangedSubviews.isEmpty {
-            definitionStack.addArrangedSubview(Self.createSpacer())
+            definitionStack.addArrangedSubview(UIView.createSpacer())
             outerStack.addArrangedSubview(definitionStack)
         }
         
@@ -163,13 +163,6 @@ class DictionaryView: UIScrollView {
         return stack
     }
     
-    private static func createSpacer(for axis: NSLayoutConstraint.Axis = .horizontal) -> UIView {
-        let spacer = UIView()
-        spacer.setContentHuggingPriority(.fittingSizeLevel, for: axis)
-        spacer.setContentCompressionResistancePriority(.fittingSizeLevel, for: axis)
-        return spacer
-    }
-    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
@@ -186,5 +179,14 @@ class UILabelWithPadding: UILabel {
 
     override var intrinsicContentSize: CGSize {
         super.intrinsicContentSize.extend(margin: Self.padding)
+    }
+}
+
+extension UIView {
+    static func createSpacer(for axis: NSLayoutConstraint.Axis = .horizontal) -> UIView {
+        let spacer = UIView()
+        spacer.setContentHuggingPriority(.fittingSizeLevel, for: axis)
+        spacer.setContentCompressionResistancePriority(.fittingSizeLevel, for: axis)
+        return spacer
     }
 }
