@@ -180,8 +180,11 @@ class InputEngineCandidateSource: CandidateSource {
         var candidateCount = Dictionary<String, Int>()
         var candidateGroupByRomanization = Dictionary<String, [Int]>()
         for i in 0..<inputEngine.rimeLoadedCandidatesCount {
-            guard let romanization = inputEngine.getRimeCandidateComment(i), !romanization.isEmpty else { continue }
-            let firstCharRomanizations = String(romanization.prefix(while: { $0 != " " })).split(separator: "/").map({ String($0) })
+            guard var romanization = inputEngine.getRimeCandidateComment(i), !romanization.isEmpty else { continue }
+            if let toneIndex = romanization.firstIndex(where: { $0.isDigit }) {
+                romanization = String(romanization[...toneIndex])
+            }
+            let firstCharRomanizations = romanization.split(separator: "/").map({ String($0) })
             
             for firstCharRomanization in firstCharRomanizations {
                 if !candidateGroupByRomanization.keys.contains(firstCharRomanization) {
@@ -370,7 +373,8 @@ class InputEngineCandidateSource: CandidateSource {
         default: return nil
         }
         
-        if let reverseLookupPerChars = comment?.split(separator: " ").map({ $0.split(separator: "/") }) {
+        if let comment = comment, !comment.contains(",") {
+            let reverseLookupPerChars = comment.split(separator: " ").map({ $0.split(separator: "/") })
             var reverseLookupFirstChoice = ""
             for reverseLookupPerChar in reverseLookupPerChars {
                 reverseLookupFirstChoice += (reverseLookupPerChar.first ?? "") + " "

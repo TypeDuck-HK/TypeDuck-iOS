@@ -688,6 +688,8 @@ class ButtonImage {
     static let clearFilled = imageAssets("clear.fill")
     static let tab = imageAssets("arrow.right.to.line")
     static let returnKey = imageAssets("return.left")
+    static let info = imageAssets("info.circle")
+    static let close = imageAssets("xmark")
 }
 
 class ButtonColor {
@@ -708,4 +710,7 @@ class ButtonColor {
     static let inputKeyHighlightedBackgroundColor = colorAssets("inputKeyHighlightedBackgroundColor")
     static let systemKeyHighlightedBackgroundColor = colorAssets("systemKeyHighlightedBackgroundColor")
     static let placeholderKeyForegroundColor = colorAssets("placeholderKeyForegroundColor")
+    static let dictionaryViewBackgroundColor = colorAssets("dictionaryViewBackgroundColor")
+    static let dictionaryViewForegroundColor = colorAssets("dictionaryViewForegroundColor")
+    static let dictionaryViewGrayedColor = colorAssets("dictionaryViewGrayedColor")
 }

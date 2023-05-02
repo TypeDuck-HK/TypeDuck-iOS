@@ -20,9 +20,11 @@
 		142AA60C274C9B1C00D7EE39 /* DescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */; };
 		142AA60E274CB73F00D7EE39 /* DescriptionPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */; };
 		143F03E629EF9BDA00E604FC /* LanguageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F03E529EF9BDA00E604FC /* LanguageTableViewCell.swift */; };
+		146EB3CE29FC627B006A40C6 /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146EB3CD29FC627B006A40C6 /* UILabel+Extension.swift */; };
 		1474441829E68FE8009E4468 /* CandidateCellInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1474441729E68FE8009E4468 /* CandidateCellInfo.swift */; };
 		14B0D16F29F3D099007FD5F2 /* NilCoalescingAssignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B0D16E29F3D099007FD5F2 /* NilCoalescingAssignment.swift */; };
 		14B9E1392742EC2B007E8679 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */; };
+		14BD07D629F9D18400DB8865 /* DictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14BD07D529F9D18400DB8865 /* DictionaryView.swift */; };
 		14D0990D29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D0990C29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift */; };
 		7904A1DC2771481200963CAB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7904A1DB2771481200963CAB /* main.cpp */; };
 		7904A1E127714ACE00963CAB /* libmarisa.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7904A1E027714A9900963CAB /* libmarisa.tbd */; };
@@ -337,9 +339,11 @@
 		142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionViewController.swift; sourceTree = "<group>"; };
 		142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionPresentationController.swift; sourceTree = "<group>"; };
 		143F03E529EF9BDA00E604FC /* LanguageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageTableViewCell.swift; sourceTree = "<group>"; };
+		146EB3CD29FC627B006A40C6 /* UILabel+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
 		1474441729E68FE8009E4468 /* CandidateCellInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCellInfo.swift; sourceTree = "<group>"; };
 		14B0D16E29F3D099007FD5F2 /* NilCoalescingAssignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NilCoalescingAssignment.swift; sourceTree = "<group>"; };
 		14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		14BD07D529F9D18400DB8865 /* DictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryView.swift; sourceTree = "<group>"; };
 		14D0990C29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RandomAccessCollection+Extension.swift"; sourceTree = "<group>"; };
 		7904A1D92771481200963CAB /* NGramBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NGramBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
 		7904A1DB2771481200963CAB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -800,6 +804,7 @@
 				79B9B5A325F34A1200238E80 /* LayoutConstants.swift */,
 				79BE977F26D74B460059E58A /* Status */,
 				794753B827B79A9A00D63EBC /* FilterBarView.swift */,
+				14BD07D529F9D18400DB8865 /* DictionaryView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1061,6 +1066,7 @@
 				79607A64260FF09200E23D33 /* String+Extension.swift */,
 				79B9B59425F34A1200238E80 /* UIColor+Extension.swift */,
 				79B9B59825F34A1200238E80 /* UIEdgeInsets+Extension.swift */,
+				146EB3CD29FC627B006A40C6 /* UILabel+Extension.swift */,
 				79B9B59325F34A1200238E80 /* UITextDocumentProxy+Extension.swift */,
 				7906D6DF26D8D35E004C3C0F /* UIView+Extension.swift */,
 				14D0990C29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift */,
@@ -1500,6 +1506,7 @@
 				7922EF3526D61A99007E1699 /* CGRect+Extension.swift in Sources */,
 				795B22D5261EEE1400271D9F /* UserDictionary.swift in Sources */,
 				799AE20C26793F6D00286530 /* HighlightableButton.swift in Sources */,
+				14BD07D629F9D18400DB8865 /* DictionaryView.swift in Sources */,
 				79B9B60225F34A1200238E80 /* TouchHandler.swift in Sources */,
 				799AE1FC26792D8F00286530 /* StatusMenuHandler.swift in Sources */,
 				79B9B5FA25F34A1200238E80 /* UITextDocumentProxy+Extension.swift in Sources */,
@@ -1520,6 +1527,7 @@
 				79B9B60325F34A1200238E80 /* Settings.swift in Sources */,
 				79B9B60725F34A1200238E80 /* KeyRowView.swift in Sources */,
 				79BE974F26D73D680059E58A /* BaseKeyboardView.swift in Sources */,
+				146EB3CE29FC627B006A40C6 /* UILabel+Extension.swift in Sources */,
 				79248CD528274CB200AB1327 /* RimePluginExtension.mm in Sources */,
 				79305FF4260A6EF7002131EF /* DefaultDictionary.swift in Sources */,
 				79BE976326D749720059E58A /* CandidateSegmentControlCell.swift in Sources */,
