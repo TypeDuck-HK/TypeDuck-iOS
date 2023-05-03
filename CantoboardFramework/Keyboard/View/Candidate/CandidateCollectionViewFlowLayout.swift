@@ -19,6 +19,7 @@ class CandidateCollectionViewFlowLayout: UICollectionViewFlowLayout {
         self.candidatePaneView = candidatePaneView
         super.init()
         sectionHeadersPinToVisibleBounds = true
+        estimatedItemSize = Self.automaticSize
     }
     
     required init?(coder: NSCoder) {

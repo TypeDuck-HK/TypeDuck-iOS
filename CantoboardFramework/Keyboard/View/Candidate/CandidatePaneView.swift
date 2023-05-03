@@ -693,21 +693,6 @@ extension CandidatePaneView: UICollectionViewDataSource {
 }
 
 extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if indexPath.section == 0 {
-            if groupByEnabled {
-                // TODO revisit could we remove this.
-                let height = rowHeight
-                let width = collectionView.bounds.width
-                return CGSize(width: width, height: height)
-            } else {
-                return .zero
-            }
-        } else {
-            return computeCellSize(candidateIndexPath: translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
-        }
-    }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         if hasNoHeader(section: section) {
             return .zero
@@ -739,21 +724,6 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         } else {
             return rowPadding
         }
-    }
-    
-    private func computeCellSize(candidateIndexPath: IndexPath) -> CGSize {
-        let layoutConstants = layoutConstants.ref
-        guard let text = candidateOrganizer?.getCandidate(indexPath: candidateIndexPath) else {
-            DDLogInfo("Invalid IndexPath \(candidateIndexPath.description). Candidate does not exist.")
-            return .zero
-        }
-        
-        let comment = candidateOrganizer?.getCandidateComment(indexPath: candidateIndexPath)
-        let info = CandidateCellInfo(honzi: text, fromCSV: comment)
-        
-        return CandidateCell
-            .computeCellSize(cellHeight: rowHeight, candidateInfo: info, showRomanization: showRomanization, mode: mode)
-            .with(minWidth: (bounds.width - expandButtonWidth) / layoutConstants.numOfSingleCharCandidateInRow(twoComments: showRomanization), maxWidth: bounds.width)
     }
     
     private var showRomanization: Bool {
@@ -808,7 +778,6 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
             let candidateIndexPath = translateCollectionViewIndexPathToCandidateIndexPath(indexPath)
             guard let candidate = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else { return }
             let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
-            cell.frame = CGRect(origin: cell.frame.origin, size: computeCellSize(candidateIndexPath: candidateIndexPath))
             cell.setup(candidate, comment, showRomanization: showRomanization, mode: mode)
         }
     }

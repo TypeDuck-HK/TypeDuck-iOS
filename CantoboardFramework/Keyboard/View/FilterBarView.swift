@@ -62,6 +62,7 @@ class FilterBarView: UIView {
         if filterCollectionView == nil {
             let collectionViewFlowLayout = UICollectionViewFlowLayout()
             collectionViewFlowLayout.scrollDirection = .horizontal
+            collectionViewFlowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
             
             let filterCollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewFlowLayout)
             addSubview(filterCollectionView)
@@ -124,15 +125,6 @@ extension FilterBarView: UICollectionViewDataSource, UICollectionViewDelegate, U
         if let cell = cell as? CandidateCell {
             cell.free()
         }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if let text = keyboardState.tenKeysState.specializationCandidates[safe: indexPath.row] {
-            return CandidateCell
-                .computeCellSize(cellHeight: bounds.height, candidateInfo: CandidateCellInfo(honzi: text), showRomanization: false, mode: .row)
-                .with(minWidth: bounds.height * 1.25, maxWidth: bounds.width)
-        }
-        return .zero
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

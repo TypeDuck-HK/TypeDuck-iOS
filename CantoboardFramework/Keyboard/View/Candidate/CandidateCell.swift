@@ -50,11 +50,23 @@ class CandidateCell: UICollectionViewCell {
     var commentLabels: [Weak<UILabel>] = []
     weak var selectedRectLayer: CALayer?
     
+    private var isWidthCalculated = false
+    var layoutConstraint: NSLayoutConstraint?
+    
     // Uncomment this to debug memory leak.
     private let c = InstanceCounter<CandidateCell>()
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
+        
+        translatesAutoresizingMaskIntoConstraints = false
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+        ])
     }
     
     func setup(_ text: String, _ comment: String?, showRomanization: Bool, mode: CandidatePaneView.Mode) {
@@ -210,7 +222,10 @@ class CandidateCell: UICollectionViewCell {
             }
         }
         
+        isWidthCalculated = false
         layout(bounds)
+        setNeedsLayout()
+        layoutIfNeeded()
     }
     
     func free() {
@@ -274,6 +289,13 @@ class CandidateCell: UICollectionViewCell {
     }
     
     private func layout(_ bounds: CGRect) {
+        if let mainStack = mainStack {
+            if let layoutConstraint = layoutConstraint {
+                mainStack.removeConstraint(layoutConstraint)
+            }
+            layoutConstraint = mainStack.heightAnchor.constraint(equalToConstant: bounds.height)
+            layoutConstraint?.isActive = true
+        }
         let availableHeight = bounds.height - Self.margin.top - Self.margin.bottom
         
         let candidateTextHeight = availableHeight * (isFilterCell ? 0.7 : showRomanization ? 0.5 : 0.6)
@@ -298,63 +320,13 @@ class CandidateCell: UICollectionViewCell {
         selectedRectLayer?.backgroundColor = ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
     }
     
-    private static var unitFontWidthCache: [CGFloat: (halfWidths: [CGFloat], fullWidth: CGFloat)] = [:]
-    
-    static func computeCellSize(cellHeight: CGFloat, candidateInfo info: CandidateCellInfo, showRomanization: Bool, mode: CandidatePaneView.Mode) -> CGSize {
-        let fontSizeScale = Settings.cached.candidateFontSize.scale
-        
-        let candidateLabelHeight = cellHeight * (showRomanization ? 0.5 : 0.6)
-        let candidateFontSizeUnrounded = candidateLabelHeight * Self.fontSizePerHeight * fontSizeScale
-        let candidateFontSize = candidateFontSizeUnrounded.roundTo(q: 4)
-        
-        var cellWidth = estimateStringWidth(info.honzi, ofSize: candidateFontSize)
-        
-        let candidateCommentHeight = cellHeight * (showRomanization ? 0.25 : 0.3)
-        let candidateCommentFontSizeUnrounded = candidateCommentHeight * Self.fontSizePerHeight
-        let candidateCommentFontSize = candidateCommentFontSizeUnrounded.roundTo(q: 4)
-        
-        if showRomanization, let jyutping = info.jyutping {
-            let commentWidth = estimateStringWidth(jyutping, ofSize: candidateCommentFontSize)
-            cellWidth = max(cellWidth, commentWidth)
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        if !isWidthCalculated {
+            setNeedsLayout()
+            layoutIfNeeded()
+            layoutAttributes.frame = layoutAttributes.frame.with(width: contentView.systemLayoutSizeFitting(layoutAttributes.size).width + 1)
+            isWidthCalculated = true
         }
-        
-        if let mainLanguage = info.mainLanguage {
-            let commentWidth = mainLanguage.size(withFont: UIFont.systemFont(ofSize: mode == .row ? candidateCommentFontSize : candidateFontSize)).width
-            cellWidth = mode == .row ? max(cellWidth, min(cellWidth + 70, commentWidth)) : cellWidth + Self.paddingText + commentWidth
-        }
-        
-        if mode == .table {
-            let otherLanguages = info.otherLanguages
-            if !otherLanguages.isEmpty {
-                let commentWidth = info.otherLanguages.reduce(-Self.paddingComment) { sum, language in
-                    sum + Self.paddingComment + language.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
-                }
-                cellWidth = max(cellWidth, commentWidth)
-            }
-        }
-        
-        return Self.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))
-    }
-    
-    static func estimateStringWidth(_ s: String, ofSize fontSize: CGFloat) -> CGFloat {
-        var unitWidth = unitFontWidthCache[fontSize]
-        if unitWidth == nil {
-            let halfWidths = (UInt8.min...UInt8.max).map {
-                String(UnicodeScalar($0)).size(withFont: UIFont.systemFont(ofSize: fontSize)).width
-            }
-            let fullWidth = "　".size(withFont: UIFont.systemFont(ofSize: fontSize)).width
-            unitWidth = (halfWidths: halfWidths, fullWidth: fullWidth)
-            unitFontWidthCache[fontSize] = unitWidth
-        }
-        
-        let estimate = s.reduce(CGFloat.zero, { r, c in
-            if c.isASCII {
-                return r + unitWidth!.halfWidths[Int(c.asciiValue!)]
-            } else {
-                return r + unitWidth!.fullWidth
-            }
-        })
-
-        return estimate
+        return layoutAttributes
     }
 }
