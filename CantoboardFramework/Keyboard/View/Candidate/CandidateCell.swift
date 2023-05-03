@@ -41,8 +41,7 @@ class CandidateCell: UICollectionViewCell {
         }
     }
     
-    weak var mainStack, textStack, commentStack: UIStackView?
-    weak var textStackSpacer, commentStackSpacer: UIView?
+    weak var mainStack, textStack, commentStack: SidedStackView?
     weak var label: UILabel?
     weak var keyHintLayer: KeyHintLayer?
     weak var romanizationLabel: UILabel?
@@ -61,7 +60,7 @@ class CandidateCell: UICollectionViewCell {
         self.showRomanization = showRomanization
         self.mode = mode
         
-        let mainStack, textStack, commentStack: UIStackView?
+        let mainStack, textStack, commentStack: SidedStackView?
         
         if let oldMainStack = self.mainStack {
             for view in oldMainStack.arrangedSubviews {
@@ -69,13 +68,11 @@ class CandidateCell: UICollectionViewCell {
             }
             mainStack = oldMainStack
         } else {
-            mainStack = UIStackView()
-            mainStack!.translatesAutoresizingMaskIntoConstraints = false
-            mainStack!.axis = .vertical
+            mainStack = SidedStackView(axis: .vertical)
             contentView.addSubview(mainStack!)
             NSLayoutConstraint.activate([
                 mainStack!.topAnchor.constraint(equalTo: topAnchor, constant: Self.margin.top),
-                // bottomAnchor.constraint(equalTo: mainStack!.bottomAnchor, constant: Self.margin.bottom),
+                bottomAnchor.constraint(equalTo: mainStack!.bottomAnchor, constant: Self.margin.bottom),
                 mainStack!.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Self.margin.left),
                 trailingAnchor.constraint(equalTo: mainStack!.trailingAnchor, constant: Self.margin.right),
             ])
@@ -88,9 +85,7 @@ class CandidateCell: UICollectionViewCell {
             }
             textStack = oldTextStack
         } else if mode == .table {
-            textStack = UIStackView()
-            textStack!.translatesAutoresizingMaskIntoConstraints = false
-            textStack!.spacing = Self.paddingText
+            textStack = SidedStackView(spacing: Self.paddingText)
             self.textStack = textStack
         } else {
             textStack = self.textStack
@@ -102,9 +97,7 @@ class CandidateCell: UICollectionViewCell {
             }
             commentStack = oldCommentStack
         } else if mode == .table {
-            commentStack = UIStackView()
-            commentStack!.translatesAutoresizingMaskIntoConstraints = false
-            commentStack!.spacing = Self.paddingComment
+            commentStack = SidedStackView(spacing: Self.paddingComment)
             self.commentStack = commentStack
         } else {
             commentStack = self.commentStack
@@ -114,14 +107,8 @@ class CandidateCell: UICollectionViewCell {
             self.textStack?.removeFromSuperview()
             self.textStack = nil
             
-            self.textStackSpacer?.removeFromSuperview()
-            self.textStackSpacer = nil
-            
             self.commentStack?.removeFromSuperview()
             self.commentStack = nil
-            
-            self.commentStackSpacer?.removeFromSuperview()
-            self.commentStackSpacer = nil
         }
         
         let label = self.label ?? UILabel()
@@ -189,16 +176,9 @@ class CandidateCell: UICollectionViewCell {
                     self.commentLabels.removeLast(self.commentLabels.endIndex - otherLanguages.endIndex)
                 }
                 
-                let textStackSpacer, commentStackSpacer: UIView
-                textStackSpacer = self.textStackSpacer ?? UIView.createSpacer()
-                textStack!.addArrangedSubview(textStackSpacer)
                 mainStack!.addArrangedSubview(textStack!)
-                self.textStackSpacer = textStackSpacer
                 if !otherLanguages.isEmpty {
-                    commentStackSpacer = self.commentStackSpacer ?? UIView.createSpacer()
-                    commentStack!.addArrangedSubview(commentStackSpacer)
                     mainStack!.addArrangedSubview(commentStack!)
-                    self.commentStackSpacer = commentStackSpacer
                 }
             } else {
                 for commentLabel in self.commentLabels {
@@ -208,6 +188,13 @@ class CandidateCell: UICollectionViewCell {
                 }
                 self.commentLabels.removeAll()
             }
+            mainStack!.isSpaced = true
+        } else {
+            mainStack!.addArrangedSubview(label)
+            mainStack!.isSpaced = false
+            let spacer = UIView()
+            spacer.heightAnchor.constraint(equalToConstant: 4).isActive = true
+            mainStack!.addArrangedSubview(spacer)
         }
         
         layout(bounds)
@@ -247,9 +234,6 @@ class CandidateCell: UICollectionViewCell {
         }
         commentLabels.removeAll()
         
-        textStackSpacer = nil
-        commentStackSpacer = nil
-        
         selectedRectLayer?.removeFromSuperlayer()
         selectedRectLayer = nil
     }
@@ -277,7 +261,7 @@ class CandidateCell: UICollectionViewCell {
         let availableHeight = bounds.height - Self.margin.top - Self.margin.bottom
         
         let candidateTextHeight = availableHeight * (isFilterCell ? 0.7 : showRomanization ? 0.5 : 0.6)
-        let candidateTextFont = UIFont.systemFont(ofSize: candidateTextHeight * Self.fontSizePerHeight * Settings.cached.candidateFontSize.scale)
+        let candidateTextFont = UIFont.systemFont(ofSize: candidateTextHeight * Self.fontSizePerHeight)
         
         let candidateCommentHeight = availableHeight * (showRomanization ? 0.25 : 0.3)
         let candidateCommentFont = UIFont.systemFont(ofSize: candidateCommentHeight * Self.fontSizePerHeight)
@@ -301,10 +285,8 @@ class CandidateCell: UICollectionViewCell {
     private static var unitFontWidthCache: [CGFloat: (halfWidths: [CGFloat], fullWidth: CGFloat)] = [:]
     
     static func computeCellSize(cellHeight: CGFloat, candidateInfo info: CandidateCellInfo, showRomanization: Bool, mode: CandidatePaneView.Mode) -> CGSize {
-        let fontSizeScale = Settings.cached.candidateFontSize.scale
-        
         let candidateLabelHeight = cellHeight * (showRomanization ? 0.5 : 0.6)
-        let candidateFontSizeUnrounded = candidateLabelHeight * Self.fontSizePerHeight * fontSizeScale
+        let candidateFontSizeUnrounded = candidateLabelHeight * Self.fontSizePerHeight
         let candidateFontSize = candidateFontSizeUnrounded.roundTo(q: 4)
         
         var cellWidth = estimateStringWidth(info.honzi, ofSize: candidateFontSize)
@@ -333,6 +315,15 @@ class CandidateCell: UICollectionViewCell {
             }
         }
         
+        return Self.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))
+    }
+    
+    static func computeFilterCellSize(cellHeight: CGFloat, candidateText text: String) -> CGSize {
+        let candidateLabelHeight = cellHeight * 0.7
+        let candidateFontSizeUnrounded = candidateLabelHeight * Self.fontSizePerHeight
+        let candidateFontSize = candidateFontSizeUnrounded.roundTo(q: 4)
+        
+        let cellWidth = estimateStringWidth(text, ofSize: candidateFontSize)
         return Self.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))
     }
     

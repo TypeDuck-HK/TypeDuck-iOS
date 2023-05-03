@@ -354,7 +354,7 @@ class CandidatePaneView: UIControl {
     }
     
     var rowHeight: CGFloat {
-        layoutConstants.ref.autoCompleteBarHeight
+        layoutConstants.ref.autoCompleteBarHeight * Settings.cached.candidateFontSize.scale
     }
     
     private var expandButtonWidth: CGFloat {
@@ -750,10 +750,11 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         
         let comment = candidateOrganizer?.getCandidateComment(indexPath: candidateIndexPath)
         let info = CandidateCellInfo(honzi: text, fromCSV: comment)
+        let twoComments = showRomanization && (mode == .row || Settings.cached.languageState.selected.count > 1)
         
         return CandidateCell
             .computeCellSize(cellHeight: rowHeight, candidateInfo: info, showRomanization: showRomanization, mode: mode)
-            .with(minWidth: (bounds.width - expandButtonWidth) / layoutConstants.numOfSingleCharCandidateInRow(twoComments: showRomanization), maxWidth: bounds.width)
+            .with(minWidth: (bounds.width - expandButtonWidth) / layoutConstants.numOfSingleCharCandidateInRow(twoComments: twoComments), maxWidth: bounds.width)
     }
     
     private var showRomanization: Bool {

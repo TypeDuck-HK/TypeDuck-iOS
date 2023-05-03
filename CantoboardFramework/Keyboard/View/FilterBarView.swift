@@ -129,7 +129,7 @@ extension FilterBarView: UICollectionViewDataSource, UICollectionViewDelegate, U
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if let text = keyboardState.tenKeysState.specializationCandidates[safe: indexPath.row] {
             return CandidateCell
-                .computeCellSize(cellHeight: bounds.height, candidateInfo: CandidateCellInfo(honzi: text), showRomanization: false, mode: .row)
+                .computeFilterCellSize(cellHeight: bounds.height, candidateText: text)
                 .with(minWidth: bounds.height * 1.25, maxWidth: bounds.width)
         }
         return .zero

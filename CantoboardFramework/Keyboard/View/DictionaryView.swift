@@ -12,12 +12,12 @@ class DictionaryView: UIScrollView {
     private var rectView: UIView!
     private var outerStack: UIStackView!
     
-    private var titleStack: UIStackView!
+    private var titleStack: SidedStackView!
     private var entryLabel: UILabel!
     private var pronunciationLabel: UILabel!
     private var pronunciationTypeLabel: UILabel!
     
-    private var definitionStack: UIStackView!
+    private var definitionStack: SidedStackView!
     private var partOfSpeechLabel: UILabel!
     private var labelLabel: UILabel!
     private var definitionLabel: UILabel!
@@ -84,9 +84,7 @@ class DictionaryView: UIScrollView {
             view.removeFromSuperview()
         }
         
-        titleStack = UIStackView()
-        titleStack.spacing = 20
-        titleStack.alignment = .firstBaseline
+        titleStack = SidedStackView(spacing: 20, alignment: .firstBaseline)
         entryLabel.text = info.honzi
         titleStack.addArrangedSubview(entryLabel)
         if let jyutping = info.jyutping {
@@ -104,12 +102,9 @@ class DictionaryView: UIScrollView {
             pronunciationTypeLabel.text = "(\(pronunciationType.joined(separator: ", ")))"
             titleStack.addArrangedSubview(pronunciationTypeLabel)
         }
-        titleStack.addArrangedSubview(UIView.createSpacer())
         outerStack.addArrangedSubview(titleStack)
         
-        definitionStack = UIStackView()
-        definitionStack.spacing = 12
-        definitionStack.alignment = .firstBaseline
+        definitionStack = SidedStackView(spacing: 12, alignment: .firstBaseline)
         if let partOfSpeech = info.definition.pos {
             partOfSpeechLabel.text = partOfSpeech
             definitionStack.addArrangedSubview(partOfSpeechLabel)
@@ -123,7 +118,6 @@ class DictionaryView: UIScrollView {
             definitionStack.addArrangedSubview(definitionLabel)
         }
         if !definitionStack.arrangedSubviews.isEmpty {
-            definitionStack.addArrangedSubview(UIView.createSpacer())
             outerStack.addArrangedSubview(definitionStack)
         }
         
@@ -179,14 +173,5 @@ class UILabelWithPadding: UILabel {
 
     override var intrinsicContentSize: CGSize {
         super.intrinsicContentSize.extend(margin: Self.padding)
-    }
-}
-
-extension UIView {
-    static func createSpacer(for axis: NSLayoutConstraint.Axis = .horizontal) -> UIView {
-        let spacer = UIView()
-        spacer.setContentHuggingPriority(.fittingSizeLevel, for: axis)
-        spacer.setContentCompressionResistancePriority(.fittingSizeLevel, for: axis)
-        return spacer
     }
 }

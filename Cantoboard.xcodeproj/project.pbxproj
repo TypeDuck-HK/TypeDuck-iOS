@@ -19,10 +19,10 @@
 		142AA60A274C0A8F00D7EE39 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA609274C0A8F00D7EE39 /* AboutViewController.swift */; };
 		142AA60C274C9B1C00D7EE39 /* DescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */; };
 		142AA60E274CB73F00D7EE39 /* DescriptionPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */; };
+		142E66152A02D33B00CCD043 /* SidedStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142E66142A02D33B00CCD043 /* SidedStackView.swift */; };
 		143F03E629EF9BDA00E604FC /* LanguageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F03E529EF9BDA00E604FC /* LanguageTableViewCell.swift */; };
 		146EB3CE29FC627B006A40C6 /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146EB3CD29FC627B006A40C6 /* UILabel+Extension.swift */; };
 		1474441829E68FE8009E4468 /* CandidateCellInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1474441729E68FE8009E4468 /* CandidateCellInfo.swift */; };
-		14B0D16F29F3D099007FD5F2 /* NilCoalescingAssignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B0D16E29F3D099007FD5F2 /* NilCoalescingAssignment.swift */; };
 		14B9E1392742EC2B007E8679 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */; };
 		14BD07D629F9D18400DB8865 /* DictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14BD07D529F9D18400DB8865 /* DictionaryView.swift */; };
 		14D0990D29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D0990C29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift */; };
@@ -338,10 +338,10 @@
 		142AA609274C0A8F00D7EE39 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionViewController.swift; sourceTree = "<group>"; };
 		142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionPresentationController.swift; sourceTree = "<group>"; };
+		142E66142A02D33B00CCD043 /* SidedStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidedStackView.swift; sourceTree = "<group>"; };
 		143F03E529EF9BDA00E604FC /* LanguageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageTableViewCell.swift; sourceTree = "<group>"; };
 		146EB3CD29FC627B006A40C6 /* UILabel+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
 		1474441729E68FE8009E4468 /* CandidateCellInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCellInfo.swift; sourceTree = "<group>"; };
-		14B0D16E29F3D099007FD5F2 /* NilCoalescingAssignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NilCoalescingAssignment.swift; sourceTree = "<group>"; };
 		14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		14BD07D529F9D18400DB8865 /* DictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryView.swift; sourceTree = "<group>"; };
 		14D0990C29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RandomAccessCollection+Extension.swift"; sourceTree = "<group>"; };
@@ -697,7 +697,6 @@
 				79248CD428274CB200AB1327 /* RimePluginExtension.mm */,
 				79B9B59925F34A1200238E80 /* Utils.swift */,
 				792DF3C3274341F500F9828C /* Weak.swift */,
-				14B0D16E29F3D099007FD5F2 /* NilCoalescingAssignment.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -805,6 +804,7 @@
 				79BE977F26D74B460059E58A /* Status */,
 				794753B827B79A9A00D63EBC /* FilterBarView.swift */,
 				14BD07D529F9D18400DB8865 /* DictionaryView.swift */,
+				142E66142A02D33B00CCD043 /* SidedStackView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1476,7 +1476,6 @@
 				79D31ACD263FAC1300993949 /* InstanceCounter.swift in Sources */,
 				79607A65260FF09200E23D33 /* String+Extension.swift in Sources */,
 				798CC739281E22D000D21A33 /* TenKeysController.swift in Sources */,
-				14B0D16F29F3D099007FD5F2 /* NilCoalescingAssignment.swift in Sources */,
 				79B9B5FC25F34A1200238E80 /* Collection+Extension.swift in Sources */,
 				79B9B5FF25F34A1200238E80 /* UIEdgeInsets+Extension.swift in Sources */,
 				7912CC5A26D2173000BA89AB /* EastAsianWidth.swift in Sources */,
@@ -1501,6 +1500,7 @@
 				796E53EB26E6E1F400C9B187 /* PhoneKeyboardViewLayout.swift in Sources */,
 				79B9B60425F34A1200238E80 /* KeyboardViewController.swift in Sources */,
 				7906D6BA26D8A7F5004C3C0F /* Reference.swift in Sources */,
+				142E66152A02D33B00CCD043 /* SidedStackView.swift in Sources */,
 				79B9B5F925F34A1200238E80 /* FeedbackProvider.swift in Sources */,
 				794753B927B79A9A00D63EBC /* FilterBarView.swift in Sources */,
 				7922EF3526D61A99007E1699 /* CGRect+Extension.swift in Sources */,
