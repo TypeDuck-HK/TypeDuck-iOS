@@ -143,17 +143,23 @@ class DictionaryView: UIScrollView {
     }
     
     private static func createKeyValueStackView(_ data: [(String, String)]) -> UIStackView {
+        var firstKeyLabel: UILabel?
+        var layoutConstraints = [NSLayoutConstraint]()
         let stack = UIStackView(arrangedSubviews: data.map {
             let keyLabel = UILabel(text: $0.0, color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .headline))
             let valueLabel = UILabel(text: $0.1, font: .preferredFont(forTextStyle: .body))
             keyLabel.textAlignment = .right
-            let stack = UIStackView(arrangedSubviews: [keyLabel, valueLabel])
-            stack.spacing = 12
-            valueLabel.widthAnchor.constraint(equalTo: keyLabel.widthAnchor, multiplier: 2).isActive = true
+            let stack = SidedStackView(spacing: 12, arrangedSubviews: [keyLabel, valueLabel])
+            if let firstKeyLabel = firstKeyLabel {
+                layoutConstraints.append(keyLabel.widthAnchor.constraint(equalTo: firstKeyLabel.widthAnchor))
+            } else {
+                firstKeyLabel = keyLabel
+            }
             return stack
         })
         stack.axis = .vertical
         stack.spacing = 4
+        NSLayoutConstraint.activate(layoutConstraints)
         return stack
     }
     

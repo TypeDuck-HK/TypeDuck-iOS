@@ -15,7 +15,7 @@ class CandidateCell: UICollectionViewCell {
     private static let margin = UIEdgeInsets(top: 3, left: 8, bottom: 0, right: 8)
     private static let fontSizePerHeight: CGFloat = 18 / "＠".size(withFont: UIFont.systemFont(ofSize: 20)).height
     private static let paddingText: CGFloat = 10
-    private static let paddingComment: CGFloat = 5
+    private static let paddingComment: CGFloat = 8
     
     var showRomanization: Bool = false
     var mode: CandidatePaneView.Mode = .row
@@ -85,7 +85,7 @@ class CandidateCell: UICollectionViewCell {
             }
             textStack = oldTextStack
         } else if mode == .table {
-            textStack = SidedStackView(spacing: Self.paddingText)
+            textStack = SidedStackView(spacing: Self.paddingText, alignment: .firstBaseline)
             self.textStack = textStack
         } else {
             textStack = self.textStack
@@ -97,7 +97,7 @@ class CandidateCell: UICollectionViewCell {
             }
             commentStack = oldCommentStack
         } else if mode == .table {
-            commentStack = SidedStackView(spacing: Self.paddingComment)
+            commentStack = SidedStackView(spacing: Self.paddingComment, alignment: .firstBaseline)
             self.commentStack = commentStack
         } else {
             commentStack = self.commentStack

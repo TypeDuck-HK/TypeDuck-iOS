@@ -787,6 +787,8 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
         let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
         let candidateInfo = CandidateCellInfo(honzi: text, fromCSV: comment)
         if candidateInfo.isDictionaryEntry {
+            FeedbackProvider.play(keyboardAction: .newLine)
+            FeedbackProvider.lightImpact.impactOccurred()
             toggleDictionary(candidateInfo: candidateInfo)
         } else {
             delegate?.handleKey(.longPressCandidate(candidateIndexPath))
