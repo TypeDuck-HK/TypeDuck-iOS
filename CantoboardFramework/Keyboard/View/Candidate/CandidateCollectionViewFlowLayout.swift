@@ -40,12 +40,25 @@ class CandidateCollectionViewFlowLayout: UICollectionViewFlowLayout {
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         let allAttributes = super.layoutAttributesForElements(in: rect) ?? []
         
-        for attributes in allAttributes {
+        var newLineIndices = [Int]()
+        var maxY = -CGFloat.infinity
+        for (i, attributes) in allAttributes.enumerated() {
             if attributes.representedElementKind == UICollectionView.elementKindSectionHeader {
                 fixHeaderPosition(attributes)
             }
             if attributes.indexPath == [0, 0], let collectionViewSize = collectionView?.bounds {
                 attributes.frame = CGRect(origin: .zero, size: CGSize(width: collectionViewSize.width, height: rowHeight))
+            } else {
+                if attributes.frame.origin.y >= maxY {
+                    newLineIndices.append(i)
+                }
+                maxY = max(attributes.frame.maxY, maxY)
+            }
+        }
+        let x = candidatePaneView?.headerWidth ?? 0
+        for (i, index) in newLineIndices.enumerated() {
+            if index + 1 == (newLineIndices[safe: i + 1] ?? allAttributes.count) {
+                allAttributes[index].frame.origin.x = x
             }
         }
         

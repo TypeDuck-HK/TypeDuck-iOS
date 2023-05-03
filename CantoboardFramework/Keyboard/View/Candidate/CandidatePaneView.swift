@@ -547,25 +547,13 @@ extension CandidatePaneView {
             flowLayout.minimumLineSpacing = rowPadding
         }
         
-        if let candidateOrganizer = candidateOrganizer {
-            UIView.performWithoutAnimation { [self] in
-                if newMode == .row && candidateOrganizer.groupByMode != .byFrequency {
-                    candidateOrganizer.groupByMode = .byFrequency
-                    collectionView.reloadData()
-                    collectionView.collectionViewLayout.invalidateLayout()
-                    collectionView.layoutIfNeeded()
-                } else {
-                    // We have to reload collection view to add/remove the segment control.
-                    collectionView.reloadSections([0])
-                }
-            }
+        if let candidateOrganizer = candidateOrganizer, newMode == .row && candidateOrganizer.groupByMode != .byFrequency {
+            candidateOrganizer.groupByMode = .byFrequency
         }
         
-        UIView.performWithoutAnimation { [self] in
-            collectionView.reloadData()
-            collectionView.collectionViewLayout.invalidateLayout()
-            collectionView.layoutIfNeeded()
-        }
+        collectionView.reloadData()
+        collectionView.collectionViewLayout.invalidateLayout()
+        collectionView.layoutIfNeeded()
         layoutSubviews()
         
         if newMode == .row {
@@ -709,7 +697,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        if hasNoHeader(section: section) {
+        if section == 0 || !hasHeader {
             return .zero
         } else {
             return UIEdgeInsets(top: 0, left: sectionHeaderWidth, bottom: 0, right: 0)
@@ -721,7 +709,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        if hasNoHeader(section: section) {
+        if section == 0 || !hasHeader {
             return .zero
         } else {
             // layoutAttributesForSupplementaryView() will move the section from the top to the left.
@@ -729,8 +717,12 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         }
     }
     
-    private func hasNoHeader(section: Int) -> Bool {
-        return mode == .row || candidateOrganizer?.groupByMode == .byFrequency || section == 0
+    var hasHeader: Bool {
+        mode == .table && candidateOrganizer?.groupByMode != .byFrequency
+    }
+    
+    var headerWidth: CGFloat {
+        hasHeader ? sectionHeaderWidth : 0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -751,10 +743,11 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         let comment = candidateOrganizer?.getCandidateComment(indexPath: candidateIndexPath)
         let info = CandidateCellInfo(honzi: text, fromCSV: comment)
         let twoComments = showRomanization && (mode == .row || Settings.cached.languageState.selected.count > 1)
+        let candidateViewWidth = bounds.width - expandButtonWidth - headerWidth
         
         return CandidateCell
             .computeCellSize(cellHeight: rowHeight, candidateInfo: info, showRomanization: showRomanization, mode: mode)
-            .with(minWidth: (bounds.width - expandButtonWidth) / layoutConstants.numOfSingleCharCandidateInRow(twoComments: twoComments), maxWidth: bounds.width)
+            .with(minWidth: candidateViewWidth / layoutConstants.numOfSingleCharCandidateInRow(twoComments: twoComments), maxWidth: candidateViewWidth)
     }
     
     private var showRomanization: Bool {

@@ -130,7 +130,7 @@ extension FilterBarView: UICollectionViewDataSource, UICollectionViewDelegate, U
         if let text = keyboardState.tenKeysState.specializationCandidates[safe: indexPath.row] {
             return CandidateCell
                 .computeFilterCellSize(cellHeight: bounds.height, candidateText: text)
-                .with(minWidth: bounds.height * 1.25, maxWidth: bounds.width)
+                .with(minWidth: bounds.height * 1.25, maxWidth: bounds.width - bounds.height)
         }
         return .zero
     }
