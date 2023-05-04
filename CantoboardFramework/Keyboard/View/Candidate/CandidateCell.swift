@@ -14,6 +14,9 @@ class CandidateCell: UICollectionViewCell {
     
     private static let margin = UIEdgeInsets(top: 3, left: 8, bottom: 0, right: 8)
     private static let fontSizePerHeight: CGFloat = 18 / "＠".size(withFont: UIFont.systemFont(ofSize: 20)).height
+    private static let swipeDownIconAspectRatio: CGFloat = 2.8
+    static let infoIconWidthRatio: CGFloat = 0.6
+    private static let infoIconHeightRatio: CGFloat = 0.4
     private static let paddingText: CGFloat = 10
     private static let paddingComment: CGFloat = 8
     
@@ -41,6 +44,16 @@ class CandidateCell: UICollectionViewCell {
         }
     }
     
+    var infoIsHighlighted: Bool = false {
+        didSet {
+            infoImage?.image = infoIsHighlighted ? ButtonImage.infoFilled : ButtonImage.info
+        }
+    }
+    
+    var infoImageFrame: CGRect {
+        CGRect(x: frame.maxX, y: frame.minY, width: frame.height * Self.infoIconWidthRatio, height: frame.height)
+    }
+    
     weak var mainStack, textStack, commentStack: SidedStackView?
     weak var label: UILabel?
     weak var keyHintLayer: KeyHintLayer?
@@ -48,6 +61,7 @@ class CandidateCell: UICollectionViewCell {
     weak var translationLabel: UILabel?
     var commentLabels: [Weak<UILabel>] = []
     weak var selectedRectLayer: CALayer?
+    weak var infoImage, chevronImage: UIImageView?
     
     // Uncomment this to debug memory leak.
     private let c = InstanceCounter<CandidateCell>()
@@ -190,11 +204,41 @@ class CandidateCell: UICollectionViewCell {
             }
             mainStack!.isSpaced = true
         } else {
+            self.info = nil
+            label.textAlignment = .center
+            
             mainStack!.addArrangedSubview(label)
             mainStack!.isSpaced = false
             let spacer = UIView()
             spacer.heightAnchor.constraint(equalToConstant: 4).isActive = true
             mainStack!.addArrangedSubview(spacer)
+        }
+        
+        let isDictionaryEntry = self.info?.isDictionaryEntry ?? false
+
+        if isDictionaryEntry {
+            let infoImage = self.infoImage ?? UIImageView()
+            infoImage.image = ButtonImage.info
+            infoImage.tintColor = label.textColor
+            contentView.addSubview(infoImage)
+            self.infoImage = infoImage
+            
+            if mode == .row {
+                let chevronImage = self.chevronImage ?? UIImageView()
+                chevronImage.image = ButtonImage.swipeDown
+                chevronImage.tintColor = label.textColor
+                contentView.addSubview(chevronImage)
+                self.chevronImage = chevronImage
+            }
+        } else {
+            self.infoImage?.image = nil
+            self.infoImage?.removeFromSuperview()
+            self.infoImage = nil
+        }
+        if mode == .table || !isDictionaryEntry {
+            self.chevronImage?.image = nil
+            self.chevronImage?.removeFromSuperview()
+            self.chevronImage = nil
         }
         
         layout(bounds)
@@ -236,6 +280,14 @@ class CandidateCell: UICollectionViewCell {
         
         selectedRectLayer?.removeFromSuperlayer()
         selectedRectLayer = nil
+        
+        infoImage?.image = nil
+        infoImage?.removeFromSuperview()
+        infoImage = nil
+        
+        chevronImage?.image = nil
+        chevronImage?.removeFromSuperview()
+        chevronImage = nil
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -249,8 +301,35 @@ class CandidateCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        if info?.isDictionaryEntry ?? false {
+            if mode == .row {
+                let dimension = bounds.height * KeyHintLayer.recommendedHeightRatio
+                let x = bounds.width - Self.margin.right
+                infoImage?.frame = CGRect(x: x, y: Self.margin.top, width: dimension, height: dimension)
+                let width = dimension - 1.75
+                let height = width / Self.swipeDownIconAspectRatio
+                chevronImage?.frame = CGRect(x: x + 0.875, y: Self.margin.top + dimension - 0.75, width: width, height: height)
+            } else {
+                let x = bounds.width - Self.margin.right + (Self.infoIconWidthRatio - Self.infoIconHeightRatio) * bounds.height / 2
+                let y = (1 - Self.infoIconHeightRatio) * bounds.height / 2
+                let dimension = bounds.height * Self.infoIconHeightRatio
+                infoImage?.frame = CGRect(x: x, y: y, width: dimension, height: dimension)
+            }
+        }
+        
         if let selectedRectLayer = selectedRectLayer {
-            selectedRectLayer.frame = bounds.insetBy(dx: 4, dy: 4)
+            var bounds = bounds
+            if info?.isDictionaryEntry ?? false {
+                bounds = bounds.insetBy(dx: 4, dy: 0)
+                if mode == .row {
+                    bounds.size.width += bounds.height * KeyHintLayer.recommendedHeightRatio - 2
+                } else {
+                    bounds.size.width -= 4
+                }
+            } else if keyHintLayer == nil {
+                bounds = bounds.insetBy(dx: 4, dy: info == nil ? 4 : 0)
+            }
+            selectedRectLayer.frame = bounds
         }
         
         guard let keyHintLayer = keyHintLayer else { return }

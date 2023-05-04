@@ -689,7 +689,9 @@ class ButtonImage {
     static let tab = imageAssets("arrow.right.to.line")
     static let returnKey = imageAssets("return.left")
     static let info = imageAssets("info.circle")
+    static let infoFilled = imageAssets("info.circle.fill")
     static let close = imageAssets("xmark")
+    static let swipeDown = imageAssets("chevron.compact.down")
 }
 
 class ButtonColor {

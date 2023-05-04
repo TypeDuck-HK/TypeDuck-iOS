@@ -692,7 +692,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
                 return .zero
             }
         } else {
-            return computeCellSize(candidateIndexPath: translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
+            return computeCellSize(candidateIndexPath: translateCollectionViewIndexPathToCandidateIndexPath(indexPath), withInfoIcon: true)
         }
     }
     
@@ -733,7 +733,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         }
     }
     
-    private func computeCellSize(candidateIndexPath: IndexPath) -> CGSize {
+    private func computeCellSize(candidateIndexPath: IndexPath, withInfoIcon: Bool) -> CGSize {
         let layoutConstants = layoutConstants.ref
         guard let text = candidateOrganizer?.getCandidate(indexPath: candidateIndexPath) else {
             DDLogInfo("Invalid IndexPath \(candidateIndexPath.description). Candidate does not exist.")
@@ -745,9 +745,16 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         let twoComments = showRomanization && (mode == .row || Settings.cached.languageState.selected.count > 1)
         let candidateViewWidth = bounds.width - expandButtonWidth - headerWidth
         
-        return CandidateCell
-            .computeCellSize(cellHeight: rowHeight, candidateInfo: info, showRomanization: showRomanization, mode: mode)
-            .with(minWidth: candidateViewWidth / layoutConstants.numOfSingleCharCandidateInRow(twoComments: twoComments), maxWidth: candidateViewWidth)
+        var size = CandidateCell.computeCellSize(cellHeight: rowHeight, candidateInfo: info, showRomanization: showRomanization, mode: mode)
+        var maxWidth = candidateViewWidth
+        if mode == .table && info.isDictionaryEntry {
+            if withInfoIcon {
+                size.width += size.height * CandidateCell.infoIconWidthRatio - 8
+            } else {
+                maxWidth -= size.height * CandidateCell.infoIconWidthRatio - 8
+            }
+        }
+        return size.with(minWidth: candidateViewWidth / layoutConstants.numOfSingleCharCandidateInRow(twoComments: twoComments), maxWidth: maxWidth)
     }
     
     private var showRomanization: Bool {
@@ -768,21 +775,20 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
 }
 
 extension CandidatePaneView: CandidateCollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard indexPath.section > 0 else { return }
-        
+    func selectItem(_ collectionView: UICollectionView, at indexPath: IndexPath) {
         FeedbackProvider.play(keyboardAction: .none)
         delegate?.candidatePaneViewCandidateSelected(translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
     }
     
-    func collectionView(_ collectionView: UICollectionView, didLongPressItemAt indexPath: IndexPath) {
+    func longPressItem(_ collectionView: UICollectionView, at indexPath: IndexPath) {
+        delegate?.handleKey(.longPressCandidate(translateCollectionViewIndexPathToCandidateIndexPath(indexPath)))
+    }
+    
+    func showDictionary(_ collectionView: UICollectionView, at indexPath: IndexPath) {
         guard let candidateOrganizer = candidateOrganizer else { return }
         
         let candidateIndexPath = translateCollectionViewIndexPathToCandidateIndexPath(indexPath)
-        guard let text = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else {
-            delegate?.handleKey(.longPressCandidate(candidateIndexPath))
-            return
-        }
+        guard let text = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else { return }
         
         let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
         let candidateInfo = CandidateCellInfo(honzi: text, fromCSV: comment)
@@ -790,8 +796,6 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
             FeedbackProvider.play(keyboardAction: .newLine)
             FeedbackProvider.lightImpact.impactOccurred()
             toggleDictionary(candidateInfo: candidateInfo)
-        } else {
-            delegate?.handleKey(.longPressCandidate(candidateIndexPath))
         }
     }
     
@@ -804,7 +808,7 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
             let candidateIndexPath = translateCollectionViewIndexPathToCandidateIndexPath(indexPath)
             guard let candidate = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else { return }
             let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
-            cell.frame = CGRect(origin: cell.frame.origin, size: computeCellSize(candidateIndexPath: candidateIndexPath))
+            cell.frame = CGRect(origin: cell.frame.origin, size: computeCellSize(candidateIndexPath: candidateIndexPath, withInfoIcon: false))
             cell.setup(candidate, comment, showRomanization: showRomanization, mode: mode)
         }
     }
