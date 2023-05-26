@@ -57,6 +57,7 @@ struct KeyboardState: Equatable {
     var returnKeyType: ReturnKeyType
     var needsInputModeSwitchKey: Bool
     var spaceKeyMode: SpaceKeyMode
+    var charForm: CharForm
     
     var isKeyboardAppearing: Bool
     var isInCaretMovingMode: Bool
@@ -107,6 +108,7 @@ struct KeyboardState: Equatable {
         returnKeyType = .default
         needsInputModeSwitchKey = false
         spaceKeyMode = .space
+        charForm = SessionState.main.lastCharForm
         
         mainSchema = SessionState.main.lastPrimarySchema
         // Make sure we are using the user selected CJ version.
@@ -486,6 +488,7 @@ class InputController: NSObject {
             keyboardViewController?.keyboardView?.setPreserveCandidateOffset()
             candidateOrganizer.charForm = cs
             candidateOrganizer.updateCandidates(reload: true, targetCandidatesCount: currentCandidatesCount)
+            state.charForm = cs
             return
         case .toggleInputMode(let toInputMode):
             guard state.reverseLookupSchema == nil else {
@@ -833,6 +836,14 @@ class InputController: NSObject {
                 let selectedInput = rimeCompositionText.prefix(rimeCompositionText.count - inputRemaining.count)
                 let bestCandidate = inputEngine.getRimeCandidate(0) ?? ""
                 composingText = selectedInput + bestCandidate
+            } else if inputEngine.rimeSchema == .stroke && state.inputMode != .english {
+                let hasCandidate = inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
+                
+                // No candidate, ignore the hit.
+                guard hasCandidate else { return true }
+                
+                candidateSelected(choice: [0, 0], enableSmartSpace: true)
+                return true
             } else if state.inputMode == .english || state.inputMode == .mixed && composingText.first?.isEnglishLetter ?? false {
                 composingText = englishText
             } else if inputEngine.rimeSchema.supportCantoneseTonalInput && Settings.cached.toneInputMode == .vxq {

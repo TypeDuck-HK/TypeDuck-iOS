@@ -188,13 +188,15 @@ using namespace std;
         NSString *charUtf8InString = [parsed objectAtIndex:0];
         NSString *rsUnicodeTuple = [parsed objectAtIndex:2];
         int totalStroke = [[parsed objectAtIndex:3] intValue];
+        NSString *iiCore = [parsed objectAtIndex:4];
+        NSString *unihanCore = [parsed objectAtIndex:5];
+        // If the char is in the simplified H Core set (簡體版香港常用字)
+        NSString *iicoreHSim = [parsed objectAtIndex:6];
         
         const char* charUtf32InString = [charUtf8InString cStringUsingEncoding: NSUTF32StringEncoding];
         uint32_t cInUtf32 = ((uint32_t*)charUtf32InString)[0];
         
-        bool isSimplified = false;
         if ([rsUnicodeTuple hasSuffix:@"'"]) {
-            isSimplified = true;
             rsUnicodeTuple = [rsUnicodeTuple substringToIndex:[rsUnicodeTuple length] - 1];
         }
         
@@ -203,13 +205,21 @@ using namespace std;
         int radicalStroke = [[rsUnicodeParsed objectAtIndex:1] intValue];
         
         UnihanEntry unihanEntry;
-        unihanEntry.isSimplified = isSimplified;
         unihanEntry.radical = radical;
         unihanEntry.radicalStroke = radicalStroke;
         unihanEntry.totalStroke = totalStroke;
+        unihanEntry.iiCore = 0;
+        if ([iiCore containsString:@"H"] || [iiCore containsString:@"T"]) {
+             unihanEntry.iiCore |= IICoreT;
+        }
+        if ([unihanCore containsString:@"G"] || [iicoreHSim containsString:@"h"]) {
+             unihanEntry.iiCore |= IICoreG;
+        }
         
         if (radical == 0 || totalStroke == 0) {
-            @throw [NSException exceptionWithName:@"UnihanDictionaryException" reason:@"Bad Char." userInfo:nil];
+            DDLogInfo(@"Ignoring char with 0 stroke %@", nsLine);
+            continue;
+            // @throw [NSException exceptionWithName:@"UnihanDictionaryException" reason:@"Bad Char." userInfo:nil];
         }
         
         leveldb::Slice key((char*)&cInUtf32, sizeof(cInUtf32));
