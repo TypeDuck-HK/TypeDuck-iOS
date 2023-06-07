@@ -518,11 +518,6 @@ class InputController: NSObject {
             state.reverseLookupSchema = schema
             changeSchema(shouldLeaveReverseLookupMode: false)
             return
-        case .changeSchema(let schema):
-            state.mainSchema = schema
-            changeSchema()
-            SessionState.main.lastPrimarySchema = schema
-            return
         case .selectCandidate(let choice):
             candidateSelected(choice: choice, enableSmartSpace: true)
         case .longPressCandidate(let choice):

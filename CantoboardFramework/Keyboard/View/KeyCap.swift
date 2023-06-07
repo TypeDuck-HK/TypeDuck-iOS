@@ -108,7 +108,6 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     rime(RimeChar, KeyCapHints?, /* children key caps */ [KeyCap]?),
     contextual(ContextualKey),
     reverseLookup(RimeSchema),
-    changeSchema(RimeSchema),
     exportFile(String, String),
     singleQuote,
     doubleQuote,
@@ -147,7 +146,6 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .shift(let shiftState): return .shift(shiftState)
         case .rime(let rc, _, _): return .rime(rc)
         case .reverseLookup(let s): return .reverseLookup(s)
-        case .changeSchema(let s): return .changeSchema(s)
         case .exportFile(let namePrefix, let path): return .exportFile(namePrefix, path)
         case .exit: return .exit
         case .currency: return .character(SessionState.main.currencySymbol)
@@ -270,9 +268,6 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .rime(.delimiter, _, _): return "分"
         case .rime(.sym, _, _): return "符"
         case .reverseLookup(let schema): return schema.signChar
-        case .changeSchema(.yale): return "耶魯／劉錫祥"
-        case .changeSchema(.jyutping10keys): return "九宮格粵拼"
-        case .changeSchema(let schema): return schema.shortName
         case .toggleInputMode(.english, _, _): return "英文"
         case .toggleInputMode(_, let rimeSchema, _): return rimeSchema?.shortName
         case .toggleCharForm(let charForm): return charForm.caption

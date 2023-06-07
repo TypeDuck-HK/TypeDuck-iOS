@@ -82,7 +82,6 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     toggleInputMode(InputMode),
     toggleSymbolShape,
     reverseLookup(RimeSchema),
-    changeSchema(RimeSchema),
     selectCandidate(IndexPath),
     longPressCandidate(IndexPath),
     exportFile(String, String),
