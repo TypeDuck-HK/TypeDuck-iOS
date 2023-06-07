@@ -18,7 +18,9 @@ class DictionaryView: UIScrollView {
     private var pronunciationTypeLabel: UILabel!
     
     private var definitionStack: SidedStackView!
+    private var partOfSpeechStack: UIStackView!
     private var registerLabel: UILabel!
+    private var labelStack: UIStackView!
     private var definitionLabel: UILabel!
     
     private var otherDataStack: UIStackView!
@@ -123,25 +125,33 @@ class DictionaryView: UIScrollView {
         
         definitionStack = SidedStackView(spacing: 12, alignment: .firstBaseline)
         if let partOfSpeech = info.properties.pos {
+            partOfSpeechStack = UIStackView()
+            partOfSpeechStack.translatesAutoresizingMaskIntoConstraints = false
+            partOfSpeechStack.spacing = 4
             for pos in partOfSpeech.split(separator: " ") {
                 let partOfSpeechLabel = UILabelWithPadding(color: ButtonColor.dictionaryViewGrayedColor, font: .systemFont(ofSize: 13, weight: .light))
                 partOfSpeechLabel.layer.borderColor = ButtonColor.dictionaryViewGrayedColor.resolvedColor(with: traitCollection).cgColor
                 partOfSpeechLabel.layer.borderWidth = 1
                 partOfSpeechLabel.layer.cornerRadius = 2
                 partOfSpeechLabel.text = Self.partOfSpeech[String(pos)] ?? String(pos)
-                definitionStack.addArrangedSubview(partOfSpeechLabel)
+                partOfSpeechStack.addArrangedSubview(partOfSpeechLabel)
             }
+            definitionStack.addArrangedSubview(partOfSpeechStack)
         }
         if let register = info.properties.register, let reg = Self.register[register] {
             registerLabel.text = reg
             definitionStack.addArrangedSubview(registerLabel)
         }
         if let label = info.properties.label {
+            labelStack = UIStackView()
+            labelStack.translatesAutoresizingMaskIntoConstraints = false
+            labelStack.spacing = 4
             for lbl in label.split(separator: " ") {
                 let labelLabel = UILabel(color: ButtonColor.keyGrayedColor, font: .preferredFont(forTextStyle: .subheadline))
                 labelLabel.text = "(\(lbl))"
-                definitionStack.addArrangedSubview(labelLabel)
+                labelStack.addArrangedSubview(labelLabel)
             }
+            definitionStack.addArrangedSubview(labelStack)
         }
         if let definition = info.mainLanguage {
             definitionLabel.text = definition
@@ -196,10 +206,8 @@ class DictionaryView: UIScrollView {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        for label in definitionStack.arrangedSubviews {
-            if label is UILabelWithPadding {
-                label.layer.borderColor = ButtonColor.dictionaryViewGrayedColor.resolvedColor(with: traitCollection).cgColor
-            }
+        for partOfSpeechLabel in partOfSpeechStack.arrangedSubviews {
+            partOfSpeechLabel.layer.borderColor = ButtonColor.dictionaryViewGrayedColor.resolvedColor(with: traitCollection).cgColor
         }
     }
 }
