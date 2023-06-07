@@ -10,7 +10,7 @@
 name: loengfan
 version: "2020.08.05"
 sort: by_weight
-use_preset_vocabulary: false
+max_phrase_length: 1
 ...
 
 一	jat1

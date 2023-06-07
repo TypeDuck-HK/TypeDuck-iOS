@@ -13,7 +13,6 @@
 name: "cangjie3"
 version: "2018"
 sort: original
-use_preset_vocabulary: true
 max_phrase_length: 1
 columns:
   - text

@@ -27,10 +27,7 @@ using namespace sul;
 
 // #define DEBUG_BUILD_DICT
 const char* rimeDictPaths[] = {
-    "../CantoboardFramework/Data/Rime/essay.txt",
     "../CantoboardFramework/Data/Rime/jyut6ping3.dict.yaml",
-    "../CantoboardFramework/Data/Rime/jyut6ping3.maps.dict.yaml",
-    "../CantoboardFramework/Data/Rime/jyut6ping3.phrase.dict.yaml",
 };
 
 bool endsWith(std::string const &fullString, std::string const &ending) {
@@ -48,8 +45,7 @@ unordered_set<string> readWordEntries() {
     for (auto rimeDictPath : rimeDictPaths) {
         ifstream dictFile(rimeDictPath);
         
-        // Special case for essay.txt.
-        bool startProcessing = endsWith(rimeDictPath, ".txt");
+        bool startProcessing = false;
         std::string line;
         
         while (getline(dictFile, line)) {

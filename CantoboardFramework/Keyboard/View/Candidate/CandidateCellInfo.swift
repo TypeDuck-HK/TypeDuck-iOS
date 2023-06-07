@@ -10,25 +10,23 @@ import Foundation
 struct CandidateCellInfo {
     let honzi: String
     var jyutping: String?
-    var pronOrder: String?
     var sandhi: String?
     var litColReading: String?
-    var freq: String?
-    var freq2: String?
-    var definition = Definition()
+    var properties = Properties()
 
-    struct Definition {
-        var eng: String?
-        var disambiguation: String?
+    struct Properties {
         var pos: String?
         var register: String?
         var label: String?
+        var normalized: String?
         var written: String?
         var colloquial: String?
-        var languages = Languages()
+        var synonym: String?
+        var definition = Definition()
     }
     
-    struct Languages {
+    struct Definition {
+        var eng: String?
         var urd: String?
         var nep: String?
         var hin: String?
@@ -36,15 +34,15 @@ struct CandidateCellInfo {
     }
     
     static let columns: [WritableKeyPath<Self, String?>] = [
-        \.jyutping, \.pronOrder, \.sandhi, \.litColReading, \.freq, \.freq2,
-        \.definition.eng, \.definition.disambiguation, \.definition.pos, \.definition.register, \.definition.label, \.definition.written, \.definition.colloquial,
-        \.definition.languages.urd, \.definition.languages.nep, \.definition.languages.hin, \.definition.languages.ind,
+        \.jyutping, \.sandhi, \.litColReading,
+        \.properties.pos, \.properties.register, \.properties.label, \.properties.normalized, \.properties.written, \.properties.colloquial, \.properties.synonym,
+        \.properties.definition.eng, \.properties.definition.urd, \.properties.definition.nep, \.properties.definition.hin, \.properties.definition.ind,
     ]
     
     private let isJyutpingOnly: Bool
     
     static let checkColumns: [WritableKeyPath<Self, String?>] = [
-        \.sandhi, \.litColReading, \.definition.pos, \.definition.register, \.definition.label, \.definition.written, \.definition.colloquial,
+        \.properties.pos, \.properties.register, \.properties.label, \.properties.normalized, \.properties.written, \.properties.colloquial, \.properties.synonym,
     ]
     
     init(honzi: String, fromCSV csv: String? = nil) {
@@ -107,11 +105,11 @@ struct CandidateCellInfo {
     
     private func getDefinition(of language: Language) -> String? {
         switch language {
-        case .eng: return self.definition.eng
-        case .hin: return self.definition.languages.hin
-        case .ind: return self.definition.languages.ind
-        case .nep: return self.definition.languages.nep
-        case .urd: return self.definition.languages.urd
+        case .eng: return self.properties.definition.eng
+        case .hin: return self.properties.definition.hin
+        case .ind: return self.properties.definition.ind
+        case .nep: return self.properties.definition.nep
+        case .urd: return self.properties.definition.urd
         }
     }
     

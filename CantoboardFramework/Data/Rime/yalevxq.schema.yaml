@@ -56,7 +56,7 @@ engine:
     - dictionary_lookup_filter
 
 dictionary_lookup_filter:
-    dictionary: jyut6ping3_scholar
+    dictionary: jyut6ping3_scolar
 
 menu:
   alternative_select_keys: "          " # Change select key to 0x7f to allow us to type number keys for tone input.

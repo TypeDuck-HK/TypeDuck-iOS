@@ -57,7 +57,7 @@ engine:
     - dictionary_lookup_filter
 
 dictionary_lookup_filter:
-    dictionary: jyut6ping3_scholar
+    dictionary: jyut6ping3_scolar
 
 speller:
   alphabet: zyxwvutsrqponmlkjihgfedcba

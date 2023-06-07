@@ -11,5 +11,5 @@ patch:
     - {schema: stroke}
     - {schema: loengfan}
     - {schema: jyut6ping3_10keys}
-    - {schema: jyut6ping3_scholar}
+    - {schema: jyut6ping3_scolar}
   "menu/page_size": 500 # The most common JyutPing "zi" maps to 409 chars.

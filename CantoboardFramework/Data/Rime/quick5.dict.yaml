@@ -16,16 +16,11 @@
 name: "cangjie5"
 version: "2020.10.25"
 sort: by_weight
-vocabulary: essay-s1c
-use_preset_vocabulary: true
+max_phrase_length: 1
 columns:
   - text
   - code
   - stem
-import_tables:
-  - quick5.words_t
-  - quick5.words_s
-  - quick5.maps
 encoder:
   exclude_patterns:
     - '^x.*$'
