@@ -70,8 +70,6 @@ class KeypadView: UIView, BaseKeyboardView {
     private weak var candidatePaneView: CandidatePaneView?
     public var layoutConstants: Reference<LayoutConstants> = Reference(LayoutConstants.forMainScreen)
     
-    internal weak var statusMenu: StatusMenu?
-    
     private var touchHandler: TouchHandler?
     private var leftButtons: [[KeypadButton]] = []
     private var rightButtons: [[KeypadButton]] = []
@@ -196,7 +194,6 @@ class KeypadView: UIView, BaseKeyboardView {
         layoutButtons(rightButtons, initialX: layoutConstants.keyboardViewInsets.left + layoutConstants.buttonGapX + layoutConstants.keypadButtonUnitSize.width, layoutConstants: layoutConstants)
         
         layoutCandidateSubviews(layoutConstants)
-        layoutStatusMenu()
     }
     
     private func layoutButtons(_ buttons: [[KeypadButton]], initialX: CGFloat, layoutConstants: LayoutConstants) {
@@ -251,7 +248,7 @@ class KeypadView: UIView, BaseKeyboardView {
     }
 }
 
-extension KeypadView: CandidatePaneViewDelegate, StatusMenuHandler {
+extension KeypadView: CandidatePaneViewDelegate {
     func candidatePaneViewCandidateSelected(_ choice: IndexPath) {
         delegate?.handleKey(.selectCandidate(choice))
     }
@@ -286,10 +283,6 @@ extension KeypadView: CandidatePaneViewDelegate, StatusMenuHandler {
         delegate?.handleKey(action)
     }
     
-    var statusMenuOriginY: CGFloat {
-        layoutConstants.ref.autoCompleteBarHeight
-    }
-    
     var keyboardSize: CGSize {
         layoutConstants.ref.keyboardSize
     }
@@ -301,7 +294,6 @@ extension KeypadView {
         guard let touch = touches.first,
               let keypadButton = touch.view as? KeyView else { return }
         
-        guard statusMenu == nil else { return }
         // Reset other combo buttons.
         let allButtons = (leftButtons + rightButtons).flatMap { $0 }
         allButtons.forEach { button in
@@ -318,7 +310,6 @@ extension KeypadView {
         guard let touch = touches.first,
               let keypadButton = touch.view as? KeyView else { return }
         
-        guard statusMenu == nil else { return }
         touchHandler?.touchMoved(touch, key: keypadButton, with: event)
     }
     
@@ -327,7 +318,6 @@ extension KeypadView {
         guard let touch = touches.first,
               let keypadButton = touch.view as? KeyView else { return }
         
-        guard statusMenu == nil else { return }
         touchHandler?.touchEnded(touch, key: keypadButton, with: event)
     }
     
@@ -335,7 +325,6 @@ extension KeypadView {
         super.touchesCancelled(touches, with: event)
         guard let touch = touches.first else { return }
         
-        guard statusMenu == nil else { return }
         touchHandler?.touchCancelled(touch, with: event)
     }
 }

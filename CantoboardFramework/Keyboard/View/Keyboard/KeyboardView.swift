@@ -29,7 +29,6 @@ class KeyboardView: UIView, BaseKeyboardView {
         }
     }
     
-    internal weak var statusMenu: StatusMenu?
     private weak var candidatePaneView: CandidatePaneView?
     private weak var emojiView: EmojiView?
     private var keyRows: [KeyRowView]!
@@ -147,7 +146,6 @@ class KeyboardView: UIView, BaseKeyboardView {
         layoutKeyboardSubviews(layoutConstants)
         layoutCandidateSubviews(layoutConstants)
         layoutLoadingIndicatorView()
-        layoutStatusMenu()
     }
     
     func scrollCandidatePaneToNextPageInRowMode() {
@@ -527,7 +525,7 @@ class KeyboardView: UIView, BaseKeyboardView {
     }
 }
 
-extension KeyboardView: CandidatePaneViewDelegate, StatusMenuHandler {
+extension KeyboardView: CandidatePaneViewDelegate {
     func candidatePaneViewCandidateSelected(_ choice: IndexPath) {
         delegate?.handleKey(.selectCandidate(choice))
     }
@@ -552,10 +550,6 @@ extension KeyboardView: CandidatePaneViewDelegate, StatusMenuHandler {
         delegate?.handleKey(action)
     }
     
-    var statusMenuOriginY: CGFloat {
-        layoutConstants.ref.autoCompleteBarHeight
-    }
-    
     var keyboardSize: CGSize {
         layoutConstants.ref.keyboardSize
     }
@@ -565,7 +559,6 @@ extension KeyboardView {
     // touchesBegan() is delayed if touches are near the screen edge.
     // We use GestureRecoginzer to workaround the delay.
     func touchesBeganFromGestureRecoginzer(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard statusMenu == nil else { return }
         for touch in touches {
             switch touch.view {
             case let key as KeyView:
@@ -578,7 +571,6 @@ extension KeyboardView {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
         
-        guard statusMenu == nil else { return }
         for touch in touches {
             let key = findTouchingView(touch, with: event) as? KeyView
             touchHandler?.touchMoved(touch, key: key, with: event)
@@ -588,7 +580,6 @@ extension KeyboardView {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
         
-        guard statusMenu == nil else { return }
         for touch in touches {
             let key = findTouchingView(touch, with: event) as? KeyView
             touchHandler?.touchEnded(touch, key: key, with: event)
@@ -598,7 +589,6 @@ extension KeyboardView {
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
         
-        guard statusMenu == nil else { return }
         for touch in touches {
             touchHandler?.touchCancelled(touch, with: event)
         }

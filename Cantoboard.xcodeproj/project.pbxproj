@@ -68,7 +68,6 @@
 		798032A52645F6AF008DC703 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798032A42645F6AF008DC703 /* Logging.swift */; };
 		798CC739281E22D000D21A33 /* TenKeysController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798CC738281E22D000D21A33 /* TenKeysController.swift */; };
 		7990347E27759D8600893C14 /* NGram.h in Headers */ = {isa = PBXBuildFile; fileRef = 7990347D27759D8600893C14 /* NGram.h */; };
-		799AE1FC26792D8F00286530 /* StatusMenuHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799AE1FB26792D8F00286530 /* StatusMenuHandler.swift */; };
 		799AE20226792F4C00286530 /* KeypadButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799AE20126792F4C00286530 /* KeypadButton.swift */; };
 		799AE20C26793F6D00286530 /* HighlightableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799AE20B26793F6D00286530 /* HighlightableButton.swift */; };
 		799D919D2674646D00AE9DBD /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 799D919C2674646D00AE9DBD /* Settings.bundle */; };
@@ -200,7 +199,6 @@
 		79D4E1D42642372600857D7D /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 79515AD72609BFB400D29A5C /* Data */; };
 		79D4E23B264251C600857D7D /* EnglishDictSource in Resources */ = {isa = PBXBuildFile; fileRef = 79D4E23A264251C600857D7D /* EnglishDictSource */; };
 		79D4E244264262D200857D7D /* UnihanSource in Resources */ = {isa = PBXBuildFile; fileRef = 79D4E243264262D200857D7D /* UnihanSource */; };
-		79E98DBD2672FC92006E32DE /* StatusMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E98DBC2672FC92006E32DE /* StatusMenu.swift */; };
 		79ECF80227D95E360008873D /* ISEmojiList_iOS12.1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79ECF80127D95E360008873D /* ISEmojiList_iOS12.1.plist */; };
 		79ECF80B27D962560008873D /* ISEmojiList_iOS13.2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79ECF80427D962560008873D /* ISEmojiList_iOS13.2.plist */; };
 		79ECF80D27D962560008873D /* ISEmojiList_iOS14.2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79ECF80627D962560008873D /* ISEmojiList_iOS14.2.plist */; };
@@ -395,7 +393,6 @@
 		798032A42645F6AF008DC703 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		798CC738281E22D000D21A33 /* TenKeysController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TenKeysController.swift; sourceTree = "<group>"; };
 		7990347D27759D8600893C14 /* NGram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NGram.h; sourceTree = "<group>"; };
-		799AE1FB26792D8F00286530 /* StatusMenuHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenuHandler.swift; sourceTree = "<group>"; };
 		799AE20126792F4C00286530 /* KeypadButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypadButton.swift; sourceTree = "<group>"; };
 		799AE20B26793F6D00286530 /* HighlightableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightableButton.swift; sourceTree = "<group>"; };
 		799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateOrganizer.swift; sourceTree = "<group>"; };
@@ -521,7 +518,6 @@
 		79D4E23A264251C600857D7D /* EnglishDictSource */ = {isa = PBXFileReference; lastKnownFileType = folder; path = EnglishDictSource; sourceTree = "<group>"; };
 		79D4E243264262D200857D7D /* UnihanSource */ = {isa = PBXFileReference; lastKnownFileType = folder; path = UnihanSource; sourceTree = "<group>"; };
 		79D7180525FDA0C400A25AC3 /* CantoboardTestApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CantoboardTestApp.entitlements; sourceTree = "<group>"; };
-		79E98DBC2672FC92006E32DE /* StatusMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenu.swift; sourceTree = "<group>"; };
 		79ECF80127D95E360008873D /* ISEmojiList_iOS12.1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ISEmojiList_iOS12.1.plist; sourceTree = "<group>"; };
 		79ECF80427D962560008873D /* ISEmojiList_iOS13.2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ISEmojiList_iOS13.2.plist; sourceTree = "<group>"; };
 		79ECF80627D962560008873D /* ISEmojiList_iOS14.2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ISEmojiList_iOS14.2.plist; sourceTree = "<group>"; };
@@ -803,7 +799,7 @@
 				79B9B5A225F34A1200238E80 /* KeyPopupView.swift */,
 				79B9B5A025F34A1200238E80 /* KeyView.swift */,
 				79B9B5A325F34A1200238E80 /* LayoutConstants.swift */,
-				79BE977F26D74B460059E58A /* Status */,
+				799D91A22674690700AE9DBD /* StatusButton.swift */,
 				794753B827B79A9A00D63EBC /* FilterBarView.swift */,
 				14BD07D529F9D18400DB8865 /* DictionaryView.swift */,
 				142E66142A02D33B00CCD043 /* SidedStackView.swift */,
@@ -1042,16 +1038,6 @@
 				79B23737267832BD009FF854 /* KeypadView.swift */,
 			);
 			path = Keypad;
-			sourceTree = "<group>";
-		};
-		79BE977F26D74B460059E58A /* Status */ = {
-			isa = PBXGroup;
-			children = (
-				799D91A22674690700AE9DBD /* StatusButton.swift */,
-				79E98DBC2672FC92006E32DE /* StatusMenu.swift */,
-				799AE1FB26792D8F00286530 /* StatusMenuHandler.swift */,
-			);
-			path = Status;
 			sourceTree = "<group>";
 		};
 		79BE978426D74B790059E58A /* Extension */ = {
@@ -1512,7 +1498,6 @@
 				799AE20C26793F6D00286530 /* HighlightableButton.swift in Sources */,
 				14BD07D629F9D18400DB8865 /* DictionaryView.swift in Sources */,
 				79B9B60225F34A1200238E80 /* TouchHandler.swift in Sources */,
-				799AE1FC26792D8F00286530 /* StatusMenuHandler.swift in Sources */,
 				79B9B5FA25F34A1200238E80 /* UITextDocumentProxy+Extension.swift in Sources */,
 				79B9B60525F34A1200238E80 /* CandidatePaneView.swift in Sources */,
 				79248CD72827A11B00AB1327 /* Optional+Extension.swift in Sources */,
@@ -1537,7 +1522,6 @@
 				79BE976326D749720059E58A /* CandidateSegmentControlCell.swift in Sources */,
 				795A69DC2700810F00CDDC52 /* CompositionLabel.swift in Sources */,
 				79D4E1BF26422C6E00857D7D /* DataFileManager.swift in Sources */,
-				79E98DBD2672FC92006E32DE /* StatusMenu.swift in Sources */,
 				79BE976926D749A90059E58A /* CandidateCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

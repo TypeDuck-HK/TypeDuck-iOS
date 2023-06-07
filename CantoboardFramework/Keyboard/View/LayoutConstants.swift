@@ -303,8 +303,6 @@ class LayoutConstants: Copyable {
     let keyHeight: CGFloat
     let autoCompleteBarHeight: CGFloat
     let keyViewInsets: UIEdgeInsets
-    let statusMenuWidth: CGFloat
-    let statusMenuItemHeight: CGFloat
     
     // Downcast helpers
     var asPhoneLayoutConstants: PhoneLayoutConstants? {
@@ -409,8 +407,6 @@ class LayoutConstants: Copyable {
         }
         compositionViewHeight = idiom == .phone ? 24 : 28
         filterBarViewHeight = 32
-        statusMenuWidth = 3 / 7 * keyboardSize.width
-        statusMenuItemHeight = keyboardSize.height / (idiom == .phone && !isPortrait ? 3.5 : 5)
     }
     
     required init(copyOf: LayoutConstants) {
@@ -428,8 +424,6 @@ class LayoutConstants: Copyable {
         self.keypadButtonUnitSize = copyOf.keypadButtonUnitSize
         self.candidatePaneViewLeftRightInset = copyOf.candidatePaneViewLeftRightInset
         self.compositionViewHeight = copyOf.compositionViewHeight
-        self.statusMenuWidth = copyOf.statusMenuWidth
-        self.statusMenuItemHeight = copyOf.statusMenuItemHeight
         self.filterBarViewHeight = copyOf.filterBarViewHeight
     }
     

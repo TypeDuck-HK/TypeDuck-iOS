@@ -206,8 +206,10 @@ class DictionaryView: UIScrollView {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        for partOfSpeechLabel in partOfSpeechStack.arrangedSubviews {
-            partOfSpeechLabel.layer.borderColor = ButtonColor.dictionaryViewGrayedColor.resolvedColor(with: traitCollection).cgColor
+        if let partOfSpeechStack = partOfSpeechStack {
+            for partOfSpeechLabel in partOfSpeechStack.arrangedSubviews {
+                partOfSpeechLabel.layer.borderColor = ButtonColor.dictionaryViewGrayedColor.resolvedColor(with: traitCollection).cgColor
+            }
         }
     }
 }

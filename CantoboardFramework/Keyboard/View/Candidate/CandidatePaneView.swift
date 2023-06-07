@@ -17,12 +17,12 @@ protocol CandidatePaneViewDelegate: NSObject {
     func candidatePaneViewCandidateSelected(_ choice: IndexPath)
     func candidatePaneCandidateLoaded()
     func handleKey(_ action: KeyboardAction)
-    func handleStatusMenu(from: UIView, with: UIEvent?) -> Bool
 }
 
 class CandidatePaneView: UIControl {
     private static let miniStatusSize = CGSize(width: 20, height: 20)
     private static let separatorWidth: CGFloat = 1
+    private static let topMargin: CGFloat = 3
     
     // Uncomment this to debug memory leak.
     private let c = InstanceCounter<CandidatePaneView>()
@@ -34,8 +34,6 @@ class CandidatePaneView: UIControl {
     enum StatusIndicatorMode {
         case lang, shape
     }
-    
-    let rowPadding = CGFloat(0)
     
     private var _keyboardState: KeyboardState
     private var layoutConstants: Reference<LayoutConstants>
@@ -192,29 +190,13 @@ class CandidatePaneView: UIControl {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var shouldShowStatusMenu: Bool {
-        if keyboardState.inputMode != .english && mode == .row,
-           case .alphabetic = keyboardState.keyboardType {
-            return true
-        }
-        return false
-    }
-    
     private func createButtons() {
         expandButton = createAndAddButton(StatusButton())
         expandButton.addTarget(self, action: #selector(self.expandButtonClick), for: .touchUpInside)
         expandButton.shouldShowStatusBackground = false
-        expandButton.handleStatusMenu = { [weak self] in
-            guard let self = self else { return false }
-            guard self.expandButton.shouldShowMenuIndicator else { return false }
-            return self.handleStatusMenu(from: $0, with: $1)
-        }
         
         inputModeButton = createAndAddButton(StatusButton())
         inputModeButton.addTarget(self, action: #selector(self.filterButtonClick), for: .touchUpInside)
-        inputModeButton.handleStatusMenu = { [weak self] in
-            return self?.handleStatusMenu(from: $0, with: $1) ?? false
-        }
         
         backspaceButton = createAndAddButton(UIButton())
         backspaceButton.addTarget(self, action: #selector(self.backspaceButtonClick), for: .touchUpInside)
@@ -238,13 +220,10 @@ class CandidatePaneView: UIControl {
     func setupButtons() {
         let expandButtonImage = dictionaryCandidateInfo != nil ? ButtonImage.close : mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
         expandButton.setImage(adjustImageFontSize(expandButtonImage), for: .normal)
-        expandButton.shouldShowMenuIndicator = mode == .row && dictionaryCandidateInfo == nil
         expandButton.isEnabled = keyboardState.enableState == .enabled
         
         var title: String?
-        var shouldShowMiniIndicator = false
         if statusIndicatorMode == .lang {
-            shouldShowMiniIndicator = true
             switch keyboardState.inputMode {
             case .mixed: title = keyboardState.activeSchema.signChar
             case .chinese: title = keyboardState.activeSchema.signChar
@@ -258,7 +237,6 @@ class CandidatePaneView: UIControl {
             }
         }
         inputModeButton.setTitle(title, for: .normal)
-        inputModeButton.shouldShowMenuIndicator = shouldShowMiniIndicator && mode == .row
         inputModeButton.isEnabled = keyboardState.enableState == .enabled
 
         backspaceButton.setImage(adjustImageFontSize(ButtonImage.backspace), for: .normal)
@@ -300,14 +278,10 @@ class CandidatePaneView: UIControl {
         layoutButtons()
     }
     
-    private func handleStatusMenu(from: UIView, with: UIEvent?) -> Bool {
-        return delegate?.handleStatusMenu(from: from, with: with) ?? false
-    }
-    
     private func createCollectionView() {
         let collectionViewLayout = CandidateCollectionViewFlowLayout(candidatePaneView: self)
         collectionViewLayout.scrollDirection = mode == .row ? .horizontal : .vertical
-        collectionViewLayout.minimumLineSpacing = rowPadding
+        collectionViewLayout.minimumLineSpacing = 0
         
         let collectionView = CandidateCollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -409,11 +383,12 @@ class CandidatePaneView: UIControl {
     override func layoutSubviews() {
         guard let superview = superview else { return }
         
+        let topMargin = mode == .row && dictionaryCandidateInfo == nil ? Self.topMargin : 0
         let height = mode == .row && dictionaryCandidateInfo == nil ? rowHeight : superview.bounds.height
-        let candidateViewWidth = superview.bounds.width - expandButtonWidth
+        let candidateViewWidth = superview.bounds.width - (mode == .row && !isFullPadCandidateBar && expandButton.isHidden ? 0 : expandButtonWidth)
         let leftRightInset = isFullPadCandidateBar ? 0 : layoutConstants.ref.candidatePaneViewLeftRightInset
         
-        let mainViewFrame = CGRect(x: leftRightInset, y: 0, width: candidateViewWidth - leftRightInset * 2, height: height)
+        let mainViewFrame = CGRect(x: leftRightInset, y: topMargin, width: candidateViewWidth - leftRightInset * 2, height: height)
         if dictionaryCandidateInfo == nil {
             collectionView.isHidden = false
             dictionaryView.isHidden = true
@@ -433,8 +408,7 @@ class CandidatePaneView: UIControl {
         super.layoutSubviews()
         layoutButtons()
         
-        let topMargin: CGFloat = mode == .row ? 3 : 0
-        let separatorFrame = CGRect(x: 0, y: topMargin, width: Self.separatorWidth, height: height - topMargin)
+        let separatorFrame = CGRect(x: 0, y: topMargin, width: Self.separatorWidth, height: height)
         
         if isFullPadCandidateBar {
             leftSeparator.isHidden = true
@@ -462,13 +436,13 @@ class CandidatePaneView: UIControl {
         guard let superview = superview else { return }
         
         let buttons = [expandButton, inputModeButton, backspaceButton, charFormButton]
-        var buttonY: CGFloat = 0
+        var buttonY = mode == .row && dictionaryCandidateInfo == nil ? Self.topMargin : 0
         let candidatePaneViewLeftRightInset = isFullPadCandidateBar ? 0 : layoutConstants.ref.candidatePaneViewLeftRightInset
         let candidateViewWidth = superview.bounds.width - (expandButton.isHidden ? directionalLayoutMargins.trailing - StatusButton.statusInset : candidatePaneViewLeftRightInset)
         for button in buttons {
             guard let button = button, !button.isHidden else { continue }
             if button == inputModeButton && inputModeButton.isMini {
-                button.frame = CGRect(origin: CGPoint(x: candidateViewWidth - Self.miniStatusSize.width, y: 0), size: Self.miniStatusSize)
+                button.frame = CGRect(origin: CGPoint(x: candidateViewWidth - Self.miniStatusSize.width, y: Self.topMargin), size: Self.miniStatusSize)
                 continue
             }
             button.frame = CGRect(origin: CGPoint(x: candidateViewWidth - expandButtonWidth, y: buttonY), size: CGSize(width: expandButtonWidth, height: expandButtonWidth))
@@ -540,7 +514,7 @@ extension CandidatePaneView {
         
         if let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
             flowLayout.scrollDirection = newMode == .row ? .horizontal : .vertical
-            flowLayout.minimumLineSpacing = rowPadding
+            flowLayout.minimumLineSpacing = 0
         }
         
         if let candidateOrganizer = candidateOrganizer, newMode == .row && candidateOrganizer.groupByMode != .byFrequency {
@@ -722,11 +696,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        if mode == .row {
-            return 0
-        } else {
-            return rowPadding
-        }
+        return 0
     }
     
     private func computeCellSize(candidateIndexPath: IndexPath, withInfoIcon: Bool) -> CGSize {
@@ -777,6 +747,7 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
     }
     
     func longPressItem(_ collectionView: UICollectionView, at indexPath: IndexPath) {
+        setPreserveCandidateOffset()
         delegate?.handleKey(.longPressCandidate(translateCollectionViewIndexPathToCandidateIndexPath(indexPath)))
     }
     

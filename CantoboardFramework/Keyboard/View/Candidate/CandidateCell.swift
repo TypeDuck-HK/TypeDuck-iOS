@@ -142,7 +142,7 @@ class CandidateCell: UICollectionViewCell {
             self.keyHintLayer?.setup(keyCap: keyCap, hintText: hintText)
         }
         
-        if let comment = comment {
+        if let comment = comment, comment != "" {
             let info = CandidateCellInfo(honzi: text, fromCSV: comment)
             self.info = info
             
