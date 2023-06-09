@@ -23,7 +23,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     var sections: [Section] = Settings.buildSections()
     var aboutCells: [(title: String, image: UIImage, action: () -> ())]!
     
-    var lastSection: Int { Keyboard.isEnabled ? sections.count + 3 : 1 }
+    var lastSection: Int { Keyboard.isEnabled ? sections.count + 4 : 1 }
     
     static let languageNames: [Language: String] = [
         .eng: LocalizedStrings.displayLanguages_eng,
@@ -88,7 +88,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         case 2: return settings.languageState.selected.count
         case 3: return settings.languageState.deselected.count
         default:
-            let sectionId = section - 3
+            let sectionId = section - 4
             guard 0 <= sectionId && sectionId < sections.count else { return 0 }
             return sections[sectionId].options.count
         }
@@ -101,7 +101,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         case 1: return LocalizedStrings.testKeyboard
         case 2: return LocalizedStrings.displayLanguages
         case 3: return settings.languageState.deselected.isEmpty ? nil : LocalizedStrings.moreLanguages
-        default: return sections[section - 3].header
+        default: return sections[section - 4].header
         }
     }
     
@@ -127,7 +127,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                                              checked: settings.languageState.selected[indexPath.row] == settings.languageState.main,
                                              isEnabled: settings.languageState.selected.count > 1)
         case 3: return LanguageTableViewCell(languageName: Self.languageNames[settings.languageState.deselected[indexPath.row]]!)
-        default: return sections[indexPath.section - 3].options[indexPath.row].dequeueCell(with: self)
+        default: return sections[indexPath.section - 4].options[indexPath.row].dequeueCell(with: self)
         }
     }
     
@@ -145,7 +145,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             settings.languageState.main = settings.languageState.selected[indexPath.row]
             Settings.save(settings)
         case 3: break
-        default: showDescription(of: sections[indexPath.section - 3].options[indexPath.row])
+        default: showDescription(of: sections[indexPath.section - 4].options[indexPath.row])
         }
     }
     
