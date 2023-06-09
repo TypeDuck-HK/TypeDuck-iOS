@@ -1,17 +1,19 @@
 __build_info:
-  rime_version: 1.7.3
+  rime_version: 1.8.4
   timestamps:
     cangjie3.custom: 0
-    cangjie3.schema: 1680154687
-    default: 1639099840
-    default.custom: 1672707832
-    symbols: 1610967803
+    cangjie3.schema: 1686304457
+    default: 1634801976
+    default.custom: 1686304457
+    symbols: 1634801976
     symbols.custom: 0
-    symbols_cantonese: 1629626926
+    symbols_cantonese: 1634801976
+dictionary_lookup_filter:
+  dictionary: jyut6ping3_scolar
 engine:
   filters:
-    - uniquifier
     - "reverse_lookup_filter@jyut6ping3_reverse_lookup"
+    - dictionary_lookup_filter
   processors:
     - ascii_composer
     - recognizer
@@ -353,7 +355,7 @@ schema:
     - jyut6ping3
   description: |
     倉頡三代補完計畫
-    
+
   name: "倉頡三代"
   schema_id: cangjie3
   version: 20220904
