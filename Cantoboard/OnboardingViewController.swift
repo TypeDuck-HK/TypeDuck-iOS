@@ -74,7 +74,7 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         super.viewDidLoad()
         
         let navTitle = UILabel()
-        navTitle.text = "Cantoboard"
+        navTitle.text = "TypeDuck"
         navTitle.font = .systemFont(ofSize: 26, weight: .semibold)
         
         let logoImageView = UIImageView(image: UIImage(named: "AppIcon60x60")!.addPadding(2))

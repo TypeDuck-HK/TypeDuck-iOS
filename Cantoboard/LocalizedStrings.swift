@@ -12,10 +12,10 @@ class LocalizedStrings {
         NSLocalizedString(stringKeyName, bundle: Bundle(for: LocalizedStrings.self), comment: stringKeyName)
     }
     
-    static let installCantoboard = localizedString("installCantoboard")
-    static let installCantoboard_settings = localizedString("installCantoboard.settings")
-    static let installCantoboard_description = localizedString("installCantoboard.description")
-    static let installCantoboard_ios15_description = localizedString("installCantoboard.ios15_description")
+    static let installTypeDuck = localizedString("installTypeDuck")
+    static let installTypeDuck_settings = localizedString("installTypeDuck.settings")
+    static let installTypeDuck_description = localizedString("installTypeDuck.description")
+    static let installTypeDuck_ios15_description = localizedString("installTypeDuck.ios15_description")
     
     static let testKeyboard = localizedString("testKeyboard")
     static let testKeyboard_placeholder = localizedString("testKeyboard.placeholder")
@@ -136,15 +136,11 @@ class LocalizedStrings {
     
     static let faq_0_question = localizedString("faq.0.question")
     static let faq_0_answer = localizedString("faq.0.answer")
-    static let faq_1_question = localizedString("faq.1.question")
-    static let faq_1_answer = localizedString("faq.1.answer")
-    static let faq_2_question = localizedString("faq.2.question")
-    static let faq_2_answer = localizedString("faq.2.answer")
     
     static let about_jyutpingSite = localizedString("about.jyutpingSite")
     static let about_sourceCode = localizedString("about.sourceCode")
+    static let about_cantoboard = localizedString("about.cantoboard")
     static let about_credit = localizedString("about.credit")
-    static let about_telegram = localizedString("about.telegram")
     static let about_email = localizedString("about.email")
     static let about_appStore = localizedString("about.appStore")
 }

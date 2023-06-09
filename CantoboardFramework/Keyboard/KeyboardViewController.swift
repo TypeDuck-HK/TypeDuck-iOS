@@ -39,7 +39,7 @@ open class KeyboardViewController: UIInputViewController {
     
     private(set) var layoutConstants: Reference<LayoutConstants> = Reference(LayoutConstants.forMainScreen)
 
-    private let log = OSLog(subsystem: "org.cantoboard.CantoboardExtension", category: "PointsOfInterest")
+    private let log = OSLog(subsystem: "hk.eduhk.typeduck.extension", category: "PointsOfInterest")
     private let signpostID: OSSignpostID
     private let instanceId: Int
     

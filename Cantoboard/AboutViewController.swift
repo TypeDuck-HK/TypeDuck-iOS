@@ -11,7 +11,8 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
     static let sections: [[(image: UIImage, title: String, url: String)]] = [
         [
             (CellImage.externalLink, LocalizedStrings.about_jyutpingSite, "https://jyutping.org"),
-            (CellImage.sourceCode, LocalizedStrings.about_sourceCode, "https://github.com/Cantoboard/Cantoboard"),
+            (CellImage.sourceCode, LocalizedStrings.about_sourceCode, "https://github.com/TypeDuck/TypeDuck-iOS"),
+            (CellImage.sourceCode, LocalizedStrings.about_cantoboard, "https://github.com/Cantoboard/Cantoboard"),
         ],
         [
             (CellImage.repository, "Rime Input Method Engine", "https://github.com/rime/librime"),
@@ -24,9 +25,8 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
             (CellImage.repository, "ISEmojiView", "https://github.com/isaced/ISEmojiView"),
         ],
         [
-            (CellImage.telegram, LocalizedStrings.about_telegram, "https://t.me/cantoboard"),
-            (CellImage.email, LocalizedStrings.about_email, "mailto:cantoboard@gmail.com"),
-            (CellImage.rate, LocalizedStrings.about_appStore, "https://apps.apple.com/us/app/cantoboard/id1556817074"),
+            (CellImage.email, LocalizedStrings.about_email, "mailto:typeduck@eduhk.hk"),
+            (CellImage.rate, LocalizedStrings.about_appStore, "https://apps.apple.com/us/app/typeduck/id0000000000"),
         ],
     ]
     

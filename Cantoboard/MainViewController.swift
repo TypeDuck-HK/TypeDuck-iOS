@@ -36,7 +36,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Cantoboard"
+        title = "TypeDuck"
         tableView = UITableView(frame: view.frame, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
@@ -97,7 +97,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case lastSection: return LocalizedStrings.other
-        case 0: return LocalizedStrings.installCantoboard
+        case 0: return LocalizedStrings.installTypeDuck
         case 1: return LocalizedStrings.testKeyboard
         case 2: return LocalizedStrings.displayLanguages
         case 3: return settings.languageState.deselected.isEmpty ? nil : LocalizedStrings.moreLanguages
@@ -108,11 +108,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
         case 0:
-            var installCantoboard_description = LocalizedStrings.installCantoboard_description
+            var installTypeDuck_description = LocalizedStrings.installTypeDuck_description
             if #available(iOS 15, *) {
-                installCantoboard_description = LocalizedStrings.installCantoboard_ios15_description + installCantoboard_description
+                installTypeDuck_description = LocalizedStrings.installTypeDuck_ios15_description + installTypeDuck_description
             }
-            return installCantoboard_description
+            return installTypeDuck_description
         case 2: return LocalizedStrings.displayLanguages_description
         default: return nil
         }
@@ -121,7 +121,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case lastSection: return UITableViewCell(title: aboutCells[indexPath.row].title, image: aboutCells[indexPath.row].image)
-        case 0: return UITableViewCell(tintedTitle: LocalizedStrings.installCantoboard_settings, image: CellImage.settings)
+        case 0: return UITableViewCell(tintedTitle: LocalizedStrings.installTypeDuck_settings, image: CellImage.settings)
         case 1: return InputTableViewCell(tableView: tableView)
         case 2: return LanguageTableViewCell(languageName: Self.languageNames[settings.languageState.selected[indexPath.row]]!,
                                              checked: settings.languageState.selected[indexPath.row] == settings.languageState.main,

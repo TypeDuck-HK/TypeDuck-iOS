@@ -10,8 +10,6 @@ import UIKit
 class FaqViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     static let faqs: [(question: String, answer: String)] = [
         (LocalizedStrings.faq_0_question, LocalizedStrings.faq_0_answer),
-        (LocalizedStrings.faq_1_question, LocalizedStrings.faq_1_answer),
-        (LocalizedStrings.faq_2_question, LocalizedStrings.faq_2_answer),
     ]
     
     override func viewDidLoad() {

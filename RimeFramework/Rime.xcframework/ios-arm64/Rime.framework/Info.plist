@@ -5,7 +5,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Rime</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.cantoboard.rimeframework</string>
+	<string>hk.eduhk.typeduck.rimeframework</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
