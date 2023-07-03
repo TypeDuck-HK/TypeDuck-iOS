@@ -11,7 +11,7 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
     static let sections: [[(image: UIImage, title: String, url: String)]] = [
         [
             (CellImage.externalLink, LocalizedStrings.about_jyutpingSite, "https://jyutping.org"),
-            (CellImage.sourceCode, LocalizedStrings.about_sourceCode, "https://github.com/TypeDuck/TypeDuck-iOS"),
+            (CellImage.sourceCode, LocalizedStrings.about_sourceCode, "https://github.com/TypeDuck-HK/TypeDuck-iOS"),
             (CellImage.sourceCode, LocalizedStrings.about_cantoboard, "https://github.com/Cantoboard/Cantoboard"),
         ],
         [
