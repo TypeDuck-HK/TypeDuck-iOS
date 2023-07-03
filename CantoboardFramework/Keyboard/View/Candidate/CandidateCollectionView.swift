@@ -20,7 +20,7 @@ class CandidateCollectionView: UICollectionView {
     private let c = InstanceCounter<CandidateCollectionView>()
     
     private static let longPressDelay: Double = 1
-    private static let swipeYThreshold: CGFloat = 50
+    private static let swipeYThreshold: CGFloat = 200 / 3
     
     private var beginPoint: CGPoint?
     
