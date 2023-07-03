@@ -30,7 +30,7 @@ class DictionaryView: UIScrollView {
         "Standard Form": \.properties.normalized,
         "Written Form": \.properties.written,
         "Vernacular Form": \.properties.colloquial,
-        "Synonym": \.properties.synonym,
+        "Word Form": \.properties.collocation,
     ]
     
     private static let litColReading: [String: String] = [
@@ -52,6 +52,10 @@ class DictionaryView: UIScrollView {
         "conj": "conjunction",
         "prep": "preposition",
         "pron": "pronoun",
+        "morph": "morpheme",
+        "mw": "classifier",
+        "part": "particle",
+        "oth": "other",
     ]
     
     override init(frame: CGRect) {

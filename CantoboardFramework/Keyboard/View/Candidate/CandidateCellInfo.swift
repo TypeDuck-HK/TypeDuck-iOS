@@ -21,7 +21,7 @@ struct CandidateCellInfo {
         var normalized: String?
         var written: String?
         var colloquial: String?
-        var synonym: String?
+        var collocation: String?
         var definition = Definition()
     }
     
@@ -35,14 +35,14 @@ struct CandidateCellInfo {
     
     static let columns: [WritableKeyPath<Self, String?>] = [
         \.jyutping, \.sandhi, \.litColReading,
-        \.properties.pos, \.properties.register, \.properties.label, \.properties.normalized, \.properties.written, \.properties.colloquial, \.properties.synonym,
+        \.properties.pos, \.properties.register, \.properties.label, \.properties.normalized, \.properties.written, \.properties.colloquial, \.properties.collocation,
         \.properties.definition.eng, \.properties.definition.urd, \.properties.definition.nep, \.properties.definition.hin, \.properties.definition.ind,
     ]
     
     private let isJyutpingOnly: Bool
     
     static let checkColumns: [WritableKeyPath<Self, String?>] = [
-        \.properties.pos, \.properties.register, \.properties.label, \.properties.normalized, \.properties.written, \.properties.colloquial, \.properties.synonym,
+        \.properties.pos, \.properties.register, \.properties.label, \.properties.normalized, \.properties.written, \.properties.colloquial, \.properties.collocation,
     ]
     
     init(honzi: String, fromCSV csv: String? = nil) {
