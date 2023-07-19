@@ -29,33 +29,35 @@ class DictionaryView: UIScrollView {
     private static let otherData: KeyValuePairs<String, WritableKeyPath<CandidateCellInfo, String?>> = [
         "Standard Form": \.properties.normalized,
         "Written Form": \.properties.written,
-        "Vernacular Form": \.properties.colloquial,
+        "Vernacular Form": \.properties.vernacular,
         "Word Form": \.properties.collocation,
     ]
     
     private static let litColReading: [String: String] = [
-        "lit": "literary reading",
-        "col": "vernacular reading",
+        "lit": "literary reading 文讀",
+        "col": "colloquial reading 白讀",
     ]
     
     private static let register: [String: String] = [
         "wri": "written",
-        "col": "vernacular",
+        "ver": "vernacular",
         "for": "formal",
+        "lzh": "archaic",
     ]
     
     private static let partOfSpeech: [String: String] = [
-        "n": "noun",
-        "v": "verb",
-        "adj": "adjective",
-        "adv": "adverb",
-        "conj": "conjunction",
-        "prep": "preposition",
-        "pron": "pronoun",
-        "morph": "morpheme",
-        "mw": "classifier",
-        "part": "particle",
-        "oth": "other",
+        "n": "noun 名詞",
+        "v": "verb 動詞",
+        "adj": "adjective 形容詞",
+        "adv": "adverb 副詞",
+        "conj": "conjunction 連接詞",
+        "prep": "preposition 前置詞",
+        "pron": "pronoun 代名詞",
+        "morph": "morpheme 語素",
+        "mw": "measure word 量詞",
+        "part": "particle 助詞",
+        "oth": "other 其他",
+        "x": "non-morpheme 非語素",
     ]
     
     override init(frame: CGRect) {
@@ -116,7 +118,7 @@ class DictionaryView: UIScrollView {
         }
         var pronunciationType = [String]()
         if let sandhi = info.sandhi, sandhi == "1" {
-            pronunciationType.append("changed tone")
+            pronunciationType.append("changed tone 變音")
         }
         if let litColReading = info.litColReading, let type = Self.litColReading[litColReading] {
             pronunciationType.append(type)
