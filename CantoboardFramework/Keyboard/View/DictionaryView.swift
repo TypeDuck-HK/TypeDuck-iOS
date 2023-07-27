@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class DictionaryView: UIScrollView {
+class DictionaryView: UIScrollView, UIScrollViewDelegate {
     private var rectView: UIView!
     private var outerStack: UIStackView!
     
@@ -63,6 +63,9 @@ class DictionaryView: UIScrollView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
+        delegate = self
+        minimumZoomScale = Settings.cached.candidateFontSize.scale
+        maximumZoomScale = Settings.cached.candidateFontSize.scale
         
         rectView = UIView()
         rectView.translatesAutoresizingMaskIntoConstraints = false
@@ -80,14 +83,14 @@ class DictionaryView: UIScrollView {
         pronunciationLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .body))
         pronunciationTypeLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .footnote))
         
-        registerLabel = UILabel(color: ButtonColor.keyGrayedColor, font: .italicSystemFont(ofSize: 15))
+        registerLabel = UILabel(color: ButtonColor.keyGrayedColor, font: .italicSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
         definitionLabel = UILabel(font: .preferredFont(forTextStyle: .body))
         definitionLabel.numberOfLines = 0
         
         NSLayoutConstraint.activate([
-            rectView.topAnchor.constraint(equalTo: contentLayoutGuide.topAnchor, constant: 8),
-            contentLayoutGuide.bottomAnchor.constraint(equalTo: rectView.bottomAnchor, constant: 8),
-            rectView.leadingAnchor.constraint(equalTo: contentLayoutGuide.leadingAnchor, constant: 8),
+            rectView.topAnchor.constraint(equalTo: contentLayoutGuide.topAnchor, constant: 8 * Settings.cached.candidateFontSize.scale),
+            contentLayoutGuide.bottomAnchor.constraint(equalTo: rectView.bottomAnchor, constant: 8 * Settings.cached.candidateFontSize.scale),
+            rectView.leadingAnchor.constraint(equalTo: contentLayoutGuide.leadingAnchor, constant: 8 * Settings.cached.candidateFontSize.scale),
             contentLayoutGuide.trailingAnchor.constraint(equalTo: rectView.trailingAnchor),
             
             outerStack.topAnchor.constraint(equalTo: rectView.topAnchor, constant: 20),
@@ -135,7 +138,7 @@ class DictionaryView: UIScrollView {
             partOfSpeechStack.translatesAutoresizingMaskIntoConstraints = false
             partOfSpeechStack.spacing = 4
             for pos in partOfSpeech.split(separator: " ") {
-                let partOfSpeechLabel = UILabelWithPadding(color: ButtonColor.dictionaryViewGrayedColor, font: .systemFont(ofSize: 13, weight: .light))
+                let partOfSpeechLabel = UILabelWithPadding(color: ButtonColor.dictionaryViewGrayedColor, font: .systemFont(ofSize: UIFont.preferredFont(forTextStyle: .footnote).pointSize, weight: .light))
                 partOfSpeechLabel.layer.borderColor = ButtonColor.dictionaryViewGrayedColor.resolvedColor(with: traitCollection).cgColor
                 partOfSpeechLabel.layer.borderWidth = 1
                 partOfSpeechLabel.layer.cornerRadius = 2
@@ -179,13 +182,16 @@ class DictionaryView: UIScrollView {
         let otherLanguages = info.otherLanguagesWithNames
         if !otherLanguages.isEmpty {
             otherLanguageStack = UIStackView(arrangedSubviews: [
-                UILabel(text: "More Languages", font: .systemFont(ofSize: 17, weight: .medium)),
+                UILabel(text: "More Languages", font: .systemFont(ofSize: UIFont.preferredFont(forTextStyle: .headline).pointSize, weight: .medium)),
                 Self.createKeyValueStackView(otherLanguages),
             ])
             otherLanguageStack.axis = .vertical
             otherLanguageStack.spacing = 8
             outerStack.addArrangedSubview(otherLanguageStack)
         }
+        
+        setContentOffset(.zero, animated: false)
+        setZoomScale(Settings.cached.candidateFontSize.scale, animated: false)
     }
     
     private static func createKeyValueStackView(_ data: [(String, String)]) -> UIStackView {
@@ -207,6 +213,10 @@ class DictionaryView: UIScrollView {
         stack.spacing = 4
         NSLayoutConstraint.activate(layoutConstraints)
         return stack
+    }
+    
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        rectView
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
