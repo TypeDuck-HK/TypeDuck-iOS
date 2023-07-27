@@ -167,10 +167,11 @@ class CandidateCell: UICollectionViewCell {
             let targetStack = mode == .row ? mainStack : textStack
             targetStack!.addArrangedSubview(label)
             
-            if let mainLanguage = info.mainLanguage {
+            if let mainLanguage = mode == .row ? info.mainLanguageOrLabel : info.mainLanguage {
                 let translationLabel = self.translationLabel ?? UILabel()
                 translationLabel.textAlignment = mode == .row ? .center : .left
                 translationLabel.text = mainLanguage
+                translationLabel.textColor = info.isDictionaryEntry ? ButtonColor.keyForegroundColor : ButtonColor.keyHintColor
                 targetStack!.addArrangedSubview(translationLabel)
                 self.translationLabel = translationLabel
             } else {
@@ -180,11 +181,12 @@ class CandidateCell: UICollectionViewCell {
             }
             
             if mode == .table {
-                let otherLanguages = info.otherLanguages
+                let otherLanguages = info.otherLanguagesOrLabels
                 for (i, language) in otherLanguages.enumerated() {
                     let commentLabel = self.commentLabels[weak: i] ?? UILabel()
                     commentLabel.textAlignment = .left
                     commentLabel.text = language
+                    commentLabel.textColor = info.isDictionaryEntry ? ButtonColor.keyForegroundColor : ButtonColor.keyHintColor
                     commentStack!.addArrangedSubview(commentLabel)
                     self.commentLabels[weak: i] = commentLabel
                 }
@@ -385,15 +387,15 @@ class CandidateCell: UICollectionViewCell {
             cellWidth = max(cellWidth, commentWidth)
         }
         
-        if let mainLanguage = info.mainLanguage {
+        if let mainLanguage = mode == .row ? info.mainLanguageOrLabel : info.mainLanguage {
             let commentWidth = mainLanguage.size(withFont: UIFont.systemFont(ofSize: mode == .row ? candidateCommentFontSize : candidateFontSize)).width
             cellWidth = mode == .row ? max(cellWidth, min(cellWidth + 70, commentWidth)) : cellWidth + Self.paddingText + commentWidth
         }
         
         if mode == .table {
-            let otherLanguages = info.otherLanguages
+            let otherLanguages = info.otherLanguagesOrLabels
             if !otherLanguages.isEmpty {
-                let commentWidth = info.otherLanguages.reduce(-Self.paddingComment) { sum, language in
+                let commentWidth = otherLanguages.reduce(-Self.paddingComment) { sum, language in
                     sum + Self.paddingComment + language.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
                 }
                 cellWidth = max(cellWidth, commentWidth)

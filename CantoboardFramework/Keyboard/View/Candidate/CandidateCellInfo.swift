@@ -42,7 +42,7 @@ struct CandidateCellInfo {
     private let isJyutpingOnly: Bool
     
     static let checkColumns: [WritableKeyPath<Self, String?>] = [
-        \.properties.pos, \.properties.register, \.properties.label, \.properties.normalized, \.properties.written, \.properties.vernacular, \.properties.collocation,
+        \.properties.pos, \.properties.register, \.properties.normalized, \.properties.written, \.properties.vernacular, \.properties.collocation,
     ]
     
     init(honzi: String, fromCSV csv: String? = nil) {
@@ -128,6 +128,18 @@ struct CandidateCellInfo {
             guard $0 != main, let definition = getDefinition(of: $0) else { return nil }
             return ($0.name, definition)
         }
+    }
+    
+    var formattedLabels: [String]? {
+        properties.label?.split(separator: " ").map { "(\($0))" }
+    }
+    
+    var mainLanguageOrLabel: String? {
+        isDictionaryEntry ? mainLanguage : formattedLabels?.joined(separator: " ")
+    }
+    
+    var otherLanguagesOrLabels: [String] {
+        isDictionaryEntry ? otherLanguages : formattedLabels ?? []
     }
     
     var isDictionaryEntry: Bool {
