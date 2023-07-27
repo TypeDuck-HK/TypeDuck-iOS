@@ -92,6 +92,11 @@ class CandidateCell: UICollectionViewCell {
             ])
             self.mainStack = mainStack
         }
+        if !showRomanization {
+            let spacer = UIView()
+            mainStack!.addArrangedSubview(spacer)
+            spacer.heightAnchor.constraint(equalTo: mainStack!.heightAnchor, multiplier: 0.05).isActive = true
+        }
         
         if let oldTextStack = self.textStack {
             for view in oldTextStack.arrangedSubviews {
@@ -127,6 +132,7 @@ class CandidateCell: UICollectionViewCell {
         
         let label = self.label ?? UILabel()
         label.textAlignment = mode == .row ? .center : .left
+        label.lineBreakMode = .byClipping
         label.attributedText = text.toHKAttributedString
         self.label = label
         
@@ -202,16 +208,16 @@ class CandidateCell: UICollectionViewCell {
                 }
                 self.commentLabels.removeAll()
             }
-            mainStack!.isSpaced = true
         } else {
             self.info = nil
             label.textAlignment = .center
             
+            if showRomanization {
+                let spacer = UIView()
+                mainStack!.addArrangedSubview(spacer)
+                spacer.heightAnchor.constraint(equalTo: mainStack!.heightAnchor, multiplier: 0.25).isActive = true
+            }
             mainStack!.addArrangedSubview(label)
-            mainStack!.isSpaced = false
-            let spacer = UIView()
-            spacer.heightAnchor.constraint(equalToConstant: 4).isActive = true
-            mainStack!.addArrangedSubview(spacer)
         }
         
         let isDictionaryEntry = self.info?.isDictionaryEntry ?? false

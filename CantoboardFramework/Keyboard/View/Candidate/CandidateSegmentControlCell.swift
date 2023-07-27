@@ -33,7 +33,7 @@ class CandidateSegmentControlCell: UICollectionViewCell {
         
         guard let segmentControl = segmentedControl, segmentControl.numberOfSegments != groupByModes.count else { return }
         
-        let font: UIFont = .preferredFont(forTextStyle: .subheadline)
+        let font: UIFont = .preferredFont(forTextStyle: .subheadline).multiplyPointSizeBy(scale: Settings.cached.candidateFontSize.scale)
         segmentControl.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
         
         UIView.performWithoutAnimation {

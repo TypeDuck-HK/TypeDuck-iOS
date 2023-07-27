@@ -296,12 +296,18 @@ class LayoutConstants: Copyable {
     // Keyboard size
     let idiom: LayoutIdiom
     let isPortrait: Bool
-    let keyboardHeight: CGFloat
+    private let _keyboardHeight: CGFloat
+    var keyboardHeight: CGFloat {
+        _keyboardHeight - _autoCompleteBarHeight + autoCompleteBarHeight
+    }
     let keyboardViewInsets: UIEdgeInsets
     
     // General
     let keyHeight: CGFloat
-    let autoCompleteBarHeight: CGFloat
+    private let _autoCompleteBarHeight: CGFloat
+    var autoCompleteBarHeight: CGFloat {
+        _autoCompleteBarHeight * Settings.cached.candidateFontSize.scale
+    }
     let keyViewInsets: UIEdgeInsets
     
     // Downcast helpers
@@ -381,11 +387,11 @@ class LayoutConstants: Copyable {
         self.idiom = idiom
         self.isPortrait = isPortrait
         self.keyboardWidth = keyboardSize.width
-        self.keyboardHeight = keyboardSize.height
+        self._keyboardHeight = keyboardSize.height
         self.buttonGapX = buttonGapX
         self.keyboardViewInsets = UIEdgeInsets(top: Self.keyboardViewTopInset, left: keyboardViewLeftRightInset, bottom: keyboardViewBottomInset, right: keyboardViewLeftRightInset)
         self.keyHeight = keyHeight
-        self.autoCompleteBarHeight = autoCompleteBarHeight
+        self._autoCompleteBarHeight = autoCompleteBarHeight
         self.keyViewInsets = keyViewInsets
         let keyboardViewHeight = keyboardSize.height - autoCompleteBarHeight - Self.keyboardViewTopInset - keyboardViewBottomInset
         self.keyboardViewHeight = keyboardViewHeight
@@ -413,10 +419,10 @@ class LayoutConstants: Copyable {
         self.idiom = copyOf.idiom
         self.isPortrait = copyOf.isPortrait
         self.keyboardWidth = copyOf.keyboardWidth
-        self.keyboardHeight = copyOf.keyboardHeight
+        self._keyboardHeight = copyOf._keyboardHeight
         self.keyboardViewInsets = copyOf.keyboardViewInsets
         self.keyHeight = copyOf.keyHeight
-        self.autoCompleteBarHeight = copyOf.autoCompleteBarHeight
+        self._autoCompleteBarHeight = copyOf._autoCompleteBarHeight
         self.keyViewInsets = copyOf.keyViewInsets
         self.keyboardViewHeight = copyOf.keyboardViewHeight
         self.buttonGapX = copyOf.buttonGapX

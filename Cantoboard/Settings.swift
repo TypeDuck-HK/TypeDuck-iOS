@@ -163,10 +163,17 @@ extension Settings {
                     Switch(LocalizedStrings.smartFullStop, \.isSmartFullStopEnabled,
                            LocalizedStrings.smartFullStop_description, "Guide8-1"),
                     Switch(LocalizedStrings.audioFeedback, \.isAudioFeedbackEnabled),
+                ] + (UIDevice.current.userInterfaceIdiom == .pad ? [] : [
                     Switch(LocalizedStrings.tapHapticFeedback, \.isTapHapticFeedbackEnabled),
+                ]) + [
                     Segment(LocalizedStrings.candidateFontSize, \.candidateFontSize, [
+                            LocalizedStrings.candidateFontSize_small: .small,
                             LocalizedStrings.candidateFontSize_normal: .normal,
                             LocalizedStrings.candidateFontSize_large: .large,
+                    ]),
+                    Segment(LocalizedStrings.candidateGap, \.candidateGap, [
+                            LocalizedStrings.candidateGap_normal: .normal,
+                            LocalizedStrings.candidateGap_large: .large,
                     ]),
                     Segment(LocalizedStrings.symbolShape, \.symbolShape, [
                             LocalizedStrings.symbolShape_half: .half,

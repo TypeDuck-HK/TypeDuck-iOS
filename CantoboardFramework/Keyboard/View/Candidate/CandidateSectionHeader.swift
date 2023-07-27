@@ -28,7 +28,7 @@ class CandidateSectionHeader: UICollectionReusableView {
             addSubview(textLayer)
             textLayer.textAlignment = .center
             textLayer.baselineAdjustment = .alignCenters
-            textLayer.font = .preferredFont(forTextStyle: .title2)
+            textLayer.font = .preferredFont(forTextStyle: .title3).multiplyPointSizeBy(scale: Settings.cached.candidateFontSize.scale)
             textLayer.adjustsFontSizeToFitWidth = true
         }
         

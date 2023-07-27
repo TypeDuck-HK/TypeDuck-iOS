@@ -26,6 +26,7 @@ extension CALayer {
 
 class StatusButton: UIButton {
     static let statusInset: CGFloat = 4
+    static let textPadding: CGFloat = 8
     
     private weak var statusSquareBg: CALayer?
     
@@ -65,11 +66,11 @@ class StatusButton: UIButton {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        titleLabel?.font = .preferredFont(forTextStyle: isMini ? .caption1 : .title2)
+        titleLabel?.font = .preferredFont(forTextStyle: isMini ? .footnote : .title2).multiplyPointSizeBy(scale: Settings.cached.candidateFontSize.statusScale)
         titleLabel?.adjustsFontSizeToFitWidth = true
         titleLabel?.textAlignment = .center
         if !isMini {
-            titleLabel?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
+            titleLabel?.frame = bounds.insetBy(dx: Self.textPadding, dy: Self.textPadding)
             statusSquareBg?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
         }
         statusSquareBg?.isHidden = isMini || !shouldShowStatusBackground

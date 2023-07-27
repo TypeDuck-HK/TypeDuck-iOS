@@ -20,7 +20,6 @@ protocol CandidatePaneViewDelegate: NSObject {
 }
 
 class CandidatePaneView: UIControl {
-    private static let miniStatusSize = CGSize(width: 20, height: 20)
     private static let separatorWidth: CGFloat = 1
     private static let topMargin: CGFloat = 3
     
@@ -324,15 +323,19 @@ class CandidatePaneView: UIControl {
     }
     
     var rowHeight: CGFloat {
-        layoutConstants.ref.autoCompleteBarHeight * Settings.cached.candidateFontSize.scale
+        layoutConstants.ref.autoCompleteBarHeight
     }
     
     private var expandButtonWidth: CGFloat {
-        rowHeight // Square
+        layoutConstants.ref.idiom == .phone && !layoutConstants.ref.isPortrait ? rowHeight : rowHeight / Settings.cached.candidateFontSize.scale * Settings.cached.candidateFontSize.statusScale
     }
     
     var sectionHeaderWidth: CGFloat {
         rowHeight // Square
+    }
+    
+    var statusSize: CGFloat {
+        (keyboardState.keyboardIdiom.isPad ? 24 : layoutConstants.ref.isPortrait ? 20 : 16) * Settings.cached.candidateFontSize.statusScale
     }
     
     @objc private func expandButtonClick() {
@@ -436,17 +439,17 @@ class CandidatePaneView: UIControl {
         guard let superview = superview else { return }
         
         let buttons = [expandButton, inputModeButton, backspaceButton, charFormButton]
-        var buttonY = mode == .row && dictionaryCandidateInfo == nil ? Self.topMargin : 0
+        var buttonY = mode == .row && dictionaryCandidateInfo == nil ? Self.topMargin + (rowHeight - expandButtonWidth) / 2 : 0
         let candidatePaneViewLeftRightInset = isFullPadCandidateBar ? 0 : layoutConstants.ref.candidatePaneViewLeftRightInset
         let candidateViewWidth = superview.bounds.width - (expandButton.isHidden ? directionalLayoutMargins.trailing - StatusButton.statusInset : candidatePaneViewLeftRightInset)
         for button in buttons {
             guard let button = button, !button.isHidden else { continue }
             if button == inputModeButton && inputModeButton.isMini {
-                button.frame = CGRect(origin: CGPoint(x: candidateViewWidth - Self.miniStatusSize.width, y: Self.topMargin), size: Self.miniStatusSize)
+                button.frame = CGRect(origin: CGPoint(x: candidateViewWidth - statusSize, y: Self.topMargin), size: CGSize(width: statusSize, height: statusSize))
                 continue
             }
             button.frame = CGRect(origin: CGPoint(x: candidateViewWidth - expandButtonWidth, y: buttonY), size: CGSize(width: expandButtonWidth, height: expandButtonWidth))
-            buttonY += rowHeight
+            buttonY += expandButtonWidth
         }
     }
     
@@ -466,7 +469,7 @@ class CandidatePaneView: UIControl {
     }
     
     private func adjustImageFontSize(_ image: UIImage) -> UIImage {
-        image.withConfiguration(UIImage.SymbolConfiguration(pointSize: keyboardState.keyboardIdiom.isPad ? 24 : 20))
+        image.withConfiguration(UIImage.SymbolConfiguration(pointSize: statusSize))
     }
 }
 
@@ -675,7 +678,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        return (Settings.cached.candidateGap.interitemSpacing + (keyboardState.keyboardIdiom.isPad ? 6 : 0)) * Settings.cached.candidateFontSize.scale
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -696,7 +699,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        return Settings.cached.candidateGap.lineSpacing * Settings.cached.candidateFontSize.scale
     }
     
     private func computeCellSize(candidateIndexPath: IndexPath, withInfoIcon: Bool) -> CGSize {
@@ -712,15 +715,18 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         let candidateViewWidth = bounds.width - expandButtonWidth - headerWidth
         
         var size = CandidateCell.computeCellSize(cellHeight: rowHeight, candidateInfo: info, showRomanization: showRomanization, mode: mode)
+        var minWidth = candidateViewWidth / layoutConstants.numOfSingleCharCandidateInRow(twoComments: twoComments) * Settings.cached.candidateFontSize.scale
         var maxWidth = candidateViewWidth
         if mode == .table && info.isDictionaryEntry {
+            let infoIconWidth = size.height * CandidateCell.infoIconWidthRatio - 8
+            minWidth -= infoIconWidth
             if withInfoIcon {
-                size.width += size.height * CandidateCell.infoIconWidthRatio - 8
+                size.width += infoIconWidth
             } else {
-                maxWidth -= size.height * CandidateCell.infoIconWidthRatio - 8
+                maxWidth -= infoIconWidth
             }
         }
-        return size.with(minWidth: candidateViewWidth / layoutConstants.numOfSingleCharCandidateInRow(twoComments: twoComments), maxWidth: maxWidth)
+        return size.with(minWidth: minWidth, maxWidth: maxWidth)
     }
     
     private var showRomanization: Bool {

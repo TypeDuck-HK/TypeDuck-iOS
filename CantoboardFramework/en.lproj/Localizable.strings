@@ -6,18 +6,18 @@
   
 */
 
-"KeyNextPage" = "next page";
-"KeySelect" = "select";
-"KeySpace" = "space";
-"KeyFullWidthSpace" = "full width space";
-"KeyConfirm" = "confirm";
-"KeyGo" = "go";
-"KeyNext" = "next";
-"KeySend" = "send";
-"KeySearch" = "search";
+"KeyNextPage" = "Next Page";
+"KeySelect" = "Select";
+"KeySpace" = "Space";
+"KeyFullWidthSpace" = "Fullwidth Space";
+"KeyConfirm" = "Confirm";
+"KeyGo" = "Go";
+"KeyNext" = "Next";
+"KeySend" = "Send";
+"KeySearch" = "Search";
 "KeyContinue" = "→";
-"KeyDone" = "done";
+"KeyDone" = "Done";
 "KeySOS" = "SOS";
-"KeyJoin" = "join";
-"KeyRoute" = "route";
-"KeyReturn" = "return";
+"KeyJoin" = "Join";
+"KeyRoute" = "Route";
+"KeyReturn" = "Return";

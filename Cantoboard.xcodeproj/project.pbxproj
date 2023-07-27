@@ -11,6 +11,7 @@
 		1405FF3E2719FED60037F724 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1405FF3D2719FED60037F724 /* Localizable.strings */; };
 		1405FF40271A02330037F724 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1405FF3F271A02330037F724 /* LocalizedStrings.swift */; };
 		1414B2B5271B12F200091ADF /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1414B2B4271B12F200091ADF /* Settings.swift */; };
+		141A27812A726EEF0068CD94 /* UIFont+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A27802A726EEF0068CD94 /* UIFont+Extension.swift */; };
 		141A7CF52719E46100A24E92 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A7CF42719E46100A24E92 /* MainViewController.swift */; };
 		142AA601274C065100D7EE39 /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA600274C065100D7EE39 /* Keyboard.swift */; };
 		142AA604274C06E400D7EE39 /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA603274C06E400D7EE39 /* UILabel+Extension.swift */; };
@@ -329,6 +330,7 @@
 		1405FF3D2719FED60037F724 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; lineEnding = 0; path = Localizable.strings; sourceTree = "<group>"; };
 		1405FF3F271A02330037F724 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 		1414B2B4271B12F200091ADF /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		141A27802A726EEF0068CD94 /* UIFont+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extension.swift"; sourceTree = "<group>"; };
 		141A7CF42719E46100A24E92 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		142AA600274C065100D7EE39 /* Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
 		142AA603274C06E400D7EE39 /* UILabel+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
@@ -1059,6 +1061,7 @@
 				79B9B59325F34A1200238E80 /* UITextDocumentProxy+Extension.swift */,
 				7906D6DF26D8D35E004C3C0F /* UIView+Extension.swift */,
 				14D0990C29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift */,
+				141A27802A726EEF0068CD94 /* UIFont+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1506,6 +1509,7 @@
 				796E53FB26E71CEA00C9B187 /* PadFull5RowsKeyboardViewLayout.swift in Sources */,
 				79B9B5F525F34A1200238E80 /* EnglishInputEngine.swift in Sources */,
 				1474441829E68FE8009E4468 /* CandidateCellInfo.swift in Sources */,
+				141A27812A726EEF0068CD94 /* UIFont+Extension.swift in Sources */,
 				798032A52645F6AF008DC703 /* Logging.swift in Sources */,
 				79515A7E2609AA1500D29A5C /* LevelDbTable.mm in Sources */,
 				79B9B5F425F34A1200238E80 /* RimeApi.swift in Sources */,

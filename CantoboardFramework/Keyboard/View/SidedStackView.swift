@@ -35,16 +35,6 @@ class SidedStackView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var isSpaced: Bool = true {
-        didSet {
-            if isSpaced {
-                super.addArrangedSubview(spacer)
-            } else {
-                super.removeArrangedSubview(spacer)
-            }
-        }
-    }
-    
     override var arrangedSubviews: [UIView] {
         contentView.arrangedSubviews
     }

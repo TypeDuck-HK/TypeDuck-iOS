@@ -53,13 +53,42 @@ public enum EnglishLocale: String, Codable {
 }
 
 public enum CandidateFontSize: String, Codable {
+    case small = "small"
     case normal = "normal"
     case large = "large"
     
     var scale: CGFloat {
         switch self {
-        case .normal: return 1
-        case .large: return 1.2
+        case .small: return 1
+        case .normal: return 1.2
+        case .large: return 1.5
+        }
+    }
+    
+    var statusScale: CGFloat {
+        switch self {
+        case .small: return 1
+        case .normal: return 1.1
+        case .large: return 1.25
+        }
+    }
+}
+
+public enum CandidateGap: String, Codable {
+    case normal = "normal"
+    case large = "large"
+    
+    var interitemSpacing: CGFloat {
+        switch self {
+        case .normal: return 0
+        case .large: return 12
+        }
+    }
+    
+    var lineSpacing: CGFloat {
+        switch self {
+        case .normal: return 0
+        case .large: return 8
         }
     }
 }
@@ -184,12 +213,12 @@ public struct RimeSettings: Codable, Equatable {
     public var enableCorrector: Bool
     
     public init() {
-        enableCorrector = false
+        enableCorrector = true
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        enableCorrector = try container.decodeIfPresent(Bool.self, forKey: .enableCorrector) ?? false
+        enableCorrector = try container.decodeIfPresent(Bool.self, forKey: .enableCorrector) ?? true
     }
 }
 
@@ -200,6 +229,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultSmartEnglishSpaceEnabled: Bool = true
     private static let defaultSmartFullStopEnabled: Bool = true
     private static let defaultCandidateFontSize: CandidateFontSize = .normal
+    private static let defaultCandidateGap: CandidateGap = .normal
     private static let defaultSymbolShape: SymbolShape = .smart
     private static let defaultSmartSymbolShapeDefault: SymbolShape = .full
     private static let defaultSpaceAction: SpaceAction = .insertCandidate
@@ -228,6 +258,7 @@ public struct Settings: Codable, Equatable {
     public var isSmartEnglishSpaceEnabled: Bool = true
     public var isSmartFullStopEnabled: Bool
     public var candidateFontSize: CandidateFontSize
+    public var candidateGap: CandidateGap
     public var symbolShape: SymbolShape
     public var smartSymbolShapeDefault: SymbolShape
     public var spaceAction: SpaceAction
@@ -257,6 +288,7 @@ public struct Settings: Codable, Equatable {
         isSmartEnglishSpaceEnabled = Self.defaultSmartEnglishSpaceEnabled
         isSmartFullStopEnabled = Self.defaultSmartFullStopEnabled
         candidateFontSize = Self.defaultCandidateFontSize
+        candidateGap = Self.defaultCandidateGap
         symbolShape = Self.defaultSymbolShape
         smartSymbolShapeDefault = Self.defaultSmartSymbolShapeDefault
         spaceAction = Self.defaultSpaceAction
@@ -288,6 +320,7 @@ public struct Settings: Codable, Equatable {
         self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.defaultSmartFullStopEnabled
         self.isSmartEnglishSpaceEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartEnglishSpaceEnabled) ?? Settings.defaultSmartEnglishSpaceEnabled
         self.candidateFontSize = try container.decodeIfPresent(CandidateFontSize.self, forKey: .candidateFontSize) ?? Settings.defaultCandidateFontSize
+        self.candidateGap = try container.decodeIfPresent(CandidateGap.self, forKey: .candidateGap) ?? Settings.defaultCandidateGap
         self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.defaultSymbolShape
         self.smartSymbolShapeDefault = try container.decodeIfPresent(SymbolShape.self, forKey: .smartSymbolShapeDefault) ?? Settings.defaultSmartSymbolShapeDefault
         self.spaceAction = try container.decodeIfPresent(SpaceAction.self, forKey: .spaceAction) ?? Settings.defaultSpaceAction

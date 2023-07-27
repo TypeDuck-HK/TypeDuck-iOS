@@ -49,10 +49,11 @@ class CandidateCollectionViewFlowLayout: UICollectionViewFlowLayout {
             if attributes.indexPath == [0, 0], let collectionViewSize = collectionView?.bounds {
                 attributes.frame = CGRect(origin: .zero, size: CGSize(width: collectionViewSize.width, height: rowHeight))
             } else {
-                if attributes.frame.origin.y >= maxY {
+                let y = attributes.frame.origin.y
+                if y > maxY {
                     newLineIndices.append(i)
+                    maxY = y
                 }
-                maxY = max(attributes.frame.maxY, maxY)
             }
         }
         let x = candidatePaneView?.headerWidth ?? 0
