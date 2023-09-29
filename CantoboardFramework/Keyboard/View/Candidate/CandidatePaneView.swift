@@ -677,6 +677,9 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
 extension CandidatePaneView: CandidateCollectionViewDelegate {
     func selectItem(_ collectionView: UICollectionView, at indexPath: IndexPath) {
         FeedbackProvider.play(keyboardAction: .none)
+        if Settings.cached.isTapHapticFeedbackEnabled {
+            FeedbackProvider.lightImpact.impactOccurred()
+        }
         delegate?.candidatePaneViewCandidateSelected(translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
     }
     
