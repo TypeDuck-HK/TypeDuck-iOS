@@ -140,7 +140,9 @@ struct KeyboardState: Equatable {
         mainSchema = SessionState.main.lastPrimarySchema
         // Make sure we are using the user selected CJ version.
         if mainSchema == .cangjie3 || mainSchema == .cangjie5 {
-            mainSchema = Settings.cached.cangjieVersion.toRimeSchema
+            mainSchema = Settings.cached.cangjieVersion.toRimeCJSchema
+        } else if mainSchema == .quick3 || mainSchema == .quick5 {
+            mainSchema = Settings.cached.cangjieVersion.toRimeQuickSchema
         } else if mainSchema == .jyutping || mainSchema == .jyutping10keys || mainSchema == .jyutpingInitialFinal {
             mainSchema = Settings.cached.cantoneseKeyboardLayout.toRimeSchema
         }
