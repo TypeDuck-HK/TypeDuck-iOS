@@ -98,8 +98,11 @@ class LocalizedStrings {
     static var reverseLookupSettings: String { localizedString("reverseLookupSettings") }
     static var showCodeInReverseLookup: String { localizedString("reverseLookupSettings.showCodeInReverseLookup") }
     static var cangjieVersion: String { localizedString("reverseLookupSettings.cangjieVersion") }
-    static var cangjie3: String { localizedString("reverseLookupSettings.cangjie3") }
-    static var cangjie5: String { localizedString("reverseLookupSettings.cangjie5") }
+    static var cangjieVersion_cangjie3: String { localizedString("reverseLookupSettings.cangjieVersion.cangjie3") }
+    static var cangjieVersion_cangjie5: String { localizedString("reverseLookupSettings.cangjieVersion.cangjie5") }
+    static var cangjieKeyCapMode: String { localizedString("reverseLookupSettings.cangjieKeyCapMode") }
+    static var cangjieKeyCapMode_letter: String { localizedString("reverseLookupSettings.cangjieKeyCapMode.letter") }
+    static var cangjieKeyCapMode_cangjieRoot: String { localizedString("reverseLookupSettings.cangjieKeyCapMode.cangjieRoot") }
     
     static var englishInputSettings: String { localizedString("englishInputSettings") }
     static var autoCap: String { localizedString("englishInputSettings.autoCap") }

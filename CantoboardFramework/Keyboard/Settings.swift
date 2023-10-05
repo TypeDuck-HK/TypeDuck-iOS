@@ -127,6 +127,11 @@ public enum CangjieVersion: String, Codable {
     }
 }
 
+public enum CangjieKeyCapMode: String, Codable {
+    case letter = "letter"
+    case cangjieRoot = "cangjieRoot"
+}
+
 public enum ShowRomanizationMode: String, Codable {
     case always = "always"
     case onlyInNonCantoneseMode = "onlyInNonCantoneseMode"
@@ -303,6 +308,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultPadLeftSysKeyAsKeyboardType: Bool = false
     private static let defaultShowBottomLeftSwitchLangButton: Bool = false
     private static let defaultCangjieVersion: CangjieVersion = .cangjie5
+    private static let defaultCangjieKeyCapMode: CangjieKeyCapMode = .cangjieRoot
     private static let defaultLanguageState: LanguageState = LanguageState()
 
     public var interfaceLanguage: InterfaceLanguage
@@ -336,6 +342,7 @@ public struct Settings: Codable, Equatable {
     public var padLeftSysKeyAsKeyboardType: Bool
     public var showBottomLeftSwitchLangButton: Bool
     public var cangjieVersion: CangjieVersion
+    public var cangjieKeyCapMode: CangjieKeyCapMode
     public var languageState: LanguageState
     
     public init() {
@@ -370,6 +377,7 @@ public struct Settings: Codable, Equatable {
         padLeftSysKeyAsKeyboardType = Self.defaultPadLeftSysKeyAsKeyboardType
         showBottomLeftSwitchLangButton = Self.defaultShowBottomLeftSwitchLangButton
         cangjieVersion = Self.defaultCangjieVersion
+        cangjieKeyCapMode = Self.defaultCangjieKeyCapMode
         languageState = Self.defaultLanguageState
     }
     
@@ -406,6 +414,7 @@ public struct Settings: Codable, Equatable {
         self.padLeftSysKeyAsKeyboardType = try container.decodeIfPresent(Bool.self, forKey: .padLeftSysKeyAsKeyboardType) ?? Settings.defaultPadLeftSysKeyAsKeyboardType
         self.showBottomLeftSwitchLangButton = try container.decodeIfPresent(Bool.self, forKey: .showBottomLeftSwitchLangButton) ?? Settings.defaultShowBottomLeftSwitchLangButton
         self.cangjieVersion = try container.decodeIfPresent(CangjieVersion.self, forKey: .cangjieVersion) ?? Settings.defaultCangjieVersion
+        self.cangjieKeyCapMode = try container.decodeIfPresent(CangjieKeyCapMode.self, forKey: .cangjieKeyCapMode) ?? Settings.defaultCangjieKeyCapMode
         self.languageState = try container.decodeIfPresent(LanguageState.self, forKey: .languageState) ?? Settings.defaultLanguageState
     }
     

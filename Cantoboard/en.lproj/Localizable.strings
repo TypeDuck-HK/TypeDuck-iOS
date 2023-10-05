@@ -105,8 +105,11 @@ Long press: Press and hold one of the six keys in the middle of the keyboard to 
 "reverseLookupSettings" = "Reverse Lookup Settings";
 "reverseLookupSettings.showCodeInReverseLookup" = "Full input code above candidates";
 "reverseLookupSettings.cangjieVersion" = "Cangjie version";
-"reverseLookupSettings.cangjie3" = "3";
-"reverseLookupSettings.cangjie5" = "5";
+"reverseLookupSettings.cangjieVersion.cangjie3" = "3";
+"reverseLookupSettings.cangjieVersion.cangjie5" = "5";
+"reverseLookupSettings.cangjieKeyCapMode" = "Cangjie keycap";
+"reverseLookupSettings.cangjieKeyCapMode.letter" = "letter";
+"reverseLookupSettings.cangjieKeyCapMode.cangjieRoot" = "Cangjie root";
 
 "englishInputSettings" = "English Input Settings";
 "englishInputSettings.autoCap" = "Auto-capitalization";

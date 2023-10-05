@@ -205,8 +205,13 @@ extension Settings {
                 [
                     Switch(LocalizedStrings.showCodeInReverseLookup, \.showCodeInReverseLookup),
                     Segment(LocalizedStrings.cangjieVersion, \.cangjieVersion, [
-                            LocalizedStrings.cangjie3: .cangjie3,
-                            LocalizedStrings.cangjie5: .cangjie5,
+                            LocalizedStrings.cangjieVersion_cangjie3: .cangjie3,
+                            LocalizedStrings.cangjieVersion_cangjie5: .cangjie5,
+                        ]
+                    ),
+                    Segment(LocalizedStrings.cangjieKeyCapMode, \.cangjieKeyCapMode, [
+                            LocalizedStrings.cangjieKeyCapMode_letter: .letter,
+                            LocalizedStrings.cangjieKeyCapMode_cangjieRoot: .cangjieRoot,
                         ]
                     ),
                 ]

@@ -107,8 +107,11 @@ vxq: 按一下 v/x/q 輸入 1/2/3 聲；
 "reverseLookupSettings" = "反查設定";
 "reverseLookupSettings.showCodeInReverseLookup" = "顯示完整輸入碼";
 "reverseLookupSettings.cangjieVersion" = "倉頡版本";
-"reverseLookupSettings.cangjie3" = "三代";
-"reverseLookupSettings.cangjie5" = "五代";
+"reverseLookupSettings.cangjieVersion.cangjie3" = "三代";
+"reverseLookupSettings.cangjieVersion.cangjie5" = "五代";
+"reverseLookupSettings.cangjieKeyCapMode" = "倉頡鍵帽";
+"reverseLookupSettings.cangjieKeyCapMode.letter" = "英文字母";
+"reverseLookupSettings.cangjieKeyCapMode.cangjieRoot" = "倉頡字根";
 
 "englishInputSettings" = "英文輸入設定";
 "englishInputSettings.autoCap" = "自動大階";
