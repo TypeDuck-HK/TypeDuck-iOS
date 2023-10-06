@@ -49,6 +49,9 @@ class LocalizedStrings {
     static var candidateGap: String { localizedString("inputMethodSettings.candidateGap") }
     static var candidateGap_normal: String { localizedString("inputMethodSettings.candidateGap.normal") }
     static var candidateGap_large: String { localizedString("inputMethodSettings.candidateGap.large") }
+    static var candidateSelectMode: String { localizedString("inputMethodSettings.candidateSelectMode") }
+    static var candidateSelectMode_expandDownward: String { localizedString("inputMethodSettings.candidateSelectMode.expandDownward") }
+    static var candidateSelectMode_scrollRight: String { localizedString("inputMethodSettings.candidateSelectMode.scrollRight") }
     static var symbolShape: String { localizedString("inputMethodSettings.symbolShape") }
     static var symbolShape_half: String { localizedString("inputMethodSettings.symbolShape.half") }
     static var symbolShape_full: String { localizedString("inputMethodSettings.symbolShape.full") }

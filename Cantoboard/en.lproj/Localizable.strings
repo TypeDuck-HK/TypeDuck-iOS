@@ -47,6 +47,9 @@ Due to iOS limitations, if the TypeDuck option disappears or becomes unavailable
 "inputMethodSettings.candidateGap" = "Gap between candidates";
 "inputMethodSettings.candidateGap.normal" = "normal";
 "inputMethodSettings.candidateGap.large" = "large";
+"inputMethodSettings.candidateSelectMode" = "Candidate list";
+"inputMethodSettings.candidateSelectMode.expandDownward" = "expand downward";
+"inputMethodSettings.candidateSelectMode.scrollRight" = "scroll right";
 "inputMethodSettings.symbolShape" = "Punctuation";
 "inputMethodSettings.symbolShape.half" = "halfwidth";
 "inputMethodSettings.symbolShape.full" = "fullwidth";
