@@ -122,12 +122,21 @@ vxq: 按一下 v/x/q 輸入 1/2/3 聲；
 
 "reverseLookupSettings" = "反查設定";
 "reverseLookupSettings.showCodeInReverseLookup" = "顯示完整輸入碼";
-"reverseLookupSettings.cangjieVersion" = "倉頡版本";
+"reverseLookupSettings.cangjieVersion" = "倉頡速成版本";
 "reverseLookupSettings.cangjieVersion.cangjie3" = "三代";
 "reverseLookupSettings.cangjieVersion.cangjie5" = "五代";
-"reverseLookupSettings.cangjieKeyCapMode" = "倉頡鍵帽";
+"reverseLookupSettings.cangjieKeyCapMode" = "倉頡速成鍵帽";
 "reverseLookupSettings.cangjieKeyCapMode.letter" = "英文字母";
 "reverseLookupSettings.cangjieKeyCapMode.cangjieRoot" = "倉頡字根";
+"reverseLookupSettings.quick3CandidateMode" = "速成三代單字排序";
+"reverseLookupSettings.quick3CandidateMode.sortByFreq" = "字頻";
+"reverseLookupSettings.quick3CandidateMode.fixedOrder" = "固定";
+"reverseLookupSettings.quick3CandidateMode.description" =
+"字頻模式：單字會根據使用頻率動態排序。
+固定模式：非常用單字會根據 Windows 舊速成之固定順序排序。
+詞組永遠都會根據使用頻率排序。此設定只會影響速成三代。";
+"reverseLookupSettings.quick3FixedOrderNumPopularCandidates" = "速成三代常用單字數目";
+"reverseLookupSettings.quick3FixedOrderNumPopularCandidates.description" = "固定模式下，輸入法會先根據此設定顯示幾個常用單字，之後再根據 Windows 舊速成之固定順序排列剩餘單字。此設定只會影響速成三代。";
 
 "englishInputSettings" = "英文輸入設定";
 "englishInputSettings.autoCap" = "自動大階";
