@@ -313,7 +313,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultFullPadCandidateBar: Bool = true
     private static let defaultPadLeftSysKeyAsKeyboardType: Bool = false
     private static let defaultShowBottomLeftSwitchLangButton: Bool = false
-    private static let defaultCangjieVersion: CangjieVersion = .cangjie5
+    private static let defaultCangjieVersion: CangjieVersion = .cangjie3
     private static let defaultCangjieKeyCapMode: CangjieKeyCapMode = .cangjieRoot
     private static let defaultLanguageState: LanguageState = LanguageState()
 
