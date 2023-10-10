@@ -42,6 +42,7 @@ class LocalizedStrings {
     static var audioFeedback: String { localizedString("inputMethodSettings.audioFeedback") }
     static var tapHapticFeedback: String { localizedString("inputMethodSettings.tapHapticFeedback") }
     static var enableCharPreview: String { localizedString("inputMethodSettings.enableCharPreview") }
+    static var enableSystemLexicon: String { localizedString("inputMethodSettings.enableSystemLexicon") }
     static var candidateFontSize: String { localizedString("inputMethodSettings.candidateFontSize") }
     static var candidateFontSize_small: String { localizedString("inputMethodSettings.candidateFontSize.small") }
     static var candidateFontSize_normal: String { localizedString("inputMethodSettings.candidateFontSize.normal") }

@@ -40,6 +40,7 @@ Due to iOS limitations, if the TypeDuck option disappears or becomes unavailable
 "inputMethodSettings.audioFeedback" = "Sound on keypress";
 "inputMethodSettings.tapHapticFeedback" = "Vibrate on keypress (requires full access)";
 "inputMethodSettings.enableCharPreview" = "Popup on keypress";
+"inputMethodSettings.enableSystemLexicon" = "iOS text replacements";
 "inputMethodSettings.candidateFontSize" = "Font size of candidates";
 "inputMethodSettings.candidateFontSize.small" = "small";
 "inputMethodSettings.candidateFontSize.normal" = "normal";

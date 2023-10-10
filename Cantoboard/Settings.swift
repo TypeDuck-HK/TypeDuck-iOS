@@ -122,6 +122,7 @@ extension Settings {
             Switch(LocalizedStrings.audioFeedback, \.isAudioFeedbackEnabled),
             isPad ? nil : Switch(LocalizedStrings.tapHapticFeedback, \.isTapHapticFeedbackEnabled),
             Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
+            Switch(LocalizedStrings.enableSystemLexicon, \.enableSystemLexicon),
             Segment(LocalizedStrings.candidateFontSize, \.candidateFontSize, [
                     LocalizedStrings.candidateFontSize_small: .small,
                     LocalizedStrings.candidateFontSize_normal: .normal,
