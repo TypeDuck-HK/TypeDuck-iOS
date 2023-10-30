@@ -9,7 +9,6 @@ import Foundation
 import UIKit
 
 class DictionaryView: UIScrollView {
-    private var rectView: UIView!
     private var outerStack: UIStackView!
     
     private var titleStack: SidedStackView!
@@ -63,18 +62,13 @@ class DictionaryView: UIScrollView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
-        
-        rectView = UIView()
-        rectView.translatesAutoresizingMaskIntoConstraints = false
-        rectView.layer.cornerRadius = 12
-        rectView.backgroundColor = ButtonColor.dictionaryViewBackgroundColor
-        addSubview(rectView)
+        backgroundColor = ButtonColor.dictionaryViewBackgroundColor
         
         outerStack = UIStackView()
         outerStack.translatesAutoresizingMaskIntoConstraints = false
         outerStack.axis = .vertical
         outerStack.spacing = 16 * Settings.cached.candidateFontSize.scale
-        rectView.addSubview(outerStack)
+        addSubview(outerStack)
         
         entryLabel = UILabel(font: .preferredFont(forTextStyle: .title1))
         pronunciationLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .body))
@@ -85,15 +79,10 @@ class DictionaryView: UIScrollView {
         definitionLabel.numberOfLines = 0
         
         NSLayoutConstraint.activate([
-            rectView.topAnchor.constraint(equalTo: contentLayoutGuide.topAnchor, constant: 8 * Settings.cached.candidateFontSize.scale),
-            contentLayoutGuide.bottomAnchor.constraint(equalTo: rectView.bottomAnchor, constant: 8 * Settings.cached.candidateFontSize.scale),
-            rectView.leadingAnchor.constraint(equalTo: contentLayoutGuide.leadingAnchor, constant: 8 * Settings.cached.candidateFontSize.scale),
-            contentLayoutGuide.trailingAnchor.constraint(equalTo: rectView.trailingAnchor),
-            
-            outerStack.topAnchor.constraint(equalTo: rectView.topAnchor, constant: 20),
-            rectView.bottomAnchor.constraint(equalTo: outerStack.bottomAnchor, constant: 20),
-            outerStack.leadingAnchor.constraint(equalTo: rectView.leadingAnchor, constant: 20),
-            rectView.trailingAnchor.constraint(equalTo: outerStack.trailingAnchor, constant: 20),
+            outerStack.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            bottomAnchor.constraint(equalTo: outerStack.bottomAnchor, constant: 20),
+            outerStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            trailingAnchor.constraint(equalTo: outerStack.trailingAnchor, constant: 20),
             
             contentLayoutGuide.widthAnchor.constraint(equalTo: widthAnchor),
         ])

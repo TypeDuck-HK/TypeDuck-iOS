@@ -413,7 +413,7 @@ class CandidatePaneView: UIControl {
         
         let separatorFrame = CGRect(x: 0, y: topMargin, width: Self.separatorWidth, height: height)
         
-        if isFullPadCandidateBar {
+        if isFullPadCandidateBar || dictionaryCandidateInfo != nil {
             leftSeparator.isHidden = true
         } else {
             leftSeparator.isHidden = false
