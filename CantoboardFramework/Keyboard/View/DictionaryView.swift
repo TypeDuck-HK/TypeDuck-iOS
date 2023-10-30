@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class DictionaryView: UIScrollView, UIScrollViewDelegate {
+class DictionaryView: UIScrollView {
     private var rectView: UIView!
     private var outerStack: UIStackView!
     
@@ -63,9 +63,6 @@ class DictionaryView: UIScrollView, UIScrollViewDelegate {
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
-        delegate = self
-        minimumZoomScale = Settings.cached.candidateFontSize.scale
-        maximumZoomScale = Settings.cached.candidateFontSize.scale
         
         rectView = UIView()
         rectView.translatesAutoresizingMaskIntoConstraints = false
@@ -76,7 +73,7 @@ class DictionaryView: UIScrollView, UIScrollViewDelegate {
         outerStack = UIStackView()
         outerStack.translatesAutoresizingMaskIntoConstraints = false
         outerStack.axis = .vertical
-        outerStack.spacing = 16
+        outerStack.spacing = 16 * Settings.cached.candidateFontSize.scale
         rectView.addSubview(outerStack)
         
         entryLabel = UILabel(font: .preferredFont(forTextStyle: .title1))
@@ -112,7 +109,7 @@ class DictionaryView: UIScrollView, UIScrollViewDelegate {
             view.removeFromSuperview()
         }
         
-        titleStack = SidedStackView(spacing: 20, alignment: .firstBaseline)
+        titleStack = SidedStackView(spacing: 20 * Settings.cached.candidateFontSize.scale, alignment: .firstBaseline)
         entryLabel.text = info.honzi
         titleStack.addArrangedSubview(entryLabel)
         if let jyutping = info.jyutping {
@@ -132,11 +129,11 @@ class DictionaryView: UIScrollView, UIScrollViewDelegate {
         }
         outerStack.addArrangedSubview(titleStack)
         
-        definitionStack = SidedStackView(spacing: 12, alignment: .firstBaseline)
+        definitionStack = SidedStackView(spacing: 12 * Settings.cached.candidateFontSize.scale, alignment: .firstBaseline)
         if let partOfSpeech = info.properties.pos {
             partOfSpeechStack = UIStackView()
             partOfSpeechStack.translatesAutoresizingMaskIntoConstraints = false
-            partOfSpeechStack.spacing = 4
+            partOfSpeechStack.spacing = 4 * Settings.cached.candidateFontSize.scale
             for pos in partOfSpeech.split(separator: " ") {
                 let partOfSpeechLabel = UILabelWithPadding(color: ButtonColor.dictionaryViewGrayedColor, font: .systemFont(ofSize: UIFont.preferredFont(forTextStyle: .footnote).pointSize, weight: .light))
                 partOfSpeechLabel.layer.borderColor = ButtonColor.dictionaryViewGrayedColor.resolvedColor(with: traitCollection).cgColor
@@ -154,7 +151,7 @@ class DictionaryView: UIScrollView, UIScrollViewDelegate {
         if let label = info.properties.label {
             labelStack = UIStackView()
             labelStack.translatesAutoresizingMaskIntoConstraints = false
-            labelStack.spacing = 4
+            labelStack.spacing = 4 * Settings.cached.candidateFontSize.scale
             for lbl in label.split(separator: " ") {
                 let labelLabel = UILabel(color: ButtonColor.keyGrayedColor, font: .preferredFont(forTextStyle: .subheadline))
                 labelLabel.text = "(\(lbl))"
@@ -186,12 +183,11 @@ class DictionaryView: UIScrollView, UIScrollViewDelegate {
                 Self.createKeyValueStackView(otherLanguages),
             ])
             otherLanguageStack.axis = .vertical
-            otherLanguageStack.spacing = 8
+            otherLanguageStack.spacing = 8 * Settings.cached.candidateFontSize.scale
             outerStack.addArrangedSubview(otherLanguageStack)
         }
         
         setContentOffset(.zero, animated: false)
-        setZoomScale(Settings.cached.candidateFontSize.scale, animated: false)
     }
     
     private static func createKeyValueStackView(_ data: [(String, String)]) -> UIStackView {
@@ -201,7 +197,7 @@ class DictionaryView: UIScrollView, UIScrollViewDelegate {
             let keyLabel = UILabel(text: $0.0, color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .headline))
             let valueLabel = UILabel(text: $0.1, font: .preferredFont(forTextStyle: .body))
             keyLabel.textAlignment = .right
-            let stack = SidedStackView(spacing: 12, arrangedSubviews: [keyLabel, valueLabel])
+            let stack = SidedStackView(spacing: 12 * Settings.cached.candidateFontSize.scale, arrangedSubviews: [keyLabel, valueLabel])
             if let firstKeyLabel = firstKeyLabel {
                 layoutConstraints.append(keyLabel.widthAnchor.constraint(equalTo: firstKeyLabel.widthAnchor))
             } else {
@@ -210,13 +206,9 @@ class DictionaryView: UIScrollView, UIScrollViewDelegate {
             return stack
         })
         stack.axis = .vertical
-        stack.spacing = 4
+        stack.spacing = 4 * Settings.cached.candidateFontSize.scale
         NSLayoutConstraint.activate(layoutConstraints)
         return stack
-    }
-    
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        rectView
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

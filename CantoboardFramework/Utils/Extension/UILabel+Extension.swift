@@ -12,6 +12,6 @@ extension UILabel {
         self.init()
         self.text = text
         self.textColor = color
-        self.font = font
+        self.font = font.withSize(font.pointSize * Settings.cached.candidateFontSize.scale)
     }
 }
