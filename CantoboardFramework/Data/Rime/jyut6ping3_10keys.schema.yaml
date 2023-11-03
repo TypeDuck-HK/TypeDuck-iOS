@@ -4,9 +4,9 @@
 schema:
   schema_id: jyut6ping3_10keys
   name: 九宮格粵語拼音
-  version: "2022.06.07"
+  version: "2023.08.12"
   author:
-    - sgalal <sgalal.me@outlook.com>
+    - Ayaka Mikazuki <ayaka@mail.shn.hk>
     - LeiMaau <leimaau@qq.com>
     - chaaklau <chaakming@gmail.com>
     - laubonghaudoi <laubonghaudoi@icloud.com>
@@ -14,7 +14,7 @@ schema:
     - William915 <William915@gmail.com>
     - szc126 (@szc126)
     - Bing Jeung <bing@ososo.io>
-    - Ayaka Mikazuki <ayaka@mail.shn.hk>
+    - graphemecluster <graphemecluster@gmail.com>
 
   description: |-
     採用香港語言學學會粵語拼音方案
@@ -25,12 +25,12 @@ schema:
 switches:
   - name: ascii_mode
     reset: 0
-    states: [ 中文, 西文 ]
+    states: [ 中文, 英文 ]
   - name: full_shape
-    states: [ 半角, 全角 ]
-  - options: [ noop, variants_hk, simp_hk2s ]
-    states: [ 傳統漢字, 香港傳統漢字, 大陆简化汉字 ]
-    reset: 1
+    states: [ 半形, 全形 ]
+  - name: simplification
+    states: [ 繁體, 简体 ]
+    reset: 0
   - name: ascii_punct
     states: [ 。，, ．， ]
 
@@ -54,10 +54,8 @@ engine:
     - punct_translator
     - script_translator
   filters:
-    - simplifier@variants_hk
-    - simplifier@simp_hk2s
-    - simplifier
     - dictionary_lookup_filter
+    - simplifier
 
 dictionary_lookup_filter:
     dictionary: jyut6ping3_scolar
@@ -70,22 +68,11 @@ speller:
   # We use ' as the user typed delimiter, " as the filter bar injected delimiter.
   delimiter: " '\""
   algebra:
-    # 取消下兩行註釋，支援疑影交替： ng- 併入 Ø-
-    #- derive/^ng(?=[aeiou])//
-
-    # 取消下行註釋，支援泥來合流： n- 併入 l- ，如「你」讀若「理」
-    #- derive/^n(?!g)/l/
-
-    # 取消下行註釋，支援圓唇輔音合口韻缺位： gwo-, kwo- 併入 go-, ko- ，如「國」讀若「各」、「廓」讀若「確」
-    #- derive/^(g|k)w(?=o)/$1/
-
-    # 取消下行註釋，支援獨立鼻音韻 ng 併入 m，如「吳」讀若「唔」
-    #- derive/^ng(?=\d)/m/
-
-    - derive/^jy?([aeiou])/y$1/   # 容錯 je -> ye, jyu -> yu
+    - derive/^jy?(?=[aeiou])/y/   # 容錯 je -> ye, jyu -> yu
     - derive/^jyu/ju/             # 容錯 jyu -> ju
     - derive/yu(?!ng|k)/y/        # 容錯 yu -> y
     - derive/(g|k)u(?!ng|k)/$1wu/ # 輔音圓唇
+    - derive/^([zcs])/$1h/        # 聲母容錯
     - derive/eoi(?=\d)/eoy/       # 容錯
     - derive/eo/oe/               # 容錯 eo/oe 不分
     - derive/oe/eo/               # 容錯 eo/oe 不分
@@ -105,17 +92,13 @@ speller:
 
 translator:
   dictionary: jyut6ping3
-  spelling_hints: 256
-  max_homophones: 10
-  always_show_comments: true
   prism: jyut6ping3_10keys
+  always_show_comments: true
+  comment_format:
+    - xform/^/\f/
 
-variants_hk:
-  option_name: variants_hk
-  opencc_config: t2hk.json
 
-simp_hk2s:
-  option_name: simp_hk2s
+simplifier:
   opencc_config: hk2s.json
 
 punctuator:
@@ -125,3 +108,5 @@ recognizer:
   import_preset: default
   patterns:
     punct: "^/([0-9]0?|[a-z]+)$"
+
+__patch: common:/patch?

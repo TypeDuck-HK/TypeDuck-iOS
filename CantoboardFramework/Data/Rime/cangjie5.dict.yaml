@@ -13,29 +13,12 @@
 #
 #
 ---
-name: "cangjie5"
+name: cangjie5
 version: "2022.02.14"
 sort: original
 max_phrase_length: 1
-import_tables:
-  - cangjie5.cj3sym
-columns:
-  - text
-  - code
-  - stem
-encoder:
-  exclude_patterns:
-    - '^x.*$'
-    - '^z.*$'
-  rules:
-    - length_equal: 2
-      formula: "AaAzBaBbBz"
-    - length_equal: 3
-      formula: "AaAzBaBzCz"
-    - length_in_range: [4, 10]
-      formula: "AaBzCaYzZz"
-  tail_anchor: "'"
 ...
+
 日	a
 曰	a
 昌	aa
@@ -42916,3 +42899,80 @@ encoder:
 ㇏	zso
 ㇃	zsov
 ㇉	zsvs
+
+# 倉頡三代符號碼
+　	zxaa
+，	zxab
+、	zxac
+。	zxad
+．	zxae
+‧	zxaf
+；	zxag
+：	zxah
+？	zxai
+！	zxaj
+︰	zxak
+…	zxal
+‥	zxam
+﹐	zxan
+﹑	zxao
+﹒	zxap
+·	zxaq
+﹔	zxar
+﹕	zxas
+﹖	zxat
+﹗	zxau
+｜	zxav
+–	zxaw
+︱	zxax
+—	zxay
+︳	zxba
+╴	zxbb
+︴	zxbc
+﹏	zxbd
+（	zxbe
+）	zxbf
+︵	zxbg
+︶	zxbh
+｛	zxbi
+｝	zxbj
+︷	zxbk
+︸	zxbl
+〔	zxbm
+〕	zxbn
+︹	zxbo
+︺	zxbp
+【	zxbq
+】	zxbr
+︻	zxbs
+︼	zxbt
+《	zxbu
+》	zxbv
+︽	zxbw
+︾	zxbx
+〈	zxby
+〉	zxca
+︿	zxcb
+﹀	zxcc
+「	zxcd
+」	zxce
+﹁	zxcf
+﹂	zxcg
+『	zxch
+』	zxci
+﹃	zxcj
+﹄	zxck
+﹙	zxcl
+﹚	zxcm
+﹛	zxcn
+﹜	zxco
+﹝	zxcp
+﹞	zxcq
+‘	zxcr
+’	zxcs
+“	zxct
+”	zxcu
+〝	zxcv
+〞	zxcw
+‵	zxcx
+′	zxcy

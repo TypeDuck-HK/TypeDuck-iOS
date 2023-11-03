@@ -2,13 +2,9 @@ patch:
   schema_list:
     - {schema: jyut6ping3}
     - {schema: jyut6ping3vxq}
-    - {schema: yale}
-    - {schema: yalevxq}
     - {schema: cangjie3}
     - {schema: cangjie5}
-    - {schema: quick5}
     - {schema: luna_pinyin}
-    - {schema: stroke}
     - {schema: loengfan}
     - {schema: jyut6ping3_10keys}
     - {schema: jyut6ping3_scolar}

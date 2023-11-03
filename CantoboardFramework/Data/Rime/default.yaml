@@ -1,37 +1,34 @@
 # Rime default settings
-# vim: set sw=2 sts=2 et:
 # encoding: utf-8
 
-config_version: "0.15.minimal"
+config_version: "2023.11.03"
 
 schema_list:
-  - schema: luna_pinyin
+  - schema: jyut6ping3
+  - schema: jyut6ping3_scolar
 
 switcher:
-  caption: 〔方案選單〕
+  caption: "[Schema Menu]"
   hotkeys:
     - Control+grave
     - Control+Shift+grave
     - F4
   save_options:
     - full_shape
-    - ascii_punct
     - simplification
-    - extended_charset
-  fold_options: true
-  abbreviate_options: true
-  option_list_separator: '／'
+    - ascii_punct
+  option_list_separator: " / "
 
 menu:
-  page_size: 5
+  page_size: 10
 
 punctuator:
   full_shape:
     ' ' : { commit: '　' }
     ',' : { commit: ， }
     '.' : { commit: 。 }
-    '<' : [ 《, 〈, «, ‹ ]
-    '>' : [ 》, 〉, », › ]
+    '<' : [ 《, 〈, «, ‹, ⟨ ]
+    '>' : [ 》, 〉, », ›, ⟩ ]
     '/' : [ ／, ÷ ]
     '?' : { commit: ？ }
     ';' : { commit: ； }
@@ -39,60 +36,93 @@ punctuator:
     '''' : { pair: [ '‘', '’' ] }
     '"' : { pair: [ '“', '”' ] }
     '\' : [ 、, ＼ ]
-    '|' : [ ・, ｜, '§', '¦' ]
+    '|' : [ ·, ｜, '§', '¦' ]
     '`' : ｀
-    '~' : [ 〜, ～, 〰 ]
+    '~' : ～
     '!' : { commit: ！ }
-    '@' : [ ＠, ☯ ]
+    '@' : ＠
     '#' : [ ＃, ⌘ ]
     '%' : [ ％, '°', '℃' ]
-    '$' : [ ￥, '$', '€', '£', '¥', '¢', '¤' ]
+    '$' : [ ￥, '$', '€', '£', '¥', '¢', '¤', ₩ ]
     '^' : { commit: …… }
     '&' : ＆
-    '*' : [ ＊, ・, ·, ×, ※, ❂ ]
+    '*' : [ ＊, ·, ・, ×, ※ ]
     '(' : （
     ')' : ）
     '-' : －
     '_' : ——
     '+' : ＋
-    '=' : ＝
-    '[' : [ 「, 【, 〔, ［ ]
-    ']' : [ 」, 】, 〕, ］ ]
+    '=' : [ ＝, 々, 〃 ]
+    '[' : [ 「, 【, 〔, ［, 〚, 〘 ]
+    ']' : [ 」, 】, 〕, ］, 〛, 〙 ]
     '{' : [ 『, 〖, ｛ ]
     '}' : [ 』, 〗, ｝ ]
   half_shape:
     ',' : { commit: ， }
     '.' : { commit: 。 }
-    '<' : [ 《, 〈, «, ‹ ]
-    '>' : [ 》, 〉, », › ]
-    '/' : [ 、, '/', ／, ÷ ]
+    '<' : [ 《, 〈, «, ‹, ⟨, ˂, ˱ ]
+    '>' : [ 》, 〉, », ›, ⟩, ˃, ˲ ]
+    '/' : [ 、, ､, '/', ／, ÷ ]
     '?' : { commit: ？ }
     ';' : { commit: ； }
     ':' : { commit: ： }
     '''' : { pair: [ '‘', '’' ] }
     '"' : { pair: [ '“', '”' ] }
     '\' : [ 、, '\', ＼ ]
-    '|' : [ ・, '|', ｜, '§', '¦' ]
-    '`' : '`'
-    '~' : [ '~', 〜, ～, 〰 ]
+    '|' : [ ·, ・, '|', ｜, '§', '¦', '‖', ︴ ]
+    '`' : [ '`', ‵, ‶, ‷, ′, ″, ‴, ⁗ ]
+    '~' : [ '~', ～, ˜, ˷, ⸯ, ≈, ≋, ≃, ≅, ≇, ∽, ⋍, ≌, ﹏, ﹋, ﹌, ︴ ]
     '!' : { commit: ！ }
-    '@' : '@'
-    '#' : '#'
-    '%' : [ '%', ％, '°', '℃' ]
-    '$' : [ ￥, '$', '€', '£', '¥', '¢', '¤' ]
+    '@' : [ '@', ©, ®, ℗ ]
+    '#' : [ '#', № ]
+    '%' : [ '%', ％, '°', '℃', ‰, ‱, ℉, ℅, ℆, ℀, ℁, ⅍ ]
+    '$' : [ ￥, '$', '€', '£', '¥', '¢', '¤', ₩ ]
     '^' : { commit: …… }
     '&' : '&'
-    '*' : [ '*', ＊, ・, ·, ×, ※, ❂ ]
+    '*' : [ '*', ＊, ·, ・, ×, ※ ]
     '(' : （
     ')' : ）
     '-' : '-'
     '_' : ——
     '+' : '+'
-    '=' : '='
-    '[' : [ 「, 【, 〔, ［ ]
-    ']' : [ 」, 】, 〕,  ］ ]
+    '=' : [ '=', 々, 〃 ]
+    '[' : [ 「, 【, 〔, ［, 〚, 〘 ]
+    ']' : [ 」, 】, 〕, ］, 〛, 〙 ]
     '{' : [ 『, 〖, ｛ ]
     '}' : [ 』, 〗, ｝ ]
+  ascii_style:
+    ',' : { commit: ',' }
+    '.' : { commit: '.' }
+    '<' : '<'
+    '>' : '>'
+    '/' : '/'
+    '?' : { commit: '?' }
+    ';' : { commit: ';' }
+    ':' : { commit: ':' }
+    "'" : "'"
+    '"' : '"'
+    '\' : '\'
+    '|' : '|'
+    '`' : '`'
+    '~' : '~'
+    '!' : { commit: '!' }
+    '@' : '@'
+    '#' : '#'
+    '%' : '%'
+    '$' : '$'
+    '^' : '^'
+    '&' : '&'
+    '*' : '*'
+    '(' : '('
+    ')' : ')'
+    '-' : '-'
+    '_' : '_'
+    '+' : '+'
+    '=' : '='
+    '[' : '['
+    ']' : ']'
+    '{' : '{'
+    '}' : '}'
 
 key_binder:
   bindings:
@@ -105,7 +135,10 @@ key_binder:
     - { when: composing, accept: Control+e, send: End }
     - { when: composing, accept: Control+d, send: Delete }
     - { when: composing, accept: Control+k, send: Shift+Delete }
+    - { when: composing, accept: Control+h, send: BackSpace }
     - { when: composing, accept: Control+g, send: Escape }
+    - { when: composing, accept: Control+bracketleft, send: Escape }
+    - { when: composing, accept: Control+y, send: Page_Up }
     - { when: composing, accept: Alt+v, send: Page_Up }
     - { when: composing, accept: Control+v, send: Page_Down }
     # move by word
@@ -117,24 +150,31 @@ key_binder:
     - { when: has_menu, accept: equal, send: Page_Down }
     - { when: paging, accept: comma, send: Page_Up }
     - { when: has_menu, accept: period, send: Page_Down }
+    - { when: paging, accept: bracketleft, send: Page_Up }
+    - { when: has_menu, accept: bracketright, send: Page_Down }
     # hotkey switch
     - { when: always, accept: Control+Shift+1, select: .next }
     - { when: always, accept: Control+Shift+2, toggle: ascii_mode }
     - { when: always, accept: Control+Shift+3, toggle: full_shape }
-    - { when: always, accept: Control+Shift+4, toggle: simplification }
-    - { when: always, accept: Control+Shift+5, toggle: extended_charset }
-    - { when: always, accept: Shift+space, toggle: full_shape }
+    - { when: always, accept: Control+Shift+exclam, select: .next }
+    - { when: always, accept: Control+Shift+at, toggle: ascii_mode }
+    - { when: always, accept: Control+Shift+numbersign, toggle: full_shape }
+    - { when: always, accept: Control+Shift+space, select: .next }
+    - { when: always, accept: Control+comma, toggle: full_shape }
     - { when: always, accept: Control+period, toggle: ascii_punct }
 
 recognizer:
   patterns:
-    email: "^[a-z][-_.0-9a-z]*@.*$"
+    email: "^[A-Za-z][-_.0-9A-Za-z]*@.*$"
     uppercase: "[A-Z][-_+.'0-9A-Za-z]*$"
-    url: "^(www[.]|https?:|ftp:|mailto:).*$|^[a-z]+[.].+$"
+    url: "^(www[.]|https?:|ftp[.:]|mailto:|file:).*$|^[a-z]+[.].+$"
 
 ascii_composer:
+  good_old_caps_lock: true
   switch_key:
-    Shift_L: inline_ascii
-    Shift_R: commit_text
+    Shift_L: noop
+    Shift_R: noop
     Control_L: noop
     Control_R: noop
+    Caps_Lock: clear
+    Eisu_toggle: clear
