@@ -197,7 +197,8 @@ class KeypadView: UIView, BaseKeyboardView {
     }
     
     private func layoutButtons(_ buttons: [[KeypadButton]], initialX: CGFloat, layoutConstants: LayoutConstants) {
-        var x: CGFloat = initialX, y: CGFloat = LayoutConstants.keyboardViewTopInset + layoutConstants.autoCompleteBarHeight
+        guard let candidatePaneView = candidatePaneView else { return }
+        var x: CGFloat = initialX, y: CGFloat = LayoutConstants.keyboardViewTopInset + candidatePaneView.rowHeight
         
         for row in buttons {
             x = initialX
@@ -227,7 +228,7 @@ class KeypadView: UIView, BaseKeyboardView {
     
     private func layoutCandidateSubviews(_ layoutConstants: LayoutConstants) {
         guard let candidatePaneView = candidatePaneView else { return }
-        let height = candidatePaneView.mode == .row && candidatePaneView.dictionaryCandidateInfo == nil ? layoutConstants.autoCompleteBarHeight : bounds.height
+        let height = candidatePaneView.mode == .row && candidatePaneView.dictionaryCandidateInfo == nil ? candidatePaneView.rowHeight : bounds.height
         candidatePaneView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0,
                                                                              leading: layoutConstants.keyboardViewInsets.left,
                                                                              bottom: 0,
@@ -281,10 +282,6 @@ extension KeypadView: CandidatePaneViewDelegate {
     func handleKey(_ action: KeyboardAction) {
         // if case .keyboardType(.alphabetic) = action, case .alphabetic = state.keyboardType {
         delegate?.handleKey(action)
-    }
-    
-    var keyboardSize: CGSize {
-        layoutConstants.ref.keyboardSize
     }
 }
 

@@ -20,12 +20,12 @@ internal extension UIView {
         textLayer.frame = CGRect(origin: CGPoint(x: insets.left, y: insets.top), size: size)
     }
     
-    func layout(textLayer: CATextLayer, atTopRightCornerWithInsets insets: UIEdgeInsets) {
+    func layout(textLayer: CATextLayer, atTopRightCornerWithInsets insets: UIEdgeInsets, heightRatio: CGFloat = KeyHintLayer.recommendedHeightRatio) {
         guard !textLayer.isHidden,
               let superlayerBounds = textLayer.superlayer?.bounds
             else { return }
         
-        let size = setupFontAndTextLayerSize(textLayer: textLayer, superlayerBounds: superlayerBounds)
+        let size = setupFontAndTextLayerSize(textLayer: textLayer, superlayerBounds: superlayerBounds, heightRatio: heightRatio)
         
         textLayer.alignmentMode = .right
         textLayer.frame = CGRect(origin: CGPoint(x: superlayerBounds.width - size.width - insets.right, y: insets.top), size: size)
@@ -42,10 +42,10 @@ internal extension UIView {
         textLayer.frame = CGRect(origin: CGPoint(x: 0, y: superlayerBounds.height - size.height - insets.bottom), size: size)
     }
     
-    private func setupFontAndTextLayerSize(textLayer: CATextLayer, superlayerBounds: CGRect, minHeight: CGFloat = 10) -> CGSize {
+    private func setupFontAndTextLayerSize(textLayer: CATextLayer, superlayerBounds: CGRect, minHeight: CGFloat = 10, heightRatio: CGFloat = KeyHintLayer.recommendedHeightRatio) -> CGSize {
         guard let text = textLayer.string as? String else { return .zero }
         // let wightAdjustmentRatio: CGFloat = UIScreen.main.bounds.size.isPortrait && bounds ? 1 : 1.25
-        var height = superlayerBounds.height * KeyHintLayer.recommendedHeightRatio // * wightAdjustmentRatio
+        var height = superlayerBounds.height * heightRatio // * wightAdjustmentRatio
         height = max(height, minHeight)
         
         textLayer.fontSize = KeyHintLayer.fontSizePerHeight * height

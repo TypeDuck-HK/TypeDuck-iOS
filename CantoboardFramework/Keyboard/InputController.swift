@@ -91,6 +91,35 @@ struct KeyboardState: Equatable {
         keyboardIdiom == .phone && Settings.cached.isLongPressSymbolKeysEnabled
     }
     
+    var showRomanization: Bool {
+        switch Settings.cached.showRomanizationMode {
+        case .never: return false
+        case .always: return true
+        case .onlyInNonCantoneseMode: return reverseLookupSchema != nil
+        }
+    }
+    
+    var showCodeInReverseLookup: Bool {
+        reverseLookupSchema != nil && Settings.cached.showCodeInReverseLookup
+    }
+    
+    var numLinesInCandidateBar: CGFloat {
+        // Main text occupies 2 lines and translation occupies 1 line.
+        3 + (showRomanization ? 1 : 0) + (showCodeInReverseLookup ? 1 : 0)
+    }
+    
+    var numLinesInCandidateList: CGFloat {
+        // In table mode, romanization and reverse lookup code are shown on the same line.
+        3 + (showRomanization || showCodeInReverseLookup ? 1 : 0)
+    }
+    
+    func numLines(for mode: CandidatePaneView.Mode) -> CGFloat {
+        switch mode {
+        case .row: return numLinesInCandidateBar
+        case .table: return numLinesInCandidateList
+        }
+    }
+    
     init() {
         keyboardType = KeyboardType.alphabetic(.lowercased)
         lastKeyboardTypeChangeFromAutoCap = false
@@ -114,6 +143,8 @@ struct KeyboardState: Equatable {
         // Make sure we are using the user selected CJ version.
         if mainSchema == .cangjie3 || mainSchema == .cangjie5 {
             mainSchema = Settings.cached.cangjieVersion.toRimeSchema
+        } else if mainSchema == .jyutping || mainSchema == .jyutping10keys {
+            mainSchema = Settings.cached.cantoneseKeyboardLayout.toRimeSchema
         }
         
         inputMode = SessionState.main.lastInputMode

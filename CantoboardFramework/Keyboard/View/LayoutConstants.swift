@@ -296,18 +296,12 @@ class LayoutConstants: Copyable {
     // Keyboard size
     let idiom: LayoutIdiom
     let isPortrait: Bool
-    private let _keyboardHeight: CGFloat
-    var keyboardHeight: CGFloat {
-        _keyboardHeight - _autoCompleteBarHeight + autoCompleteBarHeight
-    }
+    let keyboardHeight: CGFloat
     let keyboardViewInsets: UIEdgeInsets
     
     // General
     let keyHeight: CGFloat
-    private let _autoCompleteBarHeight: CGFloat
-    var autoCompleteBarHeight: CGFloat {
-        _autoCompleteBarHeight * Settings.cached.candidateFontSize.scale
-    }
+    let autoCompleteBarHeight: CGFloat
     let keyViewInsets: UIEdgeInsets
     
     // Downcast helpers
@@ -336,31 +330,17 @@ class LayoutConstants: Copyable {
     let keypadButtonUnitSize: CGSize
     
     var keyboardWidth: CGFloat
-    var keyboardSize: CGSize {
-        get {
-            return CGSize(width: keyboardWidth, height: keyboardHeight)
-        }
-    }
     
     let candidatePaneViewLeftRightInset: CGFloat
     let compositionViewHeight: CGFloat
     let filterBarViewHeight: CGFloat
     
-    func numOfSingleCharCandidateInRow(twoComments: Bool) -> CGFloat {
-        if twoComments {
-            switch idiom {
-            case .phone:
-                return isPortrait ? 8.5 : 16.5
-            case .pad:
-                return isPortrait ? 17.5 : 24
-            }
-        } else {
-            switch idiom {
-            case .phone:
-                return isPortrait ? 7.75 : 15
-            case .pad:
-                return isPortrait ? 16 : 22
-            }
+    var numOfSingleCharCandidateInRow: CGFloat {
+        switch idiom {
+        case .phone:
+            return isPortrait ? 8.5 : 16.5
+        case .pad:
+            return isPortrait ? 17.5 : 24
         }
     }
     
@@ -387,11 +367,11 @@ class LayoutConstants: Copyable {
         self.idiom = idiom
         self.isPortrait = isPortrait
         self.keyboardWidth = keyboardSize.width
-        self._keyboardHeight = keyboardSize.height
+        self.keyboardHeight = keyboardSize.height
         self.buttonGapX = buttonGapX
         self.keyboardViewInsets = UIEdgeInsets(top: Self.keyboardViewTopInset, left: keyboardViewLeftRightInset, bottom: keyboardViewBottomInset, right: keyboardViewLeftRightInset)
         self.keyHeight = keyHeight
-        self._autoCompleteBarHeight = autoCompleteBarHeight
+        self.autoCompleteBarHeight = autoCompleteBarHeight
         self.keyViewInsets = keyViewInsets
         let keyboardViewHeight = keyboardSize.height - autoCompleteBarHeight - Self.keyboardViewTopInset - keyboardViewBottomInset
         self.keyboardViewHeight = keyboardViewHeight
@@ -419,10 +399,10 @@ class LayoutConstants: Copyable {
         self.idiom = copyOf.idiom
         self.isPortrait = copyOf.isPortrait
         self.keyboardWidth = copyOf.keyboardWidth
-        self._keyboardHeight = copyOf._keyboardHeight
+        self.keyboardHeight = copyOf.keyboardHeight
         self.keyboardViewInsets = copyOf.keyboardViewInsets
         self.keyHeight = copyOf.keyHeight
-        self._autoCompleteBarHeight = copyOf._autoCompleteBarHeight
+        self.autoCompleteBarHeight = copyOf.autoCompleteBarHeight
         self.keyViewInsets = copyOf.keyViewInsets
         self.keyboardViewHeight = copyOf.keyboardViewHeight
         self.buttonGapX = copyOf.buttonGapX

@@ -214,8 +214,16 @@ open class KeyboardViewController: UIInputViewController {
         return height
     }
     
+    private var keyboardHeightWithoutTopView: CGFloat {
+        layoutConstants.ref.keyboardHeight - layoutConstants.ref.autoCompleteBarHeight + candidateBarHeight
+    }
+    
     private var keyboardHeight: CGFloat {
-        layoutConstants.ref.keyboardHeight + topViewHeight
+        keyboardHeightWithoutTopView + topViewHeight
+    }
+    
+    private var candidateBarHeight: CGFloat {
+        layoutConstants.ref.autoCompleteBarHeight * Settings.cached.candidateFontSize.scale / 4 * state.numLinesInCandidateBar
     }
     
     public override func viewDidLoad() {
@@ -229,7 +237,7 @@ open class KeyboardViewController: UIInputViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         createKeyboardViewPlaceholder()
         
-        view.frame = CGRect(origin: .zero, size: layoutConstants.ref.keyboardSize)
+        view.frame = CGRect(origin: .zero, size: CGSize(width: layoutConstants.ref.keyboardWidth, height: keyboardHeightWithoutTopView))
         
         os_signpost(.end, log: log, name: "viewDidLoad", signpostID: signpostID, "%d", instanceId)
         DDLogInfo("KeyboardViewController Profiling \(instanceId) viewDidLoad end time: \(Date().timeIntervalSince(initStartTime) * 1000)")
@@ -390,6 +398,11 @@ open class KeyboardViewController: UIInputViewController {
         
         if prevState.shouldUseKeypad != newState.shouldUseKeypad {
             recreateKeyboardViewIfNeeded()
+        }
+        
+        if prevState.showRomanization != newState.showRomanization ||
+            prevState.showCodeInReverseLookup != newState.showCodeInReverseLookup {
+            view.setNeedsLayout()
         }
         
         keyboardView?.state = newState

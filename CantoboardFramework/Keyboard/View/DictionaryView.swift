@@ -9,8 +9,55 @@ import Foundation
 import UIKit
 
 class DictionaryView: UIScrollView {
-    private var outerStack: UIStackView!
+    private var entryStack: UIStackView!
+    private var entryViews: [Weak<DictionaryEntryView>] = []
     
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        translatesAutoresizingMaskIntoConstraints = false
+        backgroundColor = ButtonColor.dictionaryViewBackgroundColor
+        
+        entryStack = UIStackView()
+        entryStack.translatesAutoresizingMaskIntoConstraints = false
+        entryStack.axis = .vertical
+        entryStack.spacing = 40 * Settings.cached.candidateFontSize.scale
+        addSubview(entryStack)
+        
+        let widthConstraint = contentLayoutGuide.widthAnchor.constraint(equalTo: widthAnchor)
+        widthConstraint.priority = .required
+        NSLayoutConstraint.activate([
+            entryStack.topAnchor.constraint(equalTo: contentLayoutGuide.topAnchor, constant: 20),
+            contentLayoutGuide.bottomAnchor.constraint(equalTo: entryStack.bottomAnchor, constant: 20),
+            entryStack.leadingAnchor.constraint(equalTo: contentLayoutGuide.leadingAnchor, constant: 20),
+            contentLayoutGuide.trailingAnchor.constraint(equalTo: entryStack.trailingAnchor, constant: 20),
+            widthConstraint,
+        ])
+    }
+    
+    func setup(info: CandidateInfo) {
+        let entries = info.entries.filter(\.isDictionaryEntry)
+        for (i, entry) in entries.enumerated() {
+            let entryView = entryViews[weak: i] ?? DictionaryEntryView()
+            entryView.setup(entry: entry)
+            entryStack.addArrangedSubview(entryView)
+            entryViews[weak: i] = entryView
+        }
+        if entries.endIndex < entryViews.endIndex {
+            for i in entries.endIndex..<entryViews.endIndex {
+                entryViews[i].ref?.removeFromSuperview()
+                entryViews[i].ref = nil
+            }
+            entryViews.removeLast(entryViews.endIndex - entries.endIndex)
+        }
+        setContentOffset(.zero, animated: false)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+class DictionaryEntryView: UIStackView {
     private var titleStack: SidedStackView!
     private var entryLabel: UILabel!
     private var pronunciationLabel: UILabel!
@@ -25,7 +72,7 @@ class DictionaryView: UIScrollView {
     private var otherDataStack: UIStackView!
     private var otherLanguageStack: UIStackView!
     
-    private static let otherData: KeyValuePairs<String, WritableKeyPath<CandidateCellInfo, String?>> = [
+    private static let otherData: KeyValuePairs<String, WritableKeyPath<CandidateEntry, String?>> = [
         "Standard Form": \.properties.normalized,
         "Written Form": \.properties.written,
         "Vernacular Form": \.properties.vernacular,
@@ -49,9 +96,6 @@ class DictionaryView: UIScrollView {
         "v": "verb 動詞",
         "adj": "adjective 形容詞",
         "adv": "adverb 副詞",
-        "conj": "conjunction 連接詞",
-        "prep": "preposition 前置詞",
-        "pron": "pronoun 代名詞",
         "morph": "morpheme 語素",
         "mw": "measure word 量詞",
         "part": "particle 助詞",
@@ -62,13 +106,8 @@ class DictionaryView: UIScrollView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = ButtonColor.dictionaryViewBackgroundColor
-        
-        outerStack = UIStackView()
-        outerStack.translatesAutoresizingMaskIntoConstraints = false
-        outerStack.axis = .vertical
-        outerStack.spacing = 16 * Settings.cached.candidateFontSize.scale
-        addSubview(outerStack)
+        axis = .vertical
+        spacing = 16 * Settings.cached.candidateFontSize.scale
         
         entryLabel = UILabel(font: .preferredFont(forTextStyle: .title1))
         pronunciationLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .body))
@@ -77,49 +116,40 @@ class DictionaryView: UIScrollView {
         registerLabel = UILabel(color: ButtonColor.keyGrayedColor, font: .italicSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
         definitionLabel = UILabel(font: .preferredFont(forTextStyle: .body))
         definitionLabel.numberOfLines = 0
-        
-        NSLayoutConstraint.activate([
-            outerStack.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            bottomAnchor.constraint(equalTo: outerStack.bottomAnchor, constant: 20),
-            outerStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            trailingAnchor.constraint(equalTo: outerStack.trailingAnchor, constant: 20),
-            
-            contentLayoutGuide.widthAnchor.constraint(equalTo: widthAnchor),
-        ])
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setup(info: CandidateCellInfo) {
-        for view in outerStack.arrangedSubviews {
-            outerStack.removeArrangedSubview(view)
+    func setup(entry: CandidateEntry) {
+        for view in arrangedSubviews {
+            removeArrangedSubview(view)
             view.removeFromSuperview()
         }
         
         titleStack = SidedStackView(spacing: 20 * Settings.cached.candidateFontSize.scale, alignment: .firstBaseline)
-        entryLabel.text = info.honzi
+        entryLabel.text = entry.honzi
         titleStack.addArrangedSubview(entryLabel)
-        if let jyutping = info.jyutping {
+        if let jyutping = entry.jyutping {
             pronunciationLabel.text = jyutping
             titleStack.addArrangedSubview(pronunciationLabel)
         }
         var pronunciationType = [String]()
-        if let sandhi = info.sandhi, sandhi == "1" {
+        if let sandhi = entry.sandhi, sandhi == "1" {
             pronunciationType.append("changed tone 變音")
         }
-        if let litColReading = info.litColReading, let type = Self.litColReading[litColReading] {
+        if let litColReading = entry.litColReading, let type = Self.litColReading[litColReading] {
             pronunciationType.append(type)
         }
         if !pronunciationType.isEmpty {
             pronunciationTypeLabel.text = "(\(pronunciationType.joined(separator: ", ")))"
             titleStack.addArrangedSubview(pronunciationTypeLabel)
         }
-        outerStack.addArrangedSubview(titleStack)
+        addArrangedSubview(titleStack)
         
         definitionStack = SidedStackView(spacing: 12 * Settings.cached.candidateFontSize.scale, alignment: .firstBaseline)
-        if let partOfSpeech = info.properties.pos {
+        if let partOfSpeech = entry.properties.partOfSpeech {
             partOfSpeechStack = UIStackView()
             partOfSpeechStack.translatesAutoresizingMaskIntoConstraints = false
             partOfSpeechStack.spacing = 4 * Settings.cached.candidateFontSize.scale
@@ -133,11 +163,11 @@ class DictionaryView: UIScrollView {
             }
             definitionStack.addArrangedSubview(partOfSpeechStack)
         }
-        if let register = info.properties.register, let reg = Self.register[register] {
+        if let register = entry.properties.register, let reg = Self.register[register] {
             registerLabel.text = reg
             definitionStack.addArrangedSubview(registerLabel)
         }
-        if let label = info.properties.label {
+        if let label = entry.properties.label {
             labelStack = UIStackView()
             labelStack.translatesAutoresizingMaskIntoConstraints = false
             labelStack.spacing = 4 * Settings.cached.candidateFontSize.scale
@@ -148,24 +178,24 @@ class DictionaryView: UIScrollView {
             }
             definitionStack.addArrangedSubview(labelStack)
         }
-        if let definition = info.mainLanguage {
+        if let definition = entry.mainLanguage {
             definitionLabel.text = definition
             definitionStack.addArrangedSubview(definitionLabel)
         }
         if !definitionStack.arrangedSubviews.isEmpty {
-            outerStack.addArrangedSubview(definitionStack)
+            addArrangedSubview(definitionStack)
         }
         
         let otherData = Self.otherData.compactMap { data -> (String, String)? in
-            guard let value = info[keyPath: data.value] else { return nil }
-            return (data.key, value)
+            guard let value = entry[keyPath: data.value] else { return nil }
+            return (data.key, value.replacingOccurrences(of: "，", with: "\n"))
         }
         if !otherData.isEmpty {
             otherDataStack = Self.createKeyValueStackView(otherData)
-            outerStack.addArrangedSubview(otherDataStack)
+            addArrangedSubview(otherDataStack)
         }
         
-        let otherLanguages = info.otherLanguagesWithNames
+        let otherLanguages = entry.otherLanguagesWithNames
         if !otherLanguages.isEmpty {
             otherLanguageStack = UIStackView(arrangedSubviews: [
                 UILabel(text: "More Languages", font: .systemFont(ofSize: UIFont.preferredFont(forTextStyle: .headline).pointSize, weight: .medium)),
@@ -173,10 +203,8 @@ class DictionaryView: UIScrollView {
             ])
             otherLanguageStack.axis = .vertical
             otherLanguageStack.spacing = 8 * Settings.cached.candidateFontSize.scale
-            outerStack.addArrangedSubview(otherLanguageStack)
+            addArrangedSubview(otherLanguageStack)
         }
-        
-        setContentOffset(.zero, animated: false)
     }
     
     private static func createKeyValueStackView(_ data: [(String, String)]) -> UIStackView {

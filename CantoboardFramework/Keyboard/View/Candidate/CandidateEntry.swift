@@ -1,5 +1,5 @@
 //
-//  CandidateCellInfo.swift
+//  CandidateEntry.swift
 //  CantoboardFramework
 //
 //  Created by Alex Man on 12/4/23.
@@ -7,15 +7,17 @@
 
 import Foundation
 
-struct CandidateCellInfo {
-    let honzi: String
+struct CandidateEntry {
+    var matchInputBuffer: String?
+    var honzi: String?
     var jyutping: String?
+    var pronOrder: String?
     var sandhi: String?
     var litColReading: String?
     var properties = Properties()
 
     struct Properties {
-        var pos: String?
+        var partOfSpeech: String?
         var register: String?
         var label: String?
         var normalized: String?
@@ -34,43 +36,30 @@ struct CandidateCellInfo {
     }
     
     static let columns: [WritableKeyPath<Self, String?>] = [
-        \.jyutping, \.sandhi, \.litColReading,
-        \.properties.pos, \.properties.register, \.properties.label, \.properties.normalized, \.properties.written, \.properties.vernacular, \.properties.collocation,
+        \.matchInputBuffer, \.honzi, \.jyutping, \.pronOrder, \.sandhi, \.litColReading,
+        \.properties.partOfSpeech, \.properties.register, \.properties.label, \.properties.normalized, \.properties.written, \.properties.vernacular, \.properties.collocation,
         \.properties.definition.eng, \.properties.definition.urd, \.properties.definition.nep, \.properties.definition.hin, \.properties.definition.ind,
     ]
     
     private let isJyutpingOnly: Bool
     
     static let checkColumns: [WritableKeyPath<Self, String?>] = [
-        \.properties.pos, \.properties.register, \.properties.normalized, \.properties.written, \.properties.vernacular, \.properties.collocation,
+        \.properties.partOfSpeech, \.properties.register, \.properties.normalized, \.properties.written, \.properties.vernacular, \.properties.collocation,
     ]
     
-    init(honzi: String, fromCSV csv: String? = nil) {
+    init(honzi: String? = nil, jyutping: String? = nil) {
+        isJyutpingOnly = true
         self.honzi = honzi
-        guard let csv = csv, csv.contains(",") else {
-            if csv != "" {
-                jyutping = csv
-            }
-            isJyutpingOnly = true
-            return
-        }
+        self.jyutping = jyutping
+    }
+    
+    init(csv: String) {
         isJyutpingOnly = false
         var charIterator = PeekableIterator(csv.makeIterator())
         var columnIterator = Self.columns.makeIterator()
         var isQuoted = false
         var column = columnIterator.next()!
         var value = ""
-        while let char = charIterator.next(), char != "," {
-            value += String(char)
-            if char.isDigit && charIterator.peek() != "," {
-                value += " "
-            }
-        }
-        if value != "" {
-            self[keyPath: column] = value
-        }
-        column = columnIterator.next()!
-        value = ""
         while let char = charIterator.next() {
             if isQuoted {
                 if char == "\"" {
@@ -100,6 +89,18 @@ struct CandidateCellInfo {
         }
         if value != "" {
             self[keyPath: column] = value
+        }
+        if let jyutpingWithoutSpace = jyutping {
+            var prevChar: Character?
+            value = ""
+            for char in jyutpingWithoutSpace {
+                if let prevChar = prevChar, prevChar.isDigit {
+                    value += " "
+                }
+                value += String(char)
+                prevChar = char
+            }
+            jyutping = value
         }
     }
     

@@ -113,7 +113,7 @@ extension FilterBarView: UICollectionViewDataSource, UICollectionViewDelegate, U
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let text = keyboardState.tenKeysState.specializationCandidates[safe: indexPath.row],
            let cell = cell as? CandidateCell {
-            cell.setup(text, nil, showRomanization: false, mode: .row)
+            cell.setup(text, nil, keyboardState, .row)
             if indexPath.row == keyboardState.tenKeysState.selectedSpecializationCandidateIndex {
                 cell.isSelected = true
             }

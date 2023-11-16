@@ -148,7 +148,7 @@ class CandidatePaneView: UIControl {
     
     private(set) var mode: Mode = .row
     private var shouldPreserveCandidateOffset: Bool = false
-    private(set) var dictionaryCandidateInfo: CandidateCellInfo?
+    private(set) var dictionaryCandidateInfo: CandidateInfo?
     
     var statusIndicatorMode: StatusIndicatorMode {
         get {
@@ -322,12 +322,16 @@ class CandidatePaneView: UIControl {
         self.updateConstraints() // TODO revisit
     }
     
+    private var lineHeight: CGFloat {
+        layoutConstants.ref.autoCompleteBarHeight * Settings.cached.candidateFontSize.scale / 4
+    }
+    
     var rowHeight: CGFloat {
-        layoutConstants.ref.autoCompleteBarHeight
+        lineHeight * keyboardState.numLines(for: mode)
     }
     
     private var expandButtonWidth: CGFloat {
-        layoutConstants.ref.idiom == .phone && !layoutConstants.ref.isPortrait ? rowHeight : rowHeight / Settings.cached.candidateFontSize.scale * Settings.cached.candidateFontSize.statusScale
+        lineHeight * keyboardState.numLinesInCandidateList * (layoutConstants.ref.idiom == .phone && !layoutConstants.ref.isPortrait ? 1 : Settings.cached.candidateFontSize.statusScale / Settings.cached.candidateFontSize.scale)
     }
     
     var sectionHeaderWidth: CGFloat {
@@ -388,7 +392,7 @@ class CandidatePaneView: UIControl {
         
         let topMargin = mode == .row && dictionaryCandidateInfo == nil ? Self.topMargin : 0
         let height = mode == .row && dictionaryCandidateInfo == nil ? rowHeight : superview.bounds.height
-        let candidateViewWidth = superview.bounds.width - (mode == .row && !isFullPadCandidateBar && expandButton.isHidden ? 0 : expandButtonWidth)
+        let candidateViewWidth = superview.bounds.width - (mode == .row && !isFullPadCandidateBar && expandButton.isHidden || dictionaryCandidateInfo != nil ? 0 : expandButtonWidth)
         let leftRightInset = isFullPadCandidateBar ? 0 : layoutConstants.ref.candidatePaneViewLeftRightInset
         
         let mainViewFrame = CGRect(x: leftRightInset, y: topMargin, width: candidateViewWidth - leftRightInset * 2, height: height)
@@ -537,7 +541,7 @@ extension CandidatePaneView {
         // DDLogInfo("CandidatePaneView.changeMode end")
     }
     
-    func toggleDictionary(candidateInfo: CandidateCellInfo?) {
+    func toggleDictionary(candidateInfo: CandidateInfo?) {
         let oldCandidateInfo = dictionaryCandidateInfo
         
         dictionaryCandidateInfo = candidateInfo
@@ -646,8 +650,7 @@ extension CandidatePaneView: UICollectionViewDataSource {
         
         let section = translateCollectionViewSectionToCandidateSection(indexPath.section)
         let text = candidateOrganizer?.getSectionHeader(section: section) ?? ""
-        header.layoutConstants = layoutConstants
-        header.setup(text)
+        header.setup(candidatePaneView: self, text)
         
         return header
     }
@@ -710,14 +713,13 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         }
         
         let comment = candidateOrganizer?.getCandidateComment(indexPath: candidateIndexPath)
-        let info = CandidateCellInfo(honzi: text, fromCSV: comment)
-        let twoComments = showRomanization && (mode == .row || Settings.cached.languageState.selected.count > 1)
+        let info = CandidateInfo(text, comment)
         let candidateViewWidth = bounds.width - expandButtonWidth - headerWidth
         
-        var size = CandidateCell.computeCellSize(cellHeight: rowHeight, candidateInfo: info, showRomanization: showRomanization, mode: mode)
-        var minWidth = candidateViewWidth / layoutConstants.numOfSingleCharCandidateInRow(twoComments: twoComments) * Settings.cached.candidateFontSize.scale
+        var size = CandidateCell.computeCellSize(cellHeight: rowHeight, candidateInfo: info, keyboardState: keyboardState, mode: mode)
+        var minWidth = candidateViewWidth / layoutConstants.numOfSingleCharCandidateInRow * Settings.cached.candidateFontSize.scale
         var maxWidth = candidateViewWidth
-        if mode == .table && info.isDictionaryEntry {
+        if mode == .table && info.hasDictionaryEntry {
             let infoIconWidth = size.height * CandidateCell.infoIconWidthRatio - 8
             minWidth -= infoIconWidth
             if withInfoIcon {
@@ -727,14 +729,6 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
             }
         }
         return size.with(minWidth: minWidth, maxWidth: maxWidth)
-    }
-    
-    private var showRomanization: Bool {
-        switch Settings.cached.showRomanizationMode {
-        case .never: return keyboardState.reverseLookupSchema != nil
-        case .always: return true
-        case .onlyInNonCantoneseMode: return !keyboardState.activeSchema.isCantonese
-        }
     }
     
     private func translateCollectionViewIndexPathToCandidateIndexPath(_ collectionViewIndexPath: IndexPath) -> IndexPath {
@@ -764,8 +758,8 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
         guard let text = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else { return }
         
         let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
-        let candidateInfo = CandidateCellInfo(honzi: text, fromCSV: comment)
-        if candidateInfo.isDictionaryEntry {
+        let candidateInfo = CandidateInfo(text, comment)
+        if candidateInfo.hasDictionaryEntry {
             FeedbackProvider.play(keyboardAction: .newLine)
             FeedbackProvider.lightImpact.impactOccurred()
             toggleDictionary(candidateInfo: candidateInfo)
@@ -782,7 +776,7 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
             guard let candidate = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else { return }
             let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
             cell.frame = CGRect(origin: cell.frame.origin, size: computeCellSize(candidateIndexPath: candidateIndexPath, withInfoIcon: false))
-            cell.setup(candidate, comment, showRomanization: showRomanization, mode: mode)
+            cell.setup(candidate, comment, keyboardState, mode)
         }
     }
     

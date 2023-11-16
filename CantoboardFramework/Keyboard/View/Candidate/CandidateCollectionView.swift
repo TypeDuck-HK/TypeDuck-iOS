@@ -77,7 +77,7 @@ class CandidateCollectionView: UICollectionView {
                 }
             } else if let delegate = delegate as? CandidateCollectionViewDelegate,
                       delegate.mode == .table,
-                      cell.info?.isDictionaryEntry ?? false,
+                      cell.info?.hasDictionaryEntry ?? false,
                       cell.infoImageFrame.contains(beginPoint!) {
                 cell.infoIsHighlighted = true
             }
@@ -123,7 +123,7 @@ class CandidateCollectionView: UICollectionView {
                 if !cell.frame.contains(point) {
                     cell.isSelected = false
                 }
-                if cell.info?.isDictionaryEntry ?? false,
+                if cell.info?.hasDictionaryEntry ?? false,
                    !cell.infoImageFrame.contains(point) {
                     cell.infoIsHighlighted = false
                 }
@@ -154,7 +154,7 @@ class CandidateCollectionView: UICollectionView {
             } else if cell.infoIsHighlighted {
                 cell.infoIsHighlighted = false
                 if delegate.mode == .table,
-                   cell.info?.isDictionaryEntry ?? false,
+                   cell.info?.hasDictionaryEntry ?? false,
                    cell.infoImageFrame.contains(point) {
                     delegate.showDictionary(self, at: indexPath)
                 }

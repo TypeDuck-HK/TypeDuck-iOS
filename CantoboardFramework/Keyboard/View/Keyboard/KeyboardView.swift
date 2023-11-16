@@ -179,7 +179,8 @@ class KeyboardView: UIView, BaseKeyboardView {
         let keyboardLayout = layoutConstants.idiom.keyboardViewLayout
         let keyRowsHeight: [CGFloat] = (0..<keyRows.count).map { keyRowsMargin[$0].top + keyboardLayout.getKeyHeight(atRow: $0, layoutConstants: layoutConstants) + keyRowsMargin[$0].bottom }
         
-        var currentY: CGFloat = layoutConstants.autoCompleteBarHeight
+        guard let candidatePaneView = candidatePaneView else { return }
+        var currentY: CGFloat = candidatePaneView.rowHeight
         let keyRowsY: [CGFloat] = (0..<keyRows.count).map { (currentY, currentY += keyRowsHeight[$0]).0 }
         
         for (index, keyRowY) in keyRowsY.enumerated() {
@@ -191,7 +192,7 @@ class KeyboardView: UIView, BaseKeyboardView {
     
     private func layoutCandidateSubviews(_ layoutConstants: LayoutConstants) {
         guard let candidatePaneView = candidatePaneView else { return }
-        let height = candidatePaneView.mode == .row && candidatePaneView.dictionaryCandidateInfo == nil ? layoutConstants.autoCompleteBarHeight : bounds.height
+        let height = candidatePaneView.mode == .row && candidatePaneView.dictionaryCandidateInfo == nil ? candidatePaneView.rowHeight : bounds.height
         candidatePaneView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0,
                                                                              leading: layoutConstants.keyboardViewInsets.left,
                                                                              bottom: 0,
@@ -548,10 +549,6 @@ extension KeyboardView: CandidatePaneViewDelegate {
     
     func handleKey(_ action: KeyboardAction) {
         delegate?.handleKey(action)
-    }
-    
-    var keyboardSize: CGSize {
-        layoutConstants.ref.keyboardSize
     }
 }
 

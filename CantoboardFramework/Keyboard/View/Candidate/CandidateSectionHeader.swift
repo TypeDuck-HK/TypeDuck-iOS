@@ -14,14 +14,16 @@ class CandidateSectionHeader: UICollectionReusableView {
     
     weak var textLayer: UILabel?
     
-    var layoutConstants: Reference<LayoutConstants>?
+    private weak var candidatePaneView: CandidatePaneView?
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
         backgroundColor = ButtonColor.systemKeyBackgroundColor
     }
     
-    func setup(_ text: String) {
+    func setup(candidatePaneView: CandidatePaneView, _ text: String) {
+        self.candidatePaneView = candidatePaneView
+        
         if textLayer == nil {
             let textLayer = UILabel()
             self.textLayer = textLayer
@@ -56,8 +58,8 @@ class CandidateSectionHeader: UICollectionReusableView {
     }
     
     private func layout(_ bounds: CGRect) {
-        guard let layoutConstants = layoutConstants?.ref else { return }
-        let size = CGSize(width: bounds.width, height: layoutConstants.autoCompleteBarHeight)
+        guard let candidatePaneView = candidatePaneView else { return }
+        let size = CGSize(width: bounds.width, height: candidatePaneView.rowHeight)
         textLayer?.frame = CGRect(origin: .zero, size: size).inset(by: Self.insets)
     }
 }
