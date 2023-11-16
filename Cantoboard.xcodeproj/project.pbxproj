@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -22,6 +22,11 @@
 		142AA60E274CB73F00D7EE39 /* DescriptionPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */; };
 		142E66152A02D33B00CCD043 /* SidedStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142E66142A02D33B00CCD043 /* SidedStackView.swift */; };
 		143F03E629EF9BDA00E604FC /* LanguageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143F03E529EF9BDA00E604FC /* LanguageTableViewCell.swift */; };
+		14656F952B0529B900E25AFF /* Rime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14656F922B0529B900E25AFF /* Rime.xcframework */; };
+		14656F962B0529C500E25AFF /* Rime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14656F922B0529B900E25AFF /* Rime.xcframework */; };
+		14656F972B0529C500E25AFF /* Rime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 14656F922B0529B900E25AFF /* Rime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		14656F982B0529C800E25AFF /* Rime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14656F922B0529B900E25AFF /* Rime.xcframework */; };
+		14656F992B0529C800E25AFF /* Rime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 14656F922B0529B900E25AFF /* Rime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		146EB3CE29FC627B006A40C6 /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146EB3CD29FC627B006A40C6 /* UILabel+Extension.swift */; };
 		1474441829E68FE8009E4468 /* CandidateCellInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1474441729E68FE8009E4468 /* CandidateCellInfo.swift */; };
 		14B9E1392742EC2B007E8679 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */; };
@@ -91,11 +96,6 @@
 		799F2E9125F46C0000C53416 /* CantoboardFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B57325F3496800238E80 /* CantoboardFramework.framework */; };
 		79A211F525F46E6100CB01CC /* CantoboardExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 799F2E7B25F46BC600C53416 /* CantoboardExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		79A2D0802661FD0C00F2EB19 /* Guide in Resources */ = {isa = PBXBuildFile; fileRef = 79A2D07F2661FD0C00F2EB19 /* Guide */; };
-		79B05DB42712698000CF07D3 /* Rime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B05DB22712697300CF07D3 /* Rime.xcframework */; };
-		79B05DB627126B6000CF07D3 /* Rime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B05DB22712697300CF07D3 /* Rime.xcframework */; };
-		79B05DB727126B6100CF07D3 /* Rime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B05DB22712697300CF07D3 /* Rime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79B05DB827126B8800CF07D3 /* Rime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B05DB22712697300CF07D3 /* Rime.xcframework */; };
-		79B05DB927126B8800CF07D3 /* Rime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B05DB22712697300CF07D3 /* Rime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		79B23738267832BD009FF854 /* KeypadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B23737267832BD009FF854 /* KeypadView.swift */; };
 		79B9B57725F3496800238E80 /* CantoboardFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B57525F3496800238E80 /* CantoboardFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79B9B57A25F3496800238E80 /* CantoboardFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B57325F3496800238E80 /* CantoboardFramework.framework */; };
@@ -292,9 +292,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				79B05DB927126B8800CF07D3 /* Rime.xcframework in Embed Frameworks */,
 				799F2E6B25F46B5800C53416 /* ISEmojiView.framework in Embed Frameworks */,
 				799F2E6725F46B5800C53416 /* CantoboardFramework.framework in Embed Frameworks */,
+				14656F992B0529C800E25AFF /* Rime.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -316,9 +316,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				79B05DB727126B6100CF07D3 /* Rime.xcframework in Embed Frameworks */,
 				799F2E2725F4540800C53416 /* ISEmojiView.framework in Embed Frameworks */,
 				79B9B57B25F3496800238E80 /* CantoboardFramework.framework in Embed Frameworks */,
+				14656F972B0529C500E25AFF /* Rime.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -341,6 +341,7 @@
 		142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionPresentationController.swift; sourceTree = "<group>"; };
 		142E66142A02D33B00CCD043 /* SidedStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidedStackView.swift; sourceTree = "<group>"; };
 		143F03E529EF9BDA00E604FC /* LanguageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageTableViewCell.swift; sourceTree = "<group>"; };
+		14656F922B0529B900E25AFF /* Rime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Rime.xcframework; path = RimeFramework/Rime.xcframework; sourceTree = "<group>"; };
 		146EB3CD29FC627B006A40C6 /* UILabel+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
 		1474441729E68FE8009E4468 /* CandidateCellInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCellInfo.swift; sourceTree = "<group>"; };
 		14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
@@ -414,7 +415,6 @@
 		799F2E7F25F46BC600C53416 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		799F2E8D25F46BEF00C53416 /* CantoboardExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CantoboardExtension.entitlements; sourceTree = "<group>"; };
 		79A2D07F2661FD0C00F2EB19 /* Guide */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Guide; sourceTree = "<group>"; };
-		79B05DB22712697300CF07D3 /* Rime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Rime.xcframework; path = RimeFramework/Rime.xcframework; sourceTree = "<group>"; };
 		79B23737267832BD009FF854 /* KeypadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypadView.swift; sourceTree = "<group>"; };
 		79B2D02027A90EC300E51CEF /* dynamic_bitset.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = dynamic_bitset.hpp; sourceTree = "<group>"; };
 		79B9B57325F3496800238E80 /* CantoboardFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CantoboardFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -547,9 +547,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79B05DB627126B6000CF07D3 /* Rime.xcframework in Frameworks */,
 				799F2E2625F4540800C53416 /* ISEmojiView.framework in Frameworks */,
 				79B9B57A25F3496800238E80 /* CantoboardFramework.framework in Frameworks */,
+				14656F962B0529C500E25AFF /* Rime.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -557,9 +557,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79B05DB827126B8800CF07D3 /* Rime.xcframework in Frameworks */,
 				799F2E6A25F46B5800C53416 /* ISEmojiView.framework in Frameworks */,
 				799F2E6625F46B5800C53416 /* CantoboardFramework.framework in Frameworks */,
+				14656F982B0529C800E25AFF /* Rime.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -575,7 +575,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79B05DB42712698000CF07D3 /* Rime.xcframework in Frameworks */,
+				14656F952B0529B900E25AFF /* Rime.xcframework in Frameworks */,
 				79D31AB5263F961800993949 /* CocoaLumberjack in Frameworks */,
 				799F2E3925F45B4300C53416 /* ISEmojiView.framework in Frameworks */,
 				79D31AB0263F95F600993949 /* CocoaLumberjackSwift in Frameworks */,
@@ -1000,7 +1000,7 @@
 			children = (
 				791738952772CD07007C1C7C /* libicucore.tbd */,
 				7904A1E027714A9900963CAB /* libmarisa.tbd */,
-				79B05DB22712697300CF07D3 /* Rime.xcframework */,
+				14656F922B0529B900E25AFF /* Rime.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
