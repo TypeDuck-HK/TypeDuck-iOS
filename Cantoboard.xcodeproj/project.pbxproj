@@ -1843,7 +1843,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2443A4K46S;
 				INFOPLIST_FILE = Cantoboard/Info.plist;
@@ -1851,7 +1851,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.0;
+				MARKETING_VERSION = 0.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = hk.eduhk.typeduck;
 				PRODUCT_NAME = TypeDuck;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1870,7 +1870,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2443A4K46S;
 				INFOPLIST_FILE = Cantoboard/Info.plist;
@@ -1878,7 +1878,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.0;
+				MARKETING_VERSION = 0.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = hk.eduhk.typeduck;
 				PRODUCT_NAME = TypeDuck;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1895,6 +1895,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = CantoboardTestApp/CantoboardTestApp.entitlements;
 				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = CantoboardTestApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1902,6 +1903,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = hk.eduhk.typeduck.testapp;
 				PRODUCT_NAME = TypeDuckTestApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1917,6 +1919,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = CantoboardTestApp/CantoboardTestApp.entitlements;
 				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = CantoboardTestApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1924,6 +1927,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = hk.eduhk.typeduck.testapp;
 				PRODUCT_NAME = TypeDuckTestApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
