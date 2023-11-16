@@ -41,6 +41,8 @@ struct CandidateEntry {
         \.properties.definition.eng, \.properties.definition.urd, \.properties.definition.nep, \.properties.definition.hin, \.properties.definition.ind,
     ]
     
+    static let earlyExitColumns: [WritableKeyPath<Self, String?>] = [\.matchInputBuffer, \.honzi, \.jyutping]
+    
     private let isJyutpingOnly: Bool
     
     static let checkColumns: [WritableKeyPath<Self, String?>] = [
@@ -53,10 +55,10 @@ struct CandidateEntry {
         self.jyutping = jyutping
     }
     
-    init(csv: String) {
+    init(csv: String, earlyExit: Bool = false) {
         isJyutpingOnly = false
         var charIterator = PeekableIterator(csv.makeIterator())
-        var columnIterator = Self.columns.makeIterator()
+        var columnIterator = (earlyExit ? Self.earlyExitColumns : Self.columns).makeIterator()
         var isQuoted = false
         var column = columnIterator.next()!
         var value = ""
@@ -75,11 +77,11 @@ struct CandidateEntry {
             } else if value == "" && char == "\"" {
                 isQuoted = true
             } else if char == "," {
-                if value != "" {
-                    self[keyPath: column] = value
-                }
                 guard let newColumn = columnIterator.next() else {
                     break
+                }
+                if value != "" {
+                    self[keyPath: column] = value
                 }
                 column = newColumn
                 value = ""

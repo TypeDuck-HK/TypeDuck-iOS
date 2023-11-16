@@ -150,7 +150,7 @@ class TenKeysController {
     
     private var candidateCommentCacheForCaretMovingMode: String?
     func caretMovingModeChanged(isInCaretMovingMode: Bool) {
-        let rimeCandidateComment =  (inputController?.inputEngine.getRimeCandidateComment(0) ?? "").filter({ $0 != " " && !$0.isNumber })
+        let rimeCandidateComment = (CandidateInfo.getJyutping(inputController?.inputEngine.getRimeCandidateComment(0)) ?? "").filter { $0 != " " && !$0.isNumber }
         candidateCommentCacheForCaretMovingMode = isInCaretMovingMode ? rimeCandidateComment : nil
     }
     
@@ -251,7 +251,7 @@ class TenKeysController {
             })
             // DDLogInfo("TenKeysController generateBestComposition rimeCandidateComment [\(rimeCandidateComment)] [\(candidateCommentCache)]")
         } else {
-            rimeCandidateComment = inputEngine.getRimeCandidateComment(0) ?? ""
+            rimeCandidateComment = CandidateInfo.getJyutping(inputEngine.getRimeCandidateComment(0)) ?? ""
         }
         let candidateCode = rimeCandidateComment.filter { !$0.isNumber }
         

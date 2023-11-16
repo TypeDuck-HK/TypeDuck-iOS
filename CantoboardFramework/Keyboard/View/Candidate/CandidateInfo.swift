@@ -27,6 +27,24 @@ struct CandidateInfo {
             : []
     }
     
+    static func getJyutping(_ comment: String?) -> String? {
+        let comment = Comment(comment ?? "")
+        _ = comment.consume(0x0b /* \v */)
+        _ = comment.consumeUntil(0x0c /* \f */)
+        return comment.isNotEmpty
+            ? comment.consume(0x0d /* \r */)
+                ? comment.string.lazy
+                    .split(separator: "\r")
+                    .compactMap({ CandidateEntry(csv: String($0), earlyExit: true).jyutping })
+                    .first
+                : comment.string.lazy
+                    .split(separator: "\u{000c}" /* \f */)
+                    .map({ String(String($0).hasSuffix("; ") ? $0.prefix($0.count - 2) : $0) })
+                    .compactMap({ $0.isEmpty ? nil : $0 })
+                    .first
+            : nil
+    }
+    
     var entry: CandidateEntry? { entries.first { $0.matchInputBuffer == "1" } }
     var hasDictionaryEntry: Bool { entries.contains { $0.isDictionaryEntry } }
     var romanization: String { entry?.jyutping ?? (isReverseLookup ? "" : note) }
