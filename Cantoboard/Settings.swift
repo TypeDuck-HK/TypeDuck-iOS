@@ -229,8 +229,14 @@ extension Settings {
                             LocalizedStrings.showRomanizationMode_always: .always,
                             LocalizedStrings.showRomanizationMode_onlyInNonCantoneseMode: .onlyInNonCantoneseMode,
                     ]),
+                    Switch(LocalizedStrings.showCodeInReverseLookup, \.showCodeInReverseLookup),
                     Switch(LocalizedStrings.enableCorrector, \.enableCorrector,
                            LocalizedStrings.enableCorrector_description, "Guide12-1"),
+                    Segment(LocalizedStrings.cantoneseKeyboardLayout, \.cantoneseKeyboardLayout, [
+                            LocalizedStrings.cantoneseKeyboardLayout_qwerty: .qwerty,
+                            LocalizedStrings.cantoneseKeyboardLayout_tenKeys: .tenKeys,
+                        ]
+                    ),
                     Segment(LocalizedStrings.toneInputMode, \.toneInputMode, [
                             LocalizedStrings.toneInputMode_vxq: .vxq,
                             LocalizedStrings.toneInputMode_longPress: .longPress,

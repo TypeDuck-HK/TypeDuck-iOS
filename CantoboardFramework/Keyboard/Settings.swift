@@ -40,6 +40,18 @@ public enum SpaceAction: String, Codable {
     case nextPage = "nextPage"
 }
 
+public enum CantoneseKeyboardLayout: String, Codable {
+    case qwerty = "qwerty"
+    case tenKeys = "tenKeys"
+    
+    var toRimeSchema: RimeSchema {
+        switch self {
+        case .qwerty: return .jyutping
+        case .tenKeys: return .jyutping10keys
+        }
+    }
+}
+
 public enum ToneInputMode: String, Codable {
     case longPress = "longPress"
     case vxq = "vxq"
@@ -233,10 +245,12 @@ public struct Settings: Codable, Equatable {
     private static let defaultSymbolShape: SymbolShape = .smart
     private static let defaultSmartSymbolShapeDefault: SymbolShape = .full
     private static let defaultSpaceAction: SpaceAction = .insertCandidate
+    private static let defaultCantoneseKeyboardLayout: CantoneseKeyboardLayout = .qwerty
     private static let defaultToneInputMode: ToneInputMode = .vxq
     private static let defaultRimeSettings: RimeSettings = RimeSettings()
     private static let defaultEnglishLocale: EnglishLocale = .us
     private static let defaultShowRomanizationMode: ShowRomanizationMode = .always
+    private static let defaultShowCodeInReverseLookup: Bool = true
     private static let defaultAudioFeedbackEnabled: Bool = true
     private static let defaultTapHapticFeedbackEnabled: Bool = false
     private static let defaultShowEnglishExactMatch: Bool = true
@@ -262,10 +276,12 @@ public struct Settings: Codable, Equatable {
     public var symbolShape: SymbolShape
     public var smartSymbolShapeDefault: SymbolShape
     public var spaceAction: SpaceAction
+    public var cantoneseKeyboardLayout: CantoneseKeyboardLayout
     public var toneInputMode: ToneInputMode
     public var rimeSettings: RimeSettings
     public var englishLocale: EnglishLocale
     public var showRomanizationMode: ShowRomanizationMode
+    public var showCodeInReverseLookup: Bool
     public var isAudioFeedbackEnabled: Bool
     public var isTapHapticFeedbackEnabled: Bool
     public var shouldShowEnglishExactMatch: Bool
@@ -292,10 +308,12 @@ public struct Settings: Codable, Equatable {
         symbolShape = Self.defaultSymbolShape
         smartSymbolShapeDefault = Self.defaultSmartSymbolShapeDefault
         spaceAction = Self.defaultSpaceAction
+        cantoneseKeyboardLayout = Self.defaultCantoneseKeyboardLayout
         toneInputMode = Self.defaultToneInputMode
         rimeSettings = Self.defaultRimeSettings
         englishLocale = Self.defaultEnglishLocale
         showRomanizationMode = Self.defaultShowRomanizationMode
+        showCodeInReverseLookup = Self.defaultShowCodeInReverseLookup
         isAudioFeedbackEnabled = Self.defaultAudioFeedbackEnabled
         isTapHapticFeedbackEnabled = Self.defaultTapHapticFeedbackEnabled
         shouldShowEnglishExactMatch = Self.defaultShowEnglishExactMatch
@@ -324,10 +342,12 @@ public struct Settings: Codable, Equatable {
         self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.defaultSymbolShape
         self.smartSymbolShapeDefault = try container.decodeIfPresent(SymbolShape.self, forKey: .smartSymbolShapeDefault) ?? Settings.defaultSmartSymbolShapeDefault
         self.spaceAction = try container.decodeIfPresent(SpaceAction.self, forKey: .spaceAction) ?? Settings.defaultSpaceAction
+        self.cantoneseKeyboardLayout = try container.decodeIfPresent(CantoneseKeyboardLayout.self, forKey: .cantoneseKeyboardLayout) ?? Settings.defaultCantoneseKeyboardLayout
         self.toneInputMode = try container.decodeIfPresent(ToneInputMode.self, forKey: .toneInputMode) ?? Settings.defaultToneInputMode
         self.rimeSettings = try container.decodeIfPresent(RimeSettings.self, forKey: .rimeSettings) ?? Settings.defaultRimeSettings
         self.englishLocale = try container.decodeIfPresent(EnglishLocale.self, forKey: .englishLocale) ?? Settings.defaultEnglishLocale
         self.showRomanizationMode = try container.decodeIfPresent(ShowRomanizationMode.self, forKey: .showRomanizationMode) ?? Settings.defaultShowRomanizationMode
+        self.showCodeInReverseLookup = try container.decodeIfPresent(Bool.self, forKey: .showCodeInReverseLookup) ?? Settings.defaultShowCodeInReverseLookup
         self.isAudioFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAudioFeedbackEnabled) ?? Settings.defaultAudioFeedbackEnabled
         self.isTapHapticFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTapHapticFeedbackEnabled) ?? Settings.defaultTapHapticFeedbackEnabled
         self.shouldShowEnglishExactMatch = try container.decodeIfPresent(Bool.self, forKey: .shouldShowEnglishExactMatch) ?? Settings.defaultShowEnglishExactMatch
