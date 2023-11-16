@@ -1,0 +1,3 @@
+[submodule "schema"]
+	path = CantoboardFramework/Data/Rime
+	url = https://github.com/TypeDuck-HK/schema.git

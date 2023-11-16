@@ -37,7 +37,7 @@ func main() {
         return
     }
     
-    let contentOfFile = output.joined(separator: "\n") + "\n"
+    let contentOfFile = output.joined(separator: "\n")
     try! contentOfFile.write(to: fileToFilter, atomically: true, encoding: .utf8)
 }
 
@@ -48,7 +48,7 @@ func filterLineByLine(filePath: URL) {
 
     for line in lines {
         let lineWithoutWhitespaces = line.filter{ !$0.isWhitespace }
-        if !lineWithoutWhitespaces.isEmpty && canStringBeEncoded(lineWithoutWhitespaces) { output.append(line) }
+        if lineWithoutWhitespaces.isEmpty || canStringBeEncoded(lineWithoutWhitespaces) { output.append(line) }
         i += 1
         // if i > 50 { break }
     }
