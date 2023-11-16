@@ -9,10 +9,17 @@ import Foundation
 
 import CocoaLumberjackSwift
 
-private let patchHeader = "patch:\n"
-private var correctorConfig = """
-  translator/enable_correction: true
-"""
+private let patchHeader = "__patch:\n"
+
+enum RimeOption: String {
+    case separateCandidates = "separate_candidates"
+    case enableCorrection = "enable_correction"
+    case showFullCode = "show_full_code"
+    
+    var configLine: String {
+        "  - common:/\(self.rawValue)\n"
+    }
+}
 
 // Make RimeApi a singleton with listener.
 extension RimeApi {
@@ -44,7 +51,7 @@ extension RimeApi {
     static func generateSchemaPatchFromSettings() {
         let userDataPath = DataFileManager.rimeUserDirectory
         let settings = Settings.cached
-        var commonCustomPatch = ""
+        var patchOptions: [RimeOption] = [.separateCandidates, .showFullCode]
         
         let jyutPingSchemaCustomPath = userDataPath + "/jyut6ping3.custom.yaml"
         let commonSchemaCustomPath = userDataPath + "/common.custom.yaml"
@@ -52,12 +59,12 @@ extension RimeApi {
         try? FileManager.default.removeItem(atPath: commonSchemaCustomPath)
         
         if settings.rimeSettings.enableCorrector {
-            commonCustomPatch += correctorConfig
+            patchOptions.append(.enableCorrection)
         }
         
-        if commonCustomPatch.count > 0 {
+        if !patchOptions.isEmpty {
+            let commonCustomPatch = patchHeader + patchOptions.map(\.configLine).joined()
             DDLogInfo("commonCustomPatch: \(commonCustomPatch)")
-            commonCustomPatch = patchHeader + commonCustomPatch
             do {
                 try commonCustomPatch.write(toFile: commonSchemaCustomPath, atomically: true, encoding: .utf8)
             } catch {
