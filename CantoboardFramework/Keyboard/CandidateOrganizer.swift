@@ -215,21 +215,16 @@ class InputEngineCandidateSource: CandidateSource {
         var candidateCount = Dictionary<String, Int>()
         var candidateGroupByRomanization = Dictionary<String, [Int]>()
         for i in 0..<inputEngine.rimeLoadedCandidatesCount {
-            guard var romanization = inputEngine.getRimeCandidateComment(i), !romanization.isEmpty else { continue }
-            if let toneIndex = romanization.firstIndex(where: { $0.isDigit }) {
-                romanization = String(romanization[...toneIndex])
-            }
-            let firstCharRomanizations = romanization.split(separator: "/").map({ String($0) })
+            guard let romanization = CandidateInfo.getJyutping(inputEngine.getRimeCandidateComment(i)) else { continue }
+            let firstCharRomanization = String(romanization.prefix(while: { $0 != " " }))
             
-            for firstCharRomanization in firstCharRomanizations {
-                if !candidateGroupByRomanization.keys.contains(firstCharRomanization) {
-                    candidateGroupByRomanization[firstCharRomanization] = []
-                    candidateCount[firstCharRomanization] = 0
-                    sections.append(firstCharRomanization)
-                }
-                candidateGroupByRomanization[firstCharRomanization]?.append(i)
-                candidateCount[firstCharRomanization] = (candidateCount[firstCharRomanization] ?? 0) + 1
+            if !candidateGroupByRomanization.keys.contains(firstCharRomanization) {
+                candidateGroupByRomanization[firstCharRomanization] = []
+                candidateCount[firstCharRomanization] = 0
+                sections.append(firstCharRomanization)
             }
+            candidateGroupByRomanization[firstCharRomanization]?.append(i)
+            candidateCount[firstCharRomanization] = (candidateCount[firstCharRomanization] ?? 0) + 1
         }
         
         // Merge single buckets.
@@ -402,22 +397,10 @@ class InputEngineCandidateSource: CandidateSource {
     func getCandidateComment(indexPath: IndexPath) -> String? {
         guard let candidatePath = getCandidatePath(indexPath: indexPath) else { return nil }
         
-        let comment: String?
         switch candidatePath.source {
-        case .rime: comment = inputController?.inputEngine.getRimeCandidateComment(candidatePath.index)
+        case .rime: return inputController?.inputEngine.getRimeCandidateComment(candidatePath.index)
         default: return nil
         }
-        
-        if let comment = comment, !comment.contains(",") {
-            let reverseLookupPerChars = comment.split(separator: " ").map({ $0.split(separator: "/") })
-            var reverseLookupFirstChoice = ""
-            for reverseLookupPerChar in reverseLookupPerChars {
-                reverseLookupFirstChoice += (reverseLookupPerChar.first ?? "") + " "
-            }
-            _ = reverseLookupFirstChoice.popLast()
-            return reverseLookupFirstChoice
-        }
-        return comment
     }
     
     func getCandidateCount(section: Int) -> Int {
