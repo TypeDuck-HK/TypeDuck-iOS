@@ -620,6 +620,8 @@ class InputController: NSObject {
     }
     
     func refreshInputSettings() {
+        keyboardViewController?.state = state
+        
         if Settings.cached.isMixedModeEnabled && state.inputMode == .chinese { state.inputMode = .mixed }
         if !Settings.cached.isMixedModeEnabled && state.inputMode == .mixed { state.inputMode = .chinese }
         
