@@ -73,4 +73,12 @@ internal extension UIView {
         textLayer.alignmentMode = .center
         textLayer.frame = CGRect(origin: CGPoint(x: 0, y: yOffset), size: superlayerBounds.size)
     }
+    
+    func findElement<T: UIResponder>(_ type: T.Type) -> T? {
+        var responder = next
+        while let curr = responder, !(curr is T) {
+            responder = curr.next
+        }
+        return responder as? T
+    }
 }

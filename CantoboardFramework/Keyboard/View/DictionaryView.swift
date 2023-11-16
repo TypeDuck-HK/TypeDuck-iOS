@@ -8,6 +8,45 @@
 import Foundation
 import UIKit
 
+class DictionaryViewController: UIViewController {
+    private var dictionaryView: DictionaryView!
+    private var deferredInfo: CandidateInfo?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        dictionaryView = DictionaryView()
+        view.addSubview(dictionaryView)
+        view.backgroundColor = ButtonColor.dictionaryViewBackgroundColor
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(dismissDictionary))
+        
+        NSLayoutConstraint.activate([
+            dictionaryView.topAnchor.constraint(equalTo: view.topAnchor, constant: -navigationController!.navigationBar.frame.height - 10),
+            view.bottomAnchor.constraint(equalTo: dictionaryView.bottomAnchor),
+            dictionaryView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            view.trailingAnchor.constraint(equalTo: dictionaryView.trailingAnchor),
+        ])
+        
+        if let info = deferredInfo {
+            dictionaryView.setup(info: info)
+            deferredInfo = nil
+        }
+    }
+    
+    func setup(info: CandidateInfo) {
+        if isViewLoaded {
+            dictionaryView.setup(info: info)
+        } else {
+            deferredInfo = info
+        }
+    }
+    
+    @objc func dismissDictionary() {
+        dismiss(animated: true)
+    }
+}
+
 class DictionaryView: UIScrollView {
     private var entryStack: UIStackView!
     private var entryViews: [Weak<DictionaryEntryView>] = []
@@ -15,7 +54,6 @@ class DictionaryView: UIScrollView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = ButtonColor.dictionaryViewBackgroundColor
         
         entryStack = UIStackView()
         entryStack.translatesAutoresizingMaskIntoConstraints = false
@@ -49,7 +87,7 @@ class DictionaryView: UIScrollView {
             }
             entryViews.removeLast(entryViews.endIndex - entries.endIndex)
         }
-        setContentOffset(.zero, animated: false)
+        setContentOffset(CGPoint(x: 0, y: .min), animated: false)
     }
     
     required init?(coder: NSCoder) {

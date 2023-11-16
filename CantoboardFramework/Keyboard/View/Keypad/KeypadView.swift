@@ -228,7 +228,7 @@ class KeypadView: UIView, BaseKeyboardView {
     
     private func layoutCandidateSubviews(_ layoutConstants: LayoutConstants) {
         guard let candidatePaneView = candidatePaneView else { return }
-        let height = candidatePaneView.mode == .row && candidatePaneView.dictionaryCandidateInfo == nil ? candidatePaneView.rowHeight : bounds.height
+        let height = candidatePaneView.mode == .row ? candidatePaneView.rowHeight : bounds.height
         candidatePaneView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0,
                                                                              leading: layoutConstants.keyboardViewInsets.left,
                                                                              bottom: 0,
@@ -267,7 +267,7 @@ extension KeypadView: CandidatePaneViewDelegate {
     }
     
     private func refreshButtonsVisibility(buttons: [[KeypadButton]]) {
-        let isButtonVisible = candidatePaneView?.mode ?? .row == .row && candidatePaneView?.dictionaryCandidateInfo == nil
+        let isButtonVisible = candidatePaneView?.mode ?? .row == .row
         
         buttons.forEach({
             $0.forEach({ b in
