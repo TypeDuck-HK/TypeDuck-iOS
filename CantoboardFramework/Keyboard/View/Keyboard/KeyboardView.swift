@@ -335,7 +335,7 @@ class KeyboardView: UIView, BaseKeyboardView {
                         bottomHint = "aa"
                     case "v":
                         switch state.activeSchema {
-                        case .jyutping: bottomHint = "oe/eo"
+                        case .jyutping, .loengfan: bottomHint = "oe/eo"
                         case .yale: bottomHint = "eu"
                         default: ()
                         }
@@ -348,7 +348,7 @@ class KeyboardView: UIView, BaseKeyboardView {
                 let orgChildren = childrenKeyCaps ?? keyCap.childrenKeyCaps
                 if c == "r" {
                     rightHint = "反"
-                    childrenKeyCaps = [.reverseLookup(Settings.cached.cangjieVersion.toRimeSchema), .reverseLookup(.quick)] + orgChildren + [.reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
+                    childrenKeyCaps = [.reverseLookup(Settings.cached.cangjieVersion.toRimeSchema)] + orgChildren + [.reverseLookup(.mandarin), .reverseLookup(.loengfan)]
                 } else if state.isComposing {
                     if isInLongPressMode {
                         var toneKeyCap: KeyCap? = nil

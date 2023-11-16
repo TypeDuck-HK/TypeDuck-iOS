@@ -11,7 +11,7 @@ import UIKit
 import CocoaLumberjackSwift
 
 public enum RimeSchema: String, Codable {
-    case jyutping = "jyut6ping3"
+    case jyutping = "jyut6ping3_mobile"
     case yale = "yale"
     case cangjie3 = "cangjie3"
     case cangjie5 = "cangjie5"
@@ -19,7 +19,7 @@ public enum RimeSchema: String, Codable {
     case mandarin = "luna_pinyin"
     case stroke = "stroke"
     case loengfan = "loengfan"
-    case jyutping10keys = "jyut6ping3_10keys"
+    case jyutping10keys = "jyut6ping3_mobile_10keys"
     
     var signChar: String {
         switch self {
@@ -78,7 +78,7 @@ public enum RimeSchema: String, Codable {
     
     var supportCantoneseTonalInput: Bool {
         switch self {
-        case .jyutping, .yale: return true
+        case .jyutping, .yale, .loengfan: return true
         default: return false
         }
     }
@@ -326,8 +326,8 @@ class RimeInputEngine: NSObject, InputEngine {
     
     private func setCurrentSchema(_ schemaId: RimeSchema) {
         var rimeSchemaId = schemaId.rawValue
-        if schemaId.supportCantoneseTonalInput && Settings.cached.toneInputMode == .vxq {
-            rimeSchemaId += "vxq"
+        if schemaId.supportCantoneseTonalInput && Settings.cached.toneInputMode == .longPress {
+            rimeSchemaId += "_longpress"
         }
         rimeSession?.setCurrentSchema(rimeSchemaId)
     }
@@ -337,8 +337,6 @@ class RimeInputEngine: NSObject, InputEngine {
     }
     
     private func setCharForm(isSimplification: Bool) {
-        rimeSession?.setOption("variants_hk", value: !isSimplification && Settings.cached.enableHKCorrection)
-        rimeSession?.setOption("simp_hk2s", value: isSimplification)
         rimeSession?.setOption("simplification", value: isSimplification)
         rimeSession?.setCandidateMenuToFirstPage()
         refreshCandidates()

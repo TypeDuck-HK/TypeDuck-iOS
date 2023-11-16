@@ -237,7 +237,6 @@ extension Settings {
                         ],
                         LocalizedStrings.toneInputMode_description, "Guide3-2"
                     ),
-                    Switch(LocalizedStrings.enableHKCorrection, \.enableHKCorrection),
                     Segment(LocalizedStrings.cangjieVersion, \.cangjieVersion, [
                             LocalizedStrings.cangjie3: .cangjie3,
                             LocalizedStrings.cangjie5: .cangjie5,
