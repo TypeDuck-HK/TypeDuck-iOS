@@ -51,6 +51,7 @@ struct CandidateEntry {
     
     init(honzi: String? = nil, jyutping: String? = nil) {
         isJyutpingOnly = true
+        self.matchInputBuffer = "1"
         self.honzi = honzi
         self.jyutping = jyutping
     }
