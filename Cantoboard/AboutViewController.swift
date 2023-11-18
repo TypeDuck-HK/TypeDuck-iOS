@@ -10,22 +10,25 @@ import UIKit
 class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     static let sections: [[(image: UIImage, title: String, url: String)]] = [
         [
-            (CellImage.externalLink, LocalizedStrings.about_jyutpingSite, "https://jyutping.org"),
+            (CellImage.externalLink, LocalizedStrings.about_typeduckSite, "https://typeduck.hk"),
+            (CellImage.externalLink, LocalizedStrings.about_jyutpingSite, "https://lshk.org/jyutping-scheme/"),
             (CellImage.sourceCode, LocalizedStrings.about_sourceCode, "https://github.com/TypeDuck-HK/TypeDuck-iOS"),
             (CellImage.sourceCode, LocalizedStrings.about_cantoboard, "https://github.com/Cantoboard/Cantoboard"),
         ],
         [
             (CellImage.repository, "Rime Input Method Engine", "https://github.com/rime/librime"),
+            /*
             (CellImage.repository, "Rime Cantonese Input Schema", "https://github.com/rime/rime-cantonese"),
             (CellImage.repository, "Rime 倉頡三代", "https://github.com/Arthurmcarthur/Cangjie3-Plus"),
             (CellImage.repository, "Rime 倉頡五代", "https://github.com/Jackchows/Cangjie5"),
             (CellImage.repository, "Rime 速成", "https://github.com/rime/rime-quick"),
             (CellImage.repository, "Rime 筆劃", "https://github.com/rime/rime-stroke"),
+            */
             (CellImage.repository, "Open Chinese Convert (OpenCC)", "https://github.com/BYVoid/OpenCC"),
             (CellImage.repository, "ISEmojiView", "https://github.com/isaced/ISEmojiView"),
         ],
         [
-            (CellImage.email, LocalizedStrings.about_email, "mailto:typeduck@eduhk.hk"),
+            (CellImage.email, LocalizedStrings.about_email, "mailto:info@typeduck.hk"),
             (CellImage.rate, LocalizedStrings.about_appStore, "https://apps.apple.com/us/app/typeduck/id0000000000"),
         ],
     ]

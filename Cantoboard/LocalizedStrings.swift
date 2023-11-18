@@ -145,6 +145,8 @@ class LocalizedStrings {
     static let faq_0_question = localizedString("faq.0.question")
     static let faq_0_answer = localizedString("faq.0.answer")
     
+    static let about_description = localizedString("about.description")
+    static let about_typeduckSite = localizedString("about.typeduckSite")
     static let about_jyutpingSite = localizedString("about.jyutpingSite")
     static let about_sourceCode = localizedString("about.sourceCode")
     static let about_cantoboard = localizedString("about.cantoboard")
