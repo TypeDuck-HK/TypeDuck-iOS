@@ -176,6 +176,8 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
             let container = UIView()
             container.addSubview(page)
             NSLayoutConstraint.activate([
+                page.topAnchor.constraint(greaterThanOrEqualTo: container.topAnchor),
+                page.bottomAnchor.constraint(lessThanOrEqualTo: container.bottomAnchor),
                 page.leadingAnchor.constraint(equalTo: container.leadingAnchor),
                 page.trailingAnchor.constraint(equalTo: container.trailingAnchor),
                 page.centerYAnchor.constraint(equalTo: container.centerYAnchor),
@@ -219,7 +221,7 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
             pagesScrollView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
             pagesScrollView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
             
-            pageControl.topAnchor.constraint(equalTo: pagesStackView.bottomAnchor),
+            pageControl.topAnchor.constraint(equalTo: pagesStackView.bottomAnchor, constant: 16),
             pageControl.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
             
             pagesStackView.topAnchor.constraint(equalTo: safeArea.topAnchor),
