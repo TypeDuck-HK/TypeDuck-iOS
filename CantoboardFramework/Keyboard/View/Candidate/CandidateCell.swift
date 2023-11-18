@@ -158,7 +158,14 @@ class CandidateCell: UICollectionViewCell {
         
         let info = CandidateInfo(text, comment)
         self.info = info
-        if let entry = info.entry {
+        let entry = info.entry
+        
+        if isFilterCell {
+            mainStack!.contentView.alignment = .center
+            mainStack!.addArrangedSubview(label)
+        } else {
+            mainStack!.contentView.alignment = .fill
+            
             var codeLabels: [UILabel] = []
             
             if keyboardState.showCodeInReverseLookup {
@@ -174,7 +181,7 @@ class CandidateCell: UICollectionViewCell {
                 self.reverseLookupLabel = nil
             }
             
-            if keyboardState.showRomanization {
+            if keyboardState.showRomanization, mode == .row || !info.romanization.isEmpty || !keyboardState.showCodeInReverseLookup {
                 let romanizationLabel = self.romanizationLabel ?? UILabel()
                 romanizationLabel.textAlignment = mode == .row ? .center : .left
                 romanizationLabel.text = info.romanization.isEmpty ? "⠀" : info.romanization
@@ -199,7 +206,7 @@ class CandidateCell: UICollectionViewCell {
             let targetStack = mode == .row ? mainStack : textStack
             targetStack!.addArrangedSubview(label)
             
-            if let mainLanguage = mode == .row ? entry.mainLanguageOrLabel : entry.mainLanguage {
+            if let entry = entry, let mainLanguage = mode == .row ? entry.mainLanguageOrLabel : entry.mainLanguage {
                 let translationLabel = self.translationLabel ?? UILabel()
                 translationLabel.textAlignment = mode == .row ? .center : .left
                 translationLabel.text = mainLanguage
@@ -212,7 +219,7 @@ class CandidateCell: UICollectionViewCell {
                 self.translationLabel = nil
             }
             
-            if mode == .table {
+            if mode == .table, let entry = entry {
                 let otherLanguages = entry.otherLanguagesOrLabels
                 for (i, language) in otherLanguages.enumerated() {
                     let commentLabel = self.commentLabels[weak: i] ?? UILabel()
@@ -229,14 +236,6 @@ class CandidateCell: UICollectionViewCell {
                     }
                     self.commentLabels.removeLast(self.commentLabels.endIndex - otherLanguages.endIndex)
                 }
-                
-                if !codeLabels.isEmpty {
-                    mainStack!.addArrangedSubview(codeStack!)
-                }
-                mainStack!.addArrangedSubview(textStack!)
-                if !otherLanguages.isEmpty {
-                    mainStack!.addArrangedSubview(commentStack!)
-                }
             } else {
                 for commentLabel in self.commentLabels {
                     commentLabel.ref?.text = nil
@@ -245,17 +244,15 @@ class CandidateCell: UICollectionViewCell {
                 }
                 self.commentLabels.removeAll()
             }
-        } else {
-            label.textAlignment = .center
-            
-            let numLines = keyboardState.numLines(for: mode)
-            if isFilterCell || numLines > 3 {
-                let multiplier = isFilterCell ? 0.15 : (numLines - 3) / numLines // number of top lines / number of lines
-                let spacer = UIView()
-                mainStack!.addArrangedSubview(spacer)
-                spacer.heightAnchor.constraint(equalTo: mainStack!.heightAnchor, multiplier: multiplier * Self.fontSizePerHeight / KeyHintLayer.fontSizePerHeight).isActive = true
+            if mode == .table {
+                if !codeLabels.isEmpty {
+                    mainStack!.addArrangedSubview(codeStack!)
+                }
+                mainStack!.addArrangedSubview(textStack!)
+                if !self.commentLabels.isEmpty {
+                    mainStack!.addArrangedSubview(commentStack!)
+                }
             }
-            mainStack!.addArrangedSubview(label)
         }
         
         let hasDictionaryEntry = info.hasDictionaryEntry
@@ -372,7 +369,11 @@ class CandidateCell: UICollectionViewCell {
                     bounds.size.width -= 4
                 }
             } else if keyHintLayer == nil {
-                bounds = bounds.insetBy(dx: 4, dy: info?.entry == nil ? 4 : 0)
+                if let info = info, info.entry != nil || !info.note.isEmpty || !info.romanization.isEmpty {
+                    bounds = bounds.insetBy(dx: 4, dy: 0)
+                } else {
+                    bounds = bounds.insetBy(dx: 4, dy: 4)
+                }
             }
             selectedRectLayer.frame = bounds
         }
@@ -418,20 +419,11 @@ class CandidateCell: UICollectionViewCell {
         let candidateFontSizeUnrounded = candidateLabelHeight * Self.fontSizePerHeight
         let candidateFontSize = candidateFontSizeUnrounded.roundTo(q: 4)
         
-        guard let entry = info.entry else {
-            let cellWidth = estimateStringWidth(info.text, ofSize: candidateFontSize)
-            return Self.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))
-        }
-        
-        var cellWidth: CGFloat = 0
-        if let honzi = entry.honzi {
-            let labelWidth = estimateStringWidth(honzi, ofSize: candidateFontSize)
-            cellWidth = max(cellWidth, labelWidth)
-        }
-        
         let candidateCommentHeight = cellHeight / numLines
         let candidateCommentFontSizeUnrounded = candidateCommentHeight * Self.fontSizePerHeight
         let candidateCommentFontSize = candidateCommentFontSizeUnrounded.roundTo(q: 4)
+        
+        var cellWidth = estimateStringWidth(info.text, ofSize: candidateFontSize)
         
         var noteWidth: CGFloat = 0
         if keyboardState.showCodeInReverseLookup, !info.note.isEmpty {
@@ -445,15 +437,16 @@ class CandidateCell: UICollectionViewCell {
         
         switch mode {
         case .row: cellWidth = max(cellWidth, noteWidth, romanizationWidth)
-        case .table: cellWidth = max(cellWidth, noteWidth + Self.paddingComment + romanizationWidth)
+        case .table: cellWidth = max(cellWidth, noteWidth + (info.note.isEmpty || info.romanization.isEmpty ? 0 : Self.paddingComment) + romanizationWidth)
         }
         
-        if let mainLanguage = mode == .row ? entry.mainLanguageOrLabel : entry.mainLanguage {
+        let entry = info.entry
+        if let entry = entry, let mainLanguage = mode == .row ? entry.mainLanguageOrLabel : entry.mainLanguage {
             let commentWidth = mainLanguage.size(withFont: UIFont.systemFont(ofSize: mode == .row ? candidateCommentFontSize : candidateFontSize)).width
             cellWidth = mode == .row ? max(cellWidth, min(cellWidth + 70, commentWidth)) : cellWidth + Self.paddingText + commentWidth
         }
         
-        if mode == .table {
+        if mode == .table, let entry = entry {
             let otherLanguages = entry.otherLanguagesOrLabels
             if !otherLanguages.isEmpty {
                 let commentWidth = otherLanguages.reduce(-Self.paddingComment) { sum, language in
