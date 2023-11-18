@@ -57,7 +57,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 onboarding.modalPresentationStyle = .fullScreen
                 self.present(onboarding, animated: true, completion: nil)
             }),
-            (LocalizedStrings.other_faq, CellImage.faq, { self.navigationController?.pushViewController(FaqViewController(), animated: true) }),
+            // (LocalizedStrings.other_faq, CellImage.faq, { self.navigationController?.pushViewController(FaqViewController(), animated: true) }),
             (LocalizedStrings.other_about, CellImage.about, { self.navigationController?.pushViewController(AboutViewController(), animated: true) }),
         ]
         
