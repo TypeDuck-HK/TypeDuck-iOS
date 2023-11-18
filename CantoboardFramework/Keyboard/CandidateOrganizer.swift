@@ -227,6 +227,7 @@ class InputEngineCandidateSource: CandidateSource {
             candidateCount[firstCharRomanization] = (candidateCount[firstCharRomanization] ?? 0) + 1
         }
         
+        /*
         // Merge single buckets.
         var headersToRemove = Set<String>()
         for i in 0..<sections.count {
@@ -247,6 +248,7 @@ class InputEngineCandidateSource: CandidateSource {
                 candidateGroupByRomanization[newHeader]?.append(contentsOf: candidateIndices)
             }
         }
+        */
         
         // Show exact match (without tones) first. The rest in alphabetical order.
         let composingTextEnglishSuffix = inputEngine.rimeComposition?.text.filter({ $0.isEnglishLetter }).lowercased() ?? ""
@@ -262,8 +264,7 @@ class InputEngineCandidateSource: CandidateSource {
         sectionHeaders = []
         for i in 0..<sections.count {
             let header = sections[i]
-            guard !headersToRemove.contains(header),
-                  let candidates = candidateGroupByRomanization[header]?.map({ CandidatePath(source: .rime, index: $0) }) else { continue }
+            guard let candidates = candidateGroupByRomanization[header]?.map({ CandidatePath(source: .rime, index: $0) }) else { continue }
             candidatePaths.append(candidates)
             sectionHeaders.append(header)
         }
