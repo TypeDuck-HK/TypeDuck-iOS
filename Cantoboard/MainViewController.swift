@@ -55,6 +55,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             (LocalizedStrings.other_onboarding, CellImage.onboarding, {
                 let onboarding = UINavigationController(rootViewController: OnboardingViewController())
                 onboarding.modalPresentationStyle = .fullScreen
+                onboarding.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+                onboarding.navigationBar.shadowImage = UIImage()
+                onboarding.navigationBar.isTranslucent = true
                 self.present(onboarding, animated: true, completion: nil)
             }),
             // (LocalizedStrings.other_faq, CellImage.faq, { self.navigationController?.pushViewController(FaqViewController(), animated: true) }),
