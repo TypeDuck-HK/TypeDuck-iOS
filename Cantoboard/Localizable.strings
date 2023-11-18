@@ -138,8 +138,12 @@ vxq: 撳一下 v/x/q 輸入 1/2/3 聲；
 "onboarding.jumpToSettings" = "前往 TypeDuck 設定";
 "onboarding.done" = "完成！";
 
-"onboarding.0.heading" = "歡迎使用 TypeDuck";
-"onboarding.0.content" = "TypeDuck 係一款開放原始碼嘅智能粵英混合輸入法。利用香港語言學學會粵語拼音方案，打字都可以好輕鬆！";
+"onboarding.0.heading" =
+"歡迎使用 TypeDuck
+Welcome to TypeDuck";
+"onboarding.0.content" =
+"歡迎使用 TypeDuck 打得 —— 設有少數族裔語言提示粵拼輸入法！有字想打？一裝即用，毋須再等，即刻打得！
+Welcome to TypeDuck: a Cantonese input keyboard with minority language prompts! Got something you want to type? Have your fingers ready, get, set, TYPE DUCK!";
 "onboarding.1.heading" = "輸入編輯";
 "onboarding.1.content" = "打咗成句拼音，臨揀字先發現打錯字？唔緊要！只要長撳空格或者用力撳鍵盤，就可以左右移動輸入游標，編輯輸入咗嘅字。";
 "onboarding.2.heading" = "反查功能";
@@ -157,6 +161,15 @@ vxq: 撳一下 v/x/q 輸入 1/2/3 聲；
 "faq.0.question" = "Update 咗 iOS 之後 TypeDuck 突然間消失咗，點算？";
 "faq.0.answer" = "唔使驚，呢個係 iOS 嘅 bug，只要重新撳「TypeDuck 程式設定」→「鍵盤」→「TypeDuck」加返就得。";
 
+"about.description" =
+"歡迎使用 TypeDuck 打得 —— 設有少數族裔語言提示粵拼輸入法！有字想打？一裝即用，毋須再等，即刻打得！
+Welcome to TypeDuck: a Cantonese input keyboard with minority language prompts! Got something you want to type? Have your fingers ready, get, set, TYPE DUCK!
+
+如有任何查詢，歡迎電郵至 admin@typeduck.hk 或 lchaakming@eduhk.hk。
+Should you have any enquiries, please email admin@typeduck.hk or lchaakming@eduhk.hk.
+
+本輸入法由香港教育大學語言學及現代語言系開發。特別鳴謝「語文教育及研究常務委員會」 資助本計劃。
+This input method is developed by the Department of Linguistics and Modern Languages, the Education University of Hong Kong. Special thanks to the Standing Committee on Language Education and Research for funding this project.";
 "about.jyutpingSite" = "粵拼網站";
 "about.sourceCode" = "TypeDuck 原始碼";
 "about.cantoboard" = "Cantoboard 原始碼";
