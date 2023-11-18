@@ -33,6 +33,7 @@
 		14B9E1392742EC2B007E8679 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */; };
 		14BD07D629F9D18400DB8865 /* DictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14BD07D529F9D18400DB8865 /* DictionaryView.swift */; };
 		14D0990D29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D0990C29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift */; };
+		14F677D32B0712400021B5F2 /* WrappableStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F677D22B0712400021B5F2 /* WrappableStackView.swift */; };
 		7904A1DC2771481200963CAB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7904A1DB2771481200963CAB /* main.cpp */; };
 		7904A1E127714ACE00963CAB /* libmarisa.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7904A1E027714A9900963CAB /* libmarisa.tbd */; };
 		7904A1E327716A1300963CAB /* PredictiveTextEngine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7904A1E227716A1300963CAB /* PredictiveTextEngine.mm */; };
@@ -349,6 +350,7 @@
 		14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		14BD07D529F9D18400DB8865 /* DictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryView.swift; sourceTree = "<group>"; };
 		14D0990C29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RandomAccessCollection+Extension.swift"; sourceTree = "<group>"; };
+		14F677D22B0712400021B5F2 /* WrappableStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappableStackView.swift; sourceTree = "<group>"; };
 		7904A1D92771481200963CAB /* NGramBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NGramBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
 		7904A1DB2771481200963CAB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		7904A1E027714A9900963CAB /* libmarisa.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libmarisa.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/usr/lib/libmarisa.tbd; sourceTree = DEVELOPER_DIR; };
@@ -807,6 +809,7 @@
 				794753B827B79A9A00D63EBC /* FilterBarView.swift */,
 				14BD07D529F9D18400DB8865 /* DictionaryView.swift */,
 				142E66142A02D33B00CCD043 /* SidedStackView.swift */,
+				14F677D22B0712400021B5F2 /* WrappableStackView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1462,6 +1465,7 @@
 				7922EF2F26D61029007E1699 /* KeyboardViewLayout.swift in Sources */,
 				14D0990D29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift in Sources */,
 				79B9B5FE25F34A1200238E80 /* CGPoints+Extension.swift in Sources */,
+				14F677D32B0712400021B5F2 /* WrappableStackView.swift in Sources */,
 				792D1C152830738500AD5BC0 /* FloatingPoint+Extension.swift in Sources */,
 				79B9B60C25F34A1200238E80 /* KeyCap.swift in Sources */,
 				799D91A32674690700AE9DBD /* StatusButton.swift in Sources */,

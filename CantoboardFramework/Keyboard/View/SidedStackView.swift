@@ -7,7 +7,6 @@
 
 import Foundation
 import UIKit
-import CocoaLumberjackSwift
 
 class SidedStackView: UIStackView {
     var spacer: UIView
@@ -45,5 +44,9 @@ class SidedStackView: UIStackView {
     
     override func removeArrangedSubview(_ view: UIView) {
         contentView.removeArrangedSubview(view)
+    }
+    
+    override func setCustomSpacing(_ spacing: CGFloat, after arrangedSubview: UIView) {
+        contentView.setCustomSpacing(spacing, after: arrangedSubview)
     }
 }

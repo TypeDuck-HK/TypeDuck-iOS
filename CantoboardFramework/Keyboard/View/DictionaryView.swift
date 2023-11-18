@@ -96,20 +96,6 @@ class DictionaryView: UIScrollView {
 }
 
 class DictionaryEntryView: UIStackView {
-    private var titleStack: SidedStackView!
-    private var entryLabel: UILabel!
-    private var pronunciationLabel: UILabel!
-    private var pronunciationTypeLabel: UILabel!
-    
-    private var definitionStack: SidedStackView!
-    private var partOfSpeechStack: UIStackView!
-    private var registerLabel: UILabel!
-    private var labelStack: UIStackView!
-    private var definitionLabel: UILabel!
-    
-    private var otherDataStack: UIStackView!
-    private var otherLanguageStack: UIStackView!
-    
     private static let otherData: KeyValuePairs<String, WritableKeyPath<CandidateEntry, String?>> = [
         "Standard Form": \.properties.normalized,
         "Written Form": \.properties.written,
@@ -146,14 +132,6 @@ class DictionaryEntryView: UIStackView {
         translatesAutoresizingMaskIntoConstraints = false
         axis = .vertical
         spacing = 16 * Settings.cached.candidateFontSize.scale
-        
-        entryLabel = UILabel(font: .preferredFont(forTextStyle: .title1))
-        pronunciationLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .body))
-        pronunciationTypeLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .footnote))
-        
-        registerLabel = UILabel(color: ButtonColor.keyGrayedColor, font: .italicSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
-        definitionLabel = UILabel(font: .preferredFont(forTextStyle: .body))
-        definitionLabel.numberOfLines = 0
     }
     
     required init(coder: NSCoder) {
@@ -166,12 +144,15 @@ class DictionaryEntryView: UIStackView {
             view.removeFromSuperview()
         }
         
-        titleStack = SidedStackView(spacing: 20 * Settings.cached.candidateFontSize.scale, alignment: .firstBaseline)
+        let entryLabel = UILabel(font: .preferredFont(forTextStyle: .title1))
+        entryLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         entryLabel.text = entry.honzi
-        titleStack.addArrangedSubview(entryLabel)
+        var titleStackElements: [UIView] = [entryLabel]
         if let jyutping = entry.jyutping {
+            let pronunciationLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .body))
+            pronunciationLabel.numberOfLines = 0
             pronunciationLabel.text = jyutping
-            titleStack.addArrangedSubview(pronunciationLabel)
+            titleStackElements.append(pronunciationLabel)
         }
         var pronunciationType = [String]()
         if let sandhi = entry.sandhi, sandhi == "1" {
@@ -181,47 +162,56 @@ class DictionaryEntryView: UIStackView {
             pronunciationType.append(type)
         }
         if !pronunciationType.isEmpty {
+            let pronunciationTypeLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .footnote))
+            pronunciationTypeLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
             pronunciationTypeLabel.text = "(\(pronunciationType.joined(separator: ", ")))"
-            titleStack.addArrangedSubview(pronunciationTypeLabel)
+            titleStackElements.append(pronunciationTypeLabel)
         }
-        addArrangedSubview(titleStack)
+        addArrangedSubview(WrappableStackView(spacingX: 16 * Settings.cached.candidateFontSize.scale, spacingY: 10 * Settings.cached.candidateFontSize.scale, arrangedSubviews: titleStackElements))
         
-        definitionStack = SidedStackView(spacing: 12 * Settings.cached.candidateFontSize.scale, alignment: .firstBaseline)
+        var definitionStackElements = [UIView]()
+        var smallSpacingViews = Set<UIView>()
         if let partOfSpeech = entry.properties.partOfSpeech {
-            partOfSpeechStack = UIStackView()
-            partOfSpeechStack.translatesAutoresizingMaskIntoConstraints = false
-            partOfSpeechStack.spacing = 4 * Settings.cached.candidateFontSize.scale
-            for pos in partOfSpeech.split(separator: " ") {
+            let partsOfSpeech = partOfSpeech.split(separator: " ")
+            for (i, pos) in partsOfSpeech.enumerated() {
                 let partOfSpeechLabel = UILabelWithPadding(color: ButtonColor.dictionaryViewGrayedColor, font: .systemFont(ofSize: UIFont.preferredFont(forTextStyle: .footnote).pointSize, weight: .light))
                 partOfSpeechLabel.layer.borderColor = ButtonColor.dictionaryViewGrayedColor.resolvedColor(with: traitCollection).cgColor
                 partOfSpeechLabel.layer.borderWidth = 1
                 partOfSpeechLabel.layer.cornerRadius = 2
                 partOfSpeechLabel.text = Self.partOfSpeech[String(pos)] ?? String(pos)
-                partOfSpeechStack.addArrangedSubview(partOfSpeechLabel)
+                partOfSpeechLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+                definitionStackElements.append(partOfSpeechLabel)
+                if i != partsOfSpeech.endIndex - 1 {
+                    smallSpacingViews.insert(partOfSpeechLabel)
+                }
             }
-            definitionStack.addArrangedSubview(partOfSpeechStack)
         }
         if let register = entry.properties.register, let reg = Self.register[register] {
+            let registerLabel = UILabel(color: ButtonColor.keyGrayedColor, font: .italicSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
+            registerLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
             registerLabel.text = reg
-            definitionStack.addArrangedSubview(registerLabel)
+            definitionStackElements.append(registerLabel)
         }
         if let label = entry.properties.label {
-            labelStack = UIStackView()
-            labelStack.translatesAutoresizingMaskIntoConstraints = false
-            labelStack.spacing = 4 * Settings.cached.candidateFontSize.scale
-            for lbl in label.split(separator: " ") {
+            let labels = label.split(separator: " ")
+            for (i, lbl) in labels.enumerated() {
                 let labelLabel = UILabel(color: ButtonColor.keyGrayedColor, font: .preferredFont(forTextStyle: .subheadline))
                 labelLabel.text = "(\(lbl))"
-                labelStack.addArrangedSubview(labelLabel)
+                labelLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+                definitionStackElements.append(labelLabel)
+                if i != labels.endIndex - 1 {
+                    smallSpacingViews.insert(labelLabel)
+                }
             }
-            definitionStack.addArrangedSubview(labelStack)
         }
         if let definition = entry.mainLanguage {
+            let definitionLabel = UILabel(font: .preferredFont(forTextStyle: .body))
+            definitionLabel.numberOfLines = 0
             definitionLabel.text = definition
-            definitionStack.addArrangedSubview(definitionLabel)
+            definitionStackElements.append(definitionLabel)
         }
-        if !definitionStack.arrangedSubviews.isEmpty {
-            addArrangedSubview(definitionStack)
+        if !definitionStackElements.isEmpty {
+            addArrangedSubview(WrappableStackView(spacingX: 12 * Settings.cached.candidateFontSize.scale, spacingY: 8 * Settings.cached.candidateFontSize.scale, arrangedSubviews: definitionStackElements, smallSpacingX: 4 * Settings.cached.candidateFontSize.scale, smallSpacingAfter: smallSpacingViews))
         }
         
         let otherData = Self.otherData.compactMap { data -> (String, String)? in
@@ -229,13 +219,12 @@ class DictionaryEntryView: UIStackView {
             return (data.key, value.replacingOccurrences(of: "，", with: "\n"))
         }
         if !otherData.isEmpty {
-            otherDataStack = Self.createKeyValueStackView(otherData)
-            addArrangedSubview(otherDataStack)
+            addArrangedSubview(Self.createKeyValueStackView(otherData))
         }
         
         let otherLanguages = entry.otherLanguagesWithNames
         if !otherLanguages.isEmpty {
-            otherLanguageStack = UIStackView(arrangedSubviews: [
+            let otherLanguageStack = UIStackView(arrangedSubviews: [
                 UILabel(text: "More Languages", font: .systemFont(ofSize: UIFont.preferredFont(forTextStyle: .headline).pointSize, weight: .medium)),
                 Self.createKeyValueStackView(otherLanguages),
             ])
@@ -252,7 +241,9 @@ class DictionaryEntryView: UIStackView {
             let keyLabel = UILabel(text: $0.0, color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .headline))
             let valueLabel = UILabel(text: $0.1, font: .preferredFont(forTextStyle: .body))
             keyLabel.textAlignment = .right
-            let stack = SidedStackView(spacing: 12 * Settings.cached.candidateFontSize.scale, arrangedSubviews: [keyLabel, valueLabel])
+            keyLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+            valueLabel.numberOfLines = 0
+            let stack = SidedStackView(spacing: 12 * Settings.cached.candidateFontSize.scale, alignment: .firstBaseline, arrangedSubviews: [keyLabel, valueLabel])
             if let firstKeyLabel = firstKeyLabel {
                 layoutConstraints.append(keyLabel.widthAnchor.constraint(equalTo: firstKeyLabel.widthAnchor))
             } else {
@@ -261,19 +252,9 @@ class DictionaryEntryView: UIStackView {
             return stack
         })
         stack.axis = .vertical
-        stack.spacing = 4 * Settings.cached.candidateFontSize.scale
+        stack.spacing = 6 * Settings.cached.candidateFontSize.scale
         NSLayoutConstraint.activate(layoutConstraints)
         return stack
-    }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        
-        if let partOfSpeechStack = partOfSpeechStack {
-            for partOfSpeechLabel in partOfSpeechStack.arrangedSubviews {
-                partOfSpeechLabel.layer.borderColor = ButtonColor.dictionaryViewGrayedColor.resolvedColor(with: traitCollection).cgColor
-            }
-        }
     }
 }
 
@@ -286,5 +267,10 @@ class UILabelWithPadding: UILabel {
 
     override var intrinsicContentSize: CGSize {
         super.intrinsicContentSize.extend(margin: Self.padding)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        layer.borderColor = ButtonColor.dictionaryViewGrayedColor.resolvedColor(with: traitCollection).cgColor
     }
 }
