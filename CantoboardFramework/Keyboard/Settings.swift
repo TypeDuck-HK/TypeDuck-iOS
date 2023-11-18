@@ -225,18 +225,18 @@ public struct RimeSettings: Codable, Equatable {
     public var enableCorrector: Bool
     
     public init() {
-        enableCorrector = true
+        enableCorrector = false
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        enableCorrector = try container.decodeIfPresent(Bool.self, forKey: .enableCorrector) ?? true
+        enableCorrector = try container.decodeIfPresent(Bool.self, forKey: .enableCorrector) ?? false
     }
 }
 
 public struct Settings: Codable, Equatable {
     private static let settingsKeyName = "Settings"
-    private static let defaultMixedModeEnabled: Bool = true
+    private static let defaultMixedModeEnabled: Bool = false
     private static let defaultAutoCapEnabled: Bool = true
     private static let defaultSmartEnglishSpaceEnabled: Bool = true
     private static let defaultSmartFullStopEnabled: Bool = true
