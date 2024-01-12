@@ -27,10 +27,12 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
             (CellImage.repository, "Open Chinese Convert (OpenCC)", "https://github.com/BYVoid/OpenCC"),
             (CellImage.repository, "ISEmojiView", "https://github.com/isaced/ISEmojiView"),
         ],
+        /*
         [
             (CellImage.email, LocalizedStrings.about_email, "mailto:info@typeduck.hk"),
             (CellImage.rate, LocalizedStrings.about_appStore, "https://apps.apple.com/us/app/typeduck/id0000000000"),
         ],
+        */
     ]
     
     override func viewDidLoad() {
@@ -79,6 +81,7 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.section > 0, var url = URL(string: Self.sections[indexPath.section - 1][indexPath.row].url) {
+            /*
             if url.scheme == "mailto" {
                 if #available(iOS 16.0, *) {
                     url.append(queryItems: AboutTableViewCell.emailQuery)
@@ -89,6 +92,7 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     }
                 }
             }
+            */
             UIApplication.shared.open(url)
         }
     }
