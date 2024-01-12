@@ -97,10 +97,10 @@ class DictionaryView: UIScrollView {
 
 class DictionaryEntryView: UIStackView {
     private static let otherData: KeyValuePairs<String, WritableKeyPath<CandidateEntry, String?>> = [
-        "Standard Form": \.properties.normalized,
-        "Written Form": \.properties.written,
-        "Vernacular Form": \.properties.vernacular,
-        "Word Form": \.properties.collocation,
+        "Standard Form 標準字形": \.properties.normalized,
+        "Written Form 書面語": \.properties.written,
+        "Vernacular Form 口語": \.properties.vernacular,
+        "Collocation 配搭": \.properties.collocation,
     ]
     
     private static let litColReading: [String: String] = [
@@ -109,10 +109,10 @@ class DictionaryEntryView: UIStackView {
     ]
     
     private static let register: [String: String] = [
-        "wri": "written",
-        "ver": "vernacular",
-        "for": "formal",
-        "lzh": "archaic",
+        "wri": "written 書面語",
+        "ver": "vernacular 口語",
+        "for": "formal 公文體",
+        "lzh": "classical Chinese 文言",
     ]
     
     private static let partOfSpeech: [String: String] = [
