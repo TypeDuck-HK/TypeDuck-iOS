@@ -26,38 +26,6 @@ protocol Option {
     func updateSettings()
 }
 
-extension Option {
-    func makeCell(with view: UIView) -> UITableViewCell {
-        let cell = UITableViewCell()
-        
-        var views: [UIView] = [UILabel(title: title), view]
-        if description != nil || videoUrl != nil {
-            let button = UIButton()
-            button.setImage(CellImage.faq, for: .normal)
-            button.isUserInteractionEnabled = false
-            views.append(button)
-        } else {
-            cell.selectionStyle = .none
-        }
-        
-        let stackView = UIStackView(arrangedSubviews: views)
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.spacing = 8
-        
-        let contentView = cell.contentView
-        contentView.addSubview(stackView)
-        
-        NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
-            contentView.bottomAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 6),
-            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            contentView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: 20),
-        ])
-        
-        return cell
-    }
-}
-
 private class Switch: Option {
     var title: String
     var description: String?
@@ -81,7 +49,7 @@ private class Switch: Option {
         control = UISwitch()
         control.isOn = value
         control.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
-        return makeCell(with: control)
+        return OptionTableViewCell(option: self, optionView: control)
     }
     
     @objc func updateSettings() {
@@ -118,8 +86,9 @@ private class Segment<T: Equatable>: Option {
         control = UISegmentedControl(items: options.map { $0.key })
         control.setTitleTextAttributes(String.HKAttribute, for: .normal)
         control.selectedSegmentIndex = options.firstIndex(where: { $1 == value })!
+        control.apportionsSegmentWidthsByContent = Bundle.main.preferredLocalizations[0] == "en"
         control.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
-        return makeCell(with: control)
+        return OptionTableViewCell(option: self, optionView: control)
     }
     
     @objc func updateSettings() {
@@ -158,8 +127,7 @@ extension Settings {
             Section(
                 LocalizedStrings.inputMethodSettings,
                 [
-                    Switch(LocalizedStrings.mixedMode, \.isMixedModeEnabled,
-                           LocalizedStrings.mixedMode_description, "Guide1-2"),
+                    Switch(LocalizedStrings.mixedMode, \.isMixedModeEnabled),
                     Switch(LocalizedStrings.longPressSymbolKeys, \.isLongPressSymbolKeysEnabled, LocalizedStrings.longPressSymbolKeys_description),
                     Switch(LocalizedStrings.smartFullStop, \.isSmartFullStopEnabled,
                            LocalizedStrings.smartFullStop_description, "Guide8-1"),
@@ -167,6 +135,7 @@ extension Settings {
                 ] + (UIDevice.current.userInterfaceIdiom == .pad ? [] : [
                     Switch(LocalizedStrings.tapHapticFeedback, \.isTapHapticFeedbackEnabled),
                 ]) + [
+                    Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
                     Segment(LocalizedStrings.candidateFontSize, \.candidateFontSize, [
                             LocalizedStrings.candidateFontSize_small: .small,
                             LocalizedStrings.candidateFontSize_normal: .normal,
@@ -180,35 +149,15 @@ extension Settings {
                             LocalizedStrings.symbolShape_half: .half,
                             LocalizedStrings.symbolShape_full: .full,
                             LocalizedStrings.symbolShape_smart: .smart,
-                        ],
-                        LocalizedStrings.symbolShape_description, "Guide9-1"
-                    ),
-                    Switch(LocalizedStrings.showBottomLeftSwitchLangButton, \.showBottomLeftSwitchLangButton,
-                           LocalizedStrings.showBottomLeftSwitchLangButton_description),
-                    Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
+                    ]),
                 ]
             ),
             UIDevice.current.userInterfaceIdiom == .pad ? padSection : nil,
-            Section(
-                LocalizedStrings.mixedInputSettings,
-                [
-                    Switch(LocalizedStrings.smartSpace, \.isSmartEnglishSpaceEnabled,
-                           LocalizedStrings.smartSpace_description),
-                    Segment(LocalizedStrings.smartSymbolShapeDefault, \.smartSymbolShapeDefault, [
-                            LocalizedStrings.smartSymbolShapeDefault_half: .half,
-                            LocalizedStrings.smartSymbolShapeDefault_full: .full,
-                        ],
-                        LocalizedStrings.smartSymbolShapeDefault_description, "Guide10-3"
-                    ),
-                ]
-            ),
             Section(
                 LocalizedStrings.chineseInputSettings,
                 [
                     Switch(LocalizedStrings.enablePredictiveText, \.enablePredictiveText,
                            LocalizedStrings.enablePredictiveText_description),
-                    Switch(LocalizedStrings.predictiveTextOffensiveWord, \.predictiveTextOffensiveWord,
-                           LocalizedStrings.predictiveTextOffensiveWord_description),
                     Segment(LocalizedStrings.compositionMode, \.compositionMode, [
                             LocalizedStrings.compositionMode_immediate: .immediate,
                             LocalizedStrings.compositionMode_multiStage: .multiStage,
@@ -220,11 +169,6 @@ extension Settings {
                             LocalizedStrings.spaceAction_insertCandidate: .insertCandidate,
                             LocalizedStrings.spaceAction_insertText: .insertText,
                     ]),
-                    Segment(LocalizedStrings.fullWidthSpace, \.fullWidthSpaceMode, [
-                            LocalizedStrings.fullWidthSpace_shift: .shift,
-                            LocalizedStrings.fullWidthSpace_off: .off,
-                        ], LocalizedStrings.fullWidthSpace_description
-                    ),
                     Segment(LocalizedStrings.showRomanizationMode, \.showRomanizationMode, [
                             LocalizedStrings.showRomanizationMode_never: .never,
                             LocalizedStrings.showRomanizationMode_always: .always,
@@ -255,7 +199,6 @@ extension Settings {
                 LocalizedStrings.englishInputSettings,
                 [
                     Switch(LocalizedStrings.autoCap, \.isAutoCapEnabled),
-                    Switch(LocalizedStrings.shouldShowEnglishExactMatch, \.shouldShowEnglishExactMatch),
                     Segment(LocalizedStrings.englishLocale, \.englishLocale, [
                             LocalizedStrings.englishLocale_au: .au,
                             LocalizedStrings.englishLocale_ca: .ca,

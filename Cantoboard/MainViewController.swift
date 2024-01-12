@@ -111,12 +111,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
-        case 0:
-            var installTypeDuck_description = LocalizedStrings.installTypeDuck_description
-            if #available(iOS 15, *) {
-                installTypeDuck_description = LocalizedStrings.installTypeDuck_ios15_description + installTypeDuck_description
-            }
-            return installTypeDuck_description
+        case 0: return LocalizedStrings.installTypeDuck_description
         case 3: return LocalizedStrings.displayLanguages_description
         default: return nil
         }

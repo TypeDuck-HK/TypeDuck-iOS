@@ -25,8 +25,6 @@ class DescriptionPresentationController: UIPresentationController {
         presentedController.view.layoutIfNeeded()
         
         var height = presentedController.view.safeAreaInsets.top +
-            presentedController.navigationBar.bounds.height +
-            DescriptionViewController.paddingBetweenTitleAndDescription +
             DescriptionViewController.stackViewInset.top +
             descriptionViewController.stackView.bounds.height +
             DescriptionViewController.stackViewInset.bottom +

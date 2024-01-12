@@ -8,9 +8,7 @@
 import UIKit
 
 class FaqViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    static let faqs: [(question: String, answer: String)] = [
-        (LocalizedStrings.faq_0_question, LocalizedStrings.faq_0_answer),
-    ]
+    static let faqs: [(question: String, answer: String)] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()

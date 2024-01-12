@@ -66,6 +66,7 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
+        case 1: return LocalizedStrings.about_links
         case 2: return LocalizedStrings.about_credit
         default: return nil
         }

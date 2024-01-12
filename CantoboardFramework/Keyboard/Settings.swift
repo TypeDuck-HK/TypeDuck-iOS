@@ -248,7 +248,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultCantoneseKeyboardLayout: CantoneseKeyboardLayout = .qwerty
     private static let defaultToneInputMode: ToneInputMode = .vxq
     private static let defaultRimeSettings: RimeSettings = RimeSettings()
-    private static let defaultEnglishLocale: EnglishLocale = .us
+    private static let defaultEnglishLocale: EnglishLocale = .gb
     private static let defaultShowRomanizationMode: ShowRomanizationMode = .always
     private static let defaultShowCodeInReverseLookup: Bool = true
     private static let defaultAudioFeedbackEnabled: Bool = true
@@ -269,7 +269,7 @@ public struct Settings: Codable, Equatable {
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
-    public var isSmartEnglishSpaceEnabled: Bool = true
+    public var isSmartEnglishSpaceEnabled: Bool
     public var isSmartFullStopEnabled: Bool
     public var candidateFontSize: CandidateFontSize
     public var candidateGap: CandidateGap

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1405FF3C2719FAA80037F724 /* InputTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1405FF3B2719FAA80037F724 /* InputTableViewCell.swift */; };
-		1405FF3E2719FED60037F724 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1405FF3D2719FED60037F724 /* Localizable.strings */; };
 		1405FF40271A02330037F724 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1405FF3F271A02330037F724 /* LocalizedStrings.swift */; };
 		1414B2B5271B12F200091ADF /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1414B2B4271B12F200091ADF /* Settings.swift */; };
 		141A27812A726EEF0068CD94 /* UIFont+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A27802A726EEF0068CD94 /* UIFont+Extension.swift */; };
@@ -31,6 +30,8 @@
 		146EB3CE29FC627B006A40C6 /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146EB3CD29FC627B006A40C6 /* UILabel+Extension.swift */; };
 		1474441829E68FE8009E4468 /* CandidateEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1474441729E68FE8009E4468 /* CandidateEntry.swift */; };
 		147692FB2B51A3CD001C182A /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147692FA2B51A3CD001C182A /* String+Extension.swift */; };
+		1476930B2B5204BA001C182A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1476930D2B5204BA001C182A /* Localizable.strings */; };
+		147693102B53F18A001C182A /* OptionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1476930F2B53F18A001C182A /* OptionTableViewCell.swift */; };
 		14A430322B34A47A005549F5 /* AboutTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A430312B34A47A005549F5 /* AboutTableViewCell.swift */; };
 		14B9E1392742EC2B007E8679 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */; };
 		14BD07D629F9D18400DB8865 /* DictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14BD07D529F9D18400DB8865 /* DictionaryView.swift */; };
@@ -331,7 +332,6 @@
 
 /* Begin PBXFileReference section */
 		1405FF3B2719FAA80037F724 /* InputTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputTableViewCell.swift; sourceTree = "<group>"; };
-		1405FF3D2719FED60037F724 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; lineEnding = 0; path = Localizable.strings; sourceTree = "<group>"; };
 		1405FF3F271A02330037F724 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 		1414B2B4271B12F200091ADF /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		141A27802A726EEF0068CD94 /* UIFont+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extension.swift"; sourceTree = "<group>"; };
@@ -350,6 +350,9 @@
 		146EB3CD29FC627B006A40C6 /* UILabel+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
 		1474441729E68FE8009E4468 /* CandidateEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateEntry.swift; sourceTree = "<group>"; };
 		147692FA2B51A3CD001C182A /* String+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		1476930C2B5204BA001C182A /* zh-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		1476930E2B5204BF001C182A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		1476930F2B53F18A001C182A /* OptionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionTableViewCell.swift; sourceTree = "<group>"; };
 		14A430312B34A47A005549F5 /* AboutTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTableViewCell.swift; sourceTree = "<group>"; };
 		14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		14BD07D529F9D18400DB8865 /* DictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryView.swift; sourceTree = "<group>"; };
@@ -363,9 +366,7 @@
 		7906D6DF26D8D35E004C3C0F /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		790839A626D0FCED00CA6B56 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 		790839BD26D1054400CA6B56 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		790839C226D105F000CA6B56 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		790839C326D1062F00CA6B56 /* zh-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		790839C426D1063700CA6B56 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		7912CC5926D2173000BA89AB /* EastAsianWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EastAsianWidth.swift; sourceTree = "<group>"; };
 		7913D965266752FC00DB78C2 /* MissingGlyphRemover */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MissingGlyphRemover; sourceTree = BUILT_PRODUCTS_DIR; };
 		7913D967266752FC00DB78C2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -666,13 +667,14 @@
 				799D919C2674646D00AE9DBD /* Settings.bundle */,
 				79B9B70725F43D0E00238E80 /* Cantoboard.entitlements */,
 				7919A78E25F332100075DD4D /* Info.plist */,
-				1405FF3D2719FED60037F724 /* Localizable.strings */,
+				1476930D2B5204BA001C182A /* Localizable.strings */,
 				142AA609274C0A8F00D7EE39 /* AboutViewController.swift */,
 				7919A78025F3320F0075DD4D /* AppDelegate.swift */,
 				142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */,
 				142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */,
 				142AA607274C09AB00D7EE39 /* FaqViewController.swift */,
 				1405FF3B2719FAA80037F724 /* InputTableViewCell.swift */,
+				1476930F2B53F18A001C182A /* OptionTableViewCell.swift */,
 				14A430312B34A47A005549F5 /* AboutTableViewCell.swift */,
 				143F03E529EF9BDA00E604FC /* LanguageTableViewCell.swift */,
 				142AA600274C065100D7EE39 /* Keyboard.swift */,
@@ -1283,9 +1285,7 @@
 			knownRegions = (
 				en,
 				Base,
-				"zh-Hant",
 				"zh-HK",
-				"zh-Hans",
 			);
 			mainGroup = 7919A77425F3320F0075DD4D;
 			packageReferences = (
@@ -1313,7 +1313,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7919A78D25F332100075DD4D /* LaunchScreen.storyboard in Resources */,
-				1405FF3E2719FED60037F724 /* Localizable.strings in Resources */,
+				1476930B2B5204BA001C182A /* Localizable.strings in Resources */,
 				7919A78A25F332100075DD4D /* Assets.xcassets in Resources */,
 				799D919D2674646D00AE9DBD /* Settings.bundle in Resources */,
 				79A2D0802661FD0C00F2EB19 /* Guide in Resources */,
@@ -1429,6 +1429,7 @@
 				143F03E629EF9BDA00E604FC /* LanguageTableViewCell.swift in Sources */,
 				1414B2B5271B12F200091ADF /* Settings.swift in Sources */,
 				142AA60E274CB73F00D7EE39 /* DescriptionPresentationController.swift in Sources */,
+				147693102B53F18A001C182A /* OptionTableViewCell.swift in Sources */,
 				14B9E1392742EC2B007E8679 /* OnboardingViewController.swift in Sources */,
 				142AA608274C09AB00D7EE39 /* FaqViewController.swift in Sources */,
 				142AA601274C065100D7EE39 /* Keyboard.swift in Sources */,
@@ -1609,13 +1610,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		1476930D2B5204BA001C182A /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1476930C2B5204BA001C182A /* zh-HK */,
+				1476930E2B5204BF001C182A /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		790839B826D1053C00CA6B56 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				790839BD26D1054400CA6B56 /* en */,
-				790839C226D105F000CA6B56 /* zh-Hant */,
 				790839C326D1062F00CA6B56 /* zh-HK */,
-				790839C426D1063700CA6B56 /* zh-Hans */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
