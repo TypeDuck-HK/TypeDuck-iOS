@@ -15,15 +15,13 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         set {
             Settings.save(newValue)
             
-            if let inputCell = self.tableView.cellForRow(at: [1, 0]) as? InputTableViewCell {
+            if let inputCell = self.tableView.cellForRow(at: [2, 0]) as? InputTableViewCell {
                 inputCell.hideKeyboard()
             }
         }
     }
     var sections: [Section] = Settings.buildSections()
     var aboutCells: [(title: String, image: UIImage, action: () -> ())]!
-    
-    var lastSection: Int { Keyboard.isEnabled ? sections.count + 4 : 1 }
     
     static let languageNames: [Language: String] = [
         .eng: LocalizedStrings.displayLanguages_eng,
@@ -82,16 +80,17 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.reloadData()
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int { lastSection + 1 }
+    func numberOfSections(in tableView: UITableView) -> Int { Keyboard.isEnabled ? sections.count + 5 : 2 }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case lastSection: return aboutCells.count
-        case 0, 1: return 1
-        case 2: return settings.languageState.selected.count
-        case 3: return settings.languageState.deselected.count
+        case 0: return 1
+        case 1: return aboutCells.count
+        case 2: return 1
+        case 3: return settings.languageState.selected.count
+        case 4: return settings.languageState.deselected.count
         default:
-            let sectionId = section - 4
+            let sectionId = section - 5
             guard 0 <= sectionId && sectionId < sections.count else { return 0 }
             return sections[sectionId].options.count
         }
@@ -99,12 +98,12 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
-        case lastSection: return LocalizedStrings.other
         case 0: return LocalizedStrings.installTypeDuck
-        case 1: return LocalizedStrings.testKeyboard
-        case 2: return LocalizedStrings.displayLanguages
-        case 3: return settings.languageState.deselected.isEmpty ? nil : LocalizedStrings.moreLanguages
-        default: return sections[section - 4].header
+        case 1: return nil
+        case 2: return LocalizedStrings.testKeyboard
+        case 3: return LocalizedStrings.displayLanguages
+        case 4: return settings.languageState.deselected.isEmpty ? nil : LocalizedStrings.moreLanguages
+        default: return sections[section - 5].header
         }
     }
     
@@ -116,39 +115,39 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 installTypeDuck_description = LocalizedStrings.installTypeDuck_ios15_description + installTypeDuck_description
             }
             return installTypeDuck_description
-        case 2: return LocalizedStrings.displayLanguages_description
+        case 3: return LocalizedStrings.displayLanguages_description
         default: return nil
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
-        case lastSection: return UITableViewCell(title: aboutCells[indexPath.row].title, image: aboutCells[indexPath.row].image)
         case 0: return UITableViewCell(tintedTitle: LocalizedStrings.installTypeDuck_settings, image: CellImage.settings)
-        case 1: return InputTableViewCell(tableView: tableView)
-        case 2: return LanguageTableViewCell(languageName: Self.languageNames[settings.languageState.selected[indexPath.row]]!,
+        case 1: return UITableViewCell(tintedTitle: aboutCells[indexPath.row].title, image: aboutCells[indexPath.row].image)
+        case 2: return InputTableViewCell(tableView: tableView)
+        case 3: return LanguageTableViewCell(languageName: Self.languageNames[settings.languageState.selected[indexPath.row]]!,
                                              checked: settings.languageState.selected[indexPath.row] == settings.languageState.main,
                                              isEnabled: settings.languageState.selected.count > 1)
-        case 3: return LanguageTableViewCell(languageName: Self.languageNames[settings.languageState.deselected[indexPath.row]]!)
-        default: return sections[indexPath.section - 4].options[indexPath.row].dequeueCell(with: self)
+        case 4: return LanguageTableViewCell(languageName: Self.languageNames[settings.languageState.deselected[indexPath.row]]!)
+        default: return sections[indexPath.section - 5].options[indexPath.row].dequeueCell(with: self)
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
-        case lastSection: aboutCells[indexPath.row].action()
         case 0: UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
-        case 1: (tableView.cellForRow(at: indexPath) as? InputTableViewCell)?.showKeyboard()
-        case 2:
+        case 1: aboutCells[indexPath.row].action()
+        case 2: (tableView.cellForRow(at: indexPath) as? InputTableViewCell)?.showKeyboard()
+        case 3:
             if let index = settings.languageState.selected.firstIndex(of: settings.languageState.main) {
-                tableView.cellForRow(at: IndexPath(row: index, section: 2))?.editingAccessoryType = .none
+                tableView.cellForRow(at: IndexPath(row: index, section: 3))?.editingAccessoryType = .none
             }
             tableView.cellForRow(at: indexPath)?.editingAccessoryType = .checkmark
             settings.languageState.main = settings.languageState.selected[indexPath.row]
             Settings.save(settings)
-        case 3: break
-        default: showDescription(of: sections[indexPath.section - 4].options[indexPath.row])
+        case 4: break
+        default: showDescription(of: sections[indexPath.section - 5].options[indexPath.row])
         }
     }
     
@@ -158,16 +157,16 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         switch indexPath.section {
-        // case 2: return settings.languageState.selected.count > 1
-        case 2, 3: return true
+        // case 3: return settings.languageState.selected.count > 1
+        case 3, 4: return true
         default: return false
         }
     }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         switch indexPath.section {
-        case 2: return .delete
-        case 3: return .insert
+        case 3: return .delete
+        case 4: return .insert
         default: return .none
         }
     }
@@ -178,11 +177,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             let element = settings.languageState.selected[indexPath.row]
             let index = settings.languageState.delete(at: indexPath.row)
             tableView.cellForRow(at: indexPath)?.selectionStyle = .none
-            let newIndexPath = IndexPath(row: index, section: 3)
+            let newIndexPath = IndexPath(row: index, section: 4)
             tableView.beginUpdates()
             tableView.moveRow(at: indexPath, to: newIndexPath)
             tableView.endUpdates()
-            let firstSelectedCell = tableView.cellForRow(at: IndexPath(row: 0, section: 2))
+            let firstSelectedCell = tableView.cellForRow(at: IndexPath(row: 0, section: 3))
             if settings.languageState.main == element {
                 settings.languageState.main = settings.languageState.selected.first!
                 tableView.cellForRow(at: newIndexPath)?.editingAccessoryType = .none
@@ -190,16 +189,16 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             Settings.save(settings)
             (firstSelectedCell as? LanguageTableViewCell)?.isEnabled = settings.languageState.selected.count > 1
-            tableView.headerView(forSection: 3)?.isHidden = settings.languageState.deselected.isEmpty
+            tableView.headerView(forSection: 4)?.isHidden = settings.languageState.deselected.isEmpty
         case .insert:
             let index = settings.languageState.insert(at: indexPath.row)
             Settings.save(settings)
             tableView.cellForRow(at: indexPath)?.selectionStyle = .default
-            (tableView.cellForRow(at: IndexPath(row: 0, section: 2)) as? LanguageTableViewCell)?.isEnabled = settings.languageState.selected.count > 1
+            (tableView.cellForRow(at: IndexPath(row: 0, section: 3)) as? LanguageTableViewCell)?.isEnabled = settings.languageState.selected.count > 1
             tableView.beginUpdates()
-            tableView.moveRow(at: indexPath, to: IndexPath(row: index, section: 2))
+            tableView.moveRow(at: indexPath, to: IndexPath(row: index, section: 3))
             tableView.endUpdates()
-            tableView.headerView(forSection: 3)?.isHidden = settings.languageState.deselected.isEmpty
+            tableView.headerView(forSection: 4)?.isHidden = settings.languageState.deselected.isEmpty
         default: break
         }
     }
