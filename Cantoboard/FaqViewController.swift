@@ -16,6 +16,8 @@ class FaqViewController: UIViewController, UITableViewDelegate, UITableViewDataS
         super.viewDidLoad()
         
         title = LocalizedStrings.other_faq
+        navigationController?.navigationBar.largeTitleTextAttributes = String.HKAttribute
+        navigationController?.navigationBar.titleTextAttributes = String.HKAttribute
         view.backgroundColor = .systemBackground
         let tableView = UITableView(frame: view.frame, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -59,12 +61,12 @@ class FaqTableViewCell: UITableViewCell {
         self.init()
         
         let questionLabel = UILabel()
-        questionLabel.text = question
+        questionLabel.attributedText = question.toHKAttributedString
         questionLabel.font = .preferredFont(forTextStyle: .headline)
         questionLabel.numberOfLines = 0
         
         answerLabel = UILabel()
-        answerLabel.text = answer
+        answerLabel.attributedText = answer.toHKAttributedString
         answerLabel.font = .preferredFont(forTextStyle: .body)
         answerLabel.numberOfLines = 0
         answerLabel.isHidden = true

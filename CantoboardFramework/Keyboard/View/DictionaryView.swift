@@ -146,12 +146,12 @@ class DictionaryEntryView: UIStackView {
         
         let entryLabel = UILabel(font: .preferredFont(forTextStyle: .title1))
         entryLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
-        entryLabel.text = entry.honzi
+        entryLabel.attributedText = entry.honzi?.toHKAttributedString
         var titleStackElements: [UIView] = [entryLabel]
         if let jyutping = entry.jyutping {
             let pronunciationLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .body))
             pronunciationLabel.numberOfLines = 0
-            pronunciationLabel.text = jyutping
+            pronunciationLabel.attributedText = jyutping.toHKAttributedString
             titleStackElements.append(pronunciationLabel)
         }
         var pronunciationType = [String]()
@@ -164,7 +164,7 @@ class DictionaryEntryView: UIStackView {
         if !pronunciationType.isEmpty {
             let pronunciationTypeLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .footnote))
             pronunciationTypeLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
-            pronunciationTypeLabel.text = "(\(pronunciationType.joined(separator: ", ")))"
+            pronunciationTypeLabel.attributedText = "(\(pronunciationType.joined(separator: ", ")))".toHKAttributedString
             titleStackElements.append(pronunciationTypeLabel)
         }
         addArrangedSubview(WrappableStackView(spacingX: 16 * Settings.cached.candidateFontSize.scale, spacingY: 10 * Settings.cached.candidateFontSize.scale, arrangedSubviews: titleStackElements))
@@ -178,7 +178,7 @@ class DictionaryEntryView: UIStackView {
                 partOfSpeechLabel.layer.borderColor = ButtonColor.dictionaryViewGrayedColor.resolvedColor(with: traitCollection).cgColor
                 partOfSpeechLabel.layer.borderWidth = 1
                 partOfSpeechLabel.layer.cornerRadius = 2
-                partOfSpeechLabel.text = Self.partOfSpeech[String(pos)] ?? String(pos)
+                partOfSpeechLabel.attributedText = (Self.partOfSpeech[String(pos)] ?? String(pos)).toHKAttributedString
                 partOfSpeechLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
                 definitionStackElements.append(partOfSpeechLabel)
                 if i != partsOfSpeech.endIndex - 1 {
@@ -189,14 +189,14 @@ class DictionaryEntryView: UIStackView {
         if let register = entry.properties.register, let reg = Self.register[register] {
             let registerLabel = UILabel(color: ButtonColor.keyGrayedColor, font: .italicSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
             registerLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
-            registerLabel.text = reg
+            registerLabel.attributedText = reg.toHKAttributedString
             definitionStackElements.append(registerLabel)
         }
         if let label = entry.properties.label {
             let labels = label.split(separator: " ")
             for (i, lbl) in labels.enumerated() {
                 let labelLabel = UILabel(color: ButtonColor.keyGrayedColor, font: .preferredFont(forTextStyle: .subheadline))
-                labelLabel.text = "(\(lbl))"
+                labelLabel.attributedText = "(\(lbl))".toHKAttributedString
                 labelLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
                 definitionStackElements.append(labelLabel)
                 if i != labels.endIndex - 1 {
@@ -207,7 +207,7 @@ class DictionaryEntryView: UIStackView {
         if let definition = entry.mainLanguage {
             let definitionLabel = UILabel(font: .preferredFont(forTextStyle: .body))
             definitionLabel.numberOfLines = 0
-            definitionLabel.text = definition
+            definitionLabel.attributedText = definition.toHKAttributedString
             definitionStackElements.append(definitionLabel)
         }
         if !definitionStackElements.isEmpty {

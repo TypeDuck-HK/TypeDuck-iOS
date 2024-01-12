@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 
 extension String {
-    func size(withFont: UIFont) -> CGSize {
-        return (self as NSString).size(withAttributes: [NSAttributedString.Key.font: withFont])
+    func size(withFont font: UIFont) -> CGSize {
+        return (self as NSString).size(withAttributes: Self.HKAttributed(withFont: font))
     }
     
     func caseChangeCount() -> Int {
@@ -78,7 +78,7 @@ extension String {
     }
     
     // Render the string in HK Chinese style. (標點置中)
-    func toHKAttributedString(withFont font: UIFont? = nil, withForegroundColor foregroundColor: UIColor? = nil) -> NSAttributedString {
+    static func HKAttributed(withFont font: UIFont? = nil) -> [NSAttributedString.Key : Any] {
         var attributes: [NSAttributedString.Key : Any] = [:]
         attributes[NSAttributedString.Key(kCTLanguageAttributeName as String)] = "zh-HK"
         
@@ -86,8 +86,18 @@ extension String {
             attributes[.font] = font
         }
         
+        return attributes
+    }
+    
+    func toHKAttributedString(withFont font: UIFont? = nil, withForegroundColor foregroundColor: UIColor? = nil, withParagraphStyle paragraphStyle: NSMutableParagraphStyle? = nil) -> NSAttributedString {
+        var attributes = Self.HKAttributed(withFont: font)
+        
         if let foregroundColor = foregroundColor {
             attributes[.foregroundColor] = foregroundColor
+        }
+        
+        if let paragraphStyle = paragraphStyle {
+            attributes[.paragraphStyle] = paragraphStyle
         }
         
         return NSAttributedString(string: self, attributes: attributes)

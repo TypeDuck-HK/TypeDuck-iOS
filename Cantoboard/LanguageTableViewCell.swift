@@ -16,13 +16,13 @@ class LanguageTableViewCell: UITableViewCell {
     
     convenience init(languageName: String) {
         self.init()
-        textLabel?.text = languageName
+        textLabel?.attributedText = languageName.toHKAttributedString
         selectionStyle = .none
     }
     
     convenience init(languageName: String, checked: Bool, isEnabled: Bool) {
         self.init()
-        textLabel?.text = languageName
+        textLabel?.attributedText = languageName.toHKAttributedString
         editingAccessoryType = checked ? .checkmark : .none
         self.isEnabled = isEnabled
     }

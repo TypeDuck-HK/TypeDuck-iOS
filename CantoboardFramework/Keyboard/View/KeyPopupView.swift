@@ -87,7 +87,7 @@ class KeyPopupView: UIView {
             let label = labels[i]
             let keyCap = keyCaps[i]
             label.tag = i
-            label.text = keyCap.buttonText
+            label.attributedText = keyCap.buttonText?.toHKAttributedString
             label.baselineAdjustment = .alignCenters
             label.backgroundColor = .clear
             

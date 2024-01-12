@@ -171,12 +171,12 @@ class CandidateCell: UICollectionViewCell {
             if keyboardState.showCodeInReverseLookup {
                 let reverseLookupLabel = self.reverseLookupLabel ?? UILabel()
                 reverseLookupLabel.textAlignment = mode == .row ? .center : .left
-                reverseLookupLabel.text = info.note.isEmpty ? "⠀" : info.note
+                reverseLookupLabel.attributedText = (info.note.isEmpty ? "⠀" : info.note).toHKAttributedString
                 reverseLookupLabel.textColor = ButtonColor.keyHintColor
                 codeLabels.append(reverseLookupLabel)
                 self.reverseLookupLabel = reverseLookupLabel
             } else {
-                self.reverseLookupLabel?.text = nil
+                self.reverseLookupLabel?.attributedText = nil
                 self.reverseLookupLabel?.removeFromSuperview()
                 self.reverseLookupLabel = nil
             }
@@ -184,11 +184,11 @@ class CandidateCell: UICollectionViewCell {
             if keyboardState.showRomanization, mode == .row || !info.romanization.isEmpty || !keyboardState.showCodeInReverseLookup {
                 let romanizationLabel = self.romanizationLabel ?? UILabel()
                 romanizationLabel.textAlignment = mode == .row ? .center : .left
-                romanizationLabel.text = info.romanization.isEmpty ? "⠀" : info.romanization
+                romanizationLabel.attributedText = (info.romanization.isEmpty ? "⠀" : info.romanization).toHKAttributedString
                 codeLabels.append(romanizationLabel)
                 self.romanizationLabel = romanizationLabel
             } else {
-                self.romanizationLabel?.text = nil
+                self.romanizationLabel?.attributedText = nil
                 self.romanizationLabel?.removeFromSuperview()
                 self.romanizationLabel = nil
             }
@@ -209,12 +209,12 @@ class CandidateCell: UICollectionViewCell {
             if let entry = entry, let mainLanguage = mode == .row ? entry.mainLanguageOrLabel : entry.mainLanguage {
                 let translationLabel = self.translationLabel ?? UILabel()
                 translationLabel.textAlignment = mode == .row ? .center : .left
-                translationLabel.text = mainLanguage
+                translationLabel.attributedText = mainLanguage.toHKAttributedString
                 translationLabel.textColor = entry.isDictionaryEntry ? ButtonColor.keyForegroundColor : ButtonColor.keyHintColor
                 targetStack!.addArrangedSubview(translationLabel)
                 self.translationLabel = translationLabel
             } else {
-                self.translationLabel?.text = nil
+                self.translationLabel?.attributedText = nil
                 self.translationLabel?.removeFromSuperview()
                 self.translationLabel = nil
             }
@@ -224,7 +224,7 @@ class CandidateCell: UICollectionViewCell {
                 for (i, language) in otherLanguages.enumerated() {
                     let commentLabel = self.commentLabels[weak: i] ?? UILabel()
                     commentLabel.textAlignment = .left
-                    commentLabel.text = language
+                    commentLabel.attributedText = language.toHKAttributedString
                     commentLabel.textColor = entry.isDictionaryEntry ? ButtonColor.keyForegroundColor : ButtonColor.keyHintColor
                     commentStack!.addArrangedSubview(commentLabel)
                     self.commentLabels[weak: i] = commentLabel
@@ -238,7 +238,7 @@ class CandidateCell: UICollectionViewCell {
                 }
             } else {
                 for commentLabel in self.commentLabels {
-                    commentLabel.ref?.text = nil
+                    commentLabel.ref?.attributedText = nil
                     commentLabel.ref?.removeFromSuperview()
                     commentLabel.ref = nil
                 }
@@ -300,20 +300,20 @@ class CandidateCell: UICollectionViewCell {
             view.removeFromSuperview()
         }
         
-        label?.text = nil
+        label?.attributedText = nil
         label = nil
         
         keyHintLayer?.removeFromSuperlayer()
         keyHintLayer = nil
         
-        romanizationLabel?.text = nil
+        romanizationLabel?.attributedText = nil
         romanizationLabel = nil
         
-        translationLabel?.text = nil
+        translationLabel?.attributedText = nil
         translationLabel = nil
         
         for commentLabel in commentLabels {
-            commentLabel.ref?.text = nil
+            commentLabel.ref?.attributedText = nil
             commentLabel.ref = nil
         }
         commentLabels.removeAll()

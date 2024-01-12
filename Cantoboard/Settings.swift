@@ -116,6 +116,7 @@ private class Segment<T: Equatable>: Option {
     func dequeueCell(with controller: MainViewController) -> UITableViewCell {
         self.controller = controller
         control = UISegmentedControl(items: options.map { $0.key })
+        control.setTitleTextAttributes(String.HKAttribute, for: .normal)
         control.selectedSegmentIndex = options.firstIndex(where: { $1 == value })!
         control.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         return makeCell(with: control)

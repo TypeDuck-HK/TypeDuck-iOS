@@ -34,7 +34,7 @@ class CandidateSectionHeader: UICollectionReusableView {
             textLayer.adjustsFontSizeToFitWidth = true
         }
         
-        textLayer?.text = text
+        textLayer?.attributedText = text.toHKAttributedString
         
         layout(bounds)
     }

@@ -22,10 +22,8 @@ class AboutTableViewCell: UITableViewCell, UITextViewDelegate {
         self.init()
         
         let description = LocalizedStrings.about_description
-        let attributes: [NSAttributedString.Key : Any] = [
-            NSAttributedString.Key(kCTLanguageAttributeName as String): "zh-HK",
-            .font: UIFont.preferredFont(forTextStyle: .body)
-        ]
+        var attributes = String.HKAttribute
+        attributes[.font] = UIFont.preferredFont(forTextStyle: .body)
         let attributedString = NSMutableAttributedString(string: description, attributes: attributes)
         if let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) {
             for match in detector.matches(in: description, range: NSRange(description.startIndex..<description.endIndex, in: description)) {

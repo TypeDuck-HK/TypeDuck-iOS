@@ -233,7 +233,7 @@ class CandidatePaneView: UIControl {
             default: title = nil
             }
         }
-        inputModeButton.setTitle(title, for: .normal)
+        inputModeButton.setAttributedTitle(title?.toHKAttributedString, for: .normal)
         inputModeButton.isEnabled = keyboardState.enableState == .enabled
 
         backspaceButton.setImage(adjustImageFontSize(ButtonImage.backspace), for: .normal)
@@ -241,7 +241,7 @@ class CandidatePaneView: UIControl {
         backspaceButton.isEnabled = keyboardState.enableState == .enabled
         
         let charFormText = SessionState.main.lastCharForm.caption
-        charFormButton.setTitle(charFormText, for: .normal)
+        charFormButton.setAttributedTitle(charFormText.toHKAttributedString, for: .normal)
         charFormButton.isEnabled = keyboardState.enableState == .enabled
         
         if mode == .table {

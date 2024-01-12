@@ -10,7 +10,7 @@ import UIKit
 extension UILabel {
     convenience init(title: String) {
         self.init()
-        text = title
+        attributedText = title.toHKAttributedString
         font = .preferredFont(forTextStyle: .body)
     }
     

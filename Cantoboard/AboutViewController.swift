@@ -39,6 +39,8 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
         super.viewDidLoad()
         
         title = LocalizedStrings.other_about
+        navigationController?.navigationBar.largeTitleTextAttributes = String.HKAttribute
+        navigationController?.navigationBar.titleTextAttributes = String.HKAttribute
         view.backgroundColor = .systemBackground
         let tableView = UITableView(frame: view.frame, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -67,6 +69,10 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
         case 2: return LocalizedStrings.about_credit
         default: return nil
         }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        (view as? UITableViewHeaderFooterView)?.textLabel?.attributedText = self.tableView(tableView, titleForHeaderInSection: section)?.toHKAttributedString
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

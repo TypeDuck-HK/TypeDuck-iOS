@@ -35,6 +35,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
         
         title = "TypeDuck"
+        navigationController?.navigationBar.largeTitleTextAttributes = String.HKAttribute
+        navigationController?.navigationBar.titleTextAttributes = String.HKAttribute
         tableView = UITableView(frame: view.frame, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
@@ -152,7 +154,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        (view as? UITableViewHeaderFooterView)?.textLabel?.text = self.tableView(tableView, titleForHeaderInSection: section)
+        (view as? UITableViewHeaderFooterView)?.textLabel?.attributedText = self.tableView(tableView, titleForHeaderInSection: section)?.toHKAttributedString
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        (view as? UITableViewHeaderFooterView)?.textLabel?.attributedText = self.tableView(tableView, titleForFooterInSection: section)?.toHKAttributedString
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

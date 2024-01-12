@@ -20,7 +20,7 @@ class InputTableViewCell: UITableViewCell, UITextFieldDelegate {
         textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.returnKeyType = .done
-        textField.placeholder = LocalizedStrings.testKeyboard_placeholder
+        textField.attributedPlaceholder = LocalizedStrings.testKeyboard_placeholder.toHKAttributedString
         textField.font = .preferredFont(forTextStyle: .body)
         textField.delegate = self
         contentView.addSubview(textField)

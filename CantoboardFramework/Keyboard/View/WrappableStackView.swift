@@ -109,7 +109,7 @@ class WrappableStackView: UIStackView {
                 if i == groupedViews.endIndex - 1, let label = lastIndentLabel {
                     let paragraphStyle = NSMutableParagraphStyle()
                     paragraphStyle.firstLineHeadIndent = currOffset
-                    label.attributedText = NSAttributedString(string: label.text ?? label.attributedText?.string ?? "", attributes: [.paragraphStyle: paragraphStyle])
+                    label.attributedText = (label.text ?? label.attributedText?.string)?.toHKAttributedString(withParagraphStyle: paragraphStyle)
                     lineStack.removeFromSuperview()
                     let overlappedView = OverlappedView(topView: lineStack, bottomView: label)
                     addArrangedSubview(overlappedView)
@@ -128,7 +128,7 @@ class WrappableStackView: UIStackView {
         }
         
         if lastIndentLabel == nil, let label = allViews.last as? UILabel {
-            label.attributedText = NSAttributedString(string: label.text ?? label.attributedText?.string ?? "", attributes: [:])
+            label.attributedText = (label.text ?? label.attributedText?.string)?.toHKAttributedString
         }
     }
 }

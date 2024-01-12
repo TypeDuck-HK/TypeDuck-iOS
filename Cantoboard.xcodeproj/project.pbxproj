@@ -30,6 +30,7 @@
 		14656F992B0529C800E25AFF /* Rime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 14656F922B0529B900E25AFF /* Rime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		146EB3CE29FC627B006A40C6 /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146EB3CD29FC627B006A40C6 /* UILabel+Extension.swift */; };
 		1474441829E68FE8009E4468 /* CandidateEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1474441729E68FE8009E4468 /* CandidateEntry.swift */; };
+		147692FB2B51A3CD001C182A /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147692FA2B51A3CD001C182A /* String+Extension.swift */; };
 		14A430322B34A47A005549F5 /* AboutTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A430312B34A47A005549F5 /* AboutTableViewCell.swift */; };
 		14B9E1392742EC2B007E8679 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */; };
 		14BD07D629F9D18400DB8865 /* DictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14BD07D529F9D18400DB8865 /* DictionaryView.swift */; };
@@ -348,6 +349,7 @@
 		14656F922B0529B900E25AFF /* Rime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Rime.xcframework; path = RimeFramework/Rime.xcframework; sourceTree = "<group>"; };
 		146EB3CD29FC627B006A40C6 /* UILabel+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
 		1474441729E68FE8009E4468 /* CandidateEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateEntry.swift; sourceTree = "<group>"; };
+		147692FA2B51A3CD001C182A /* String+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		14A430312B34A47A005549F5 /* AboutTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTableViewCell.swift; sourceTree = "<group>"; };
 		14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		14BD07D529F9D18400DB8865 /* DictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryView.swift; sourceTree = "<group>"; };
@@ -602,6 +604,7 @@
 		142AA602274C06B800D7EE39 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				147692FA2B51A3CD001C182A /* String+Extension.swift */,
 				79C06B912761650E00DDAEFD /* UIImage+Extension.swift */,
 				142AA603274C06E400D7EE39 /* UILabel+Extension.swift */,
 				142AA605274C06F900D7EE39 /* UITableViewCell+Extension.swift */,
@@ -1421,6 +1424,7 @@
 				1405FF3C2719FAA80037F724 /* InputTableViewCell.swift in Sources */,
 				142AA60C274C9B1C00D7EE39 /* DescriptionViewController.swift in Sources */,
 				142AA604274C06E400D7EE39 /* UILabel+Extension.swift in Sources */,
+				147692FB2B51A3CD001C182A /* String+Extension.swift in Sources */,
 				14A430322B34A47A005549F5 /* AboutTableViewCell.swift in Sources */,
 				143F03E629EF9BDA00E604FC /* LanguageTableViewCell.swift in Sources */,
 				1414B2B5271B12F200091ADF /* Settings.swift in Sources */,

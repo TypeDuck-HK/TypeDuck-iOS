@@ -27,7 +27,7 @@ class KeyHintLayer: CATextLayer {
     }
     
     func setup(keyCap: KeyCap, hintText: String) {
-        string = hintText
+        string = hintText.toHKAttributedString(withForegroundColor: foregroundColor.map { UIColor(cgColor: $0) })
     }
     
     override init(layer: Any) {
@@ -36,5 +36,15 @@ class KeyHintLayer: CATextLayer {
     
     required init?(coder: NSCoder) {
         fatalError("Not supported.")
+    }
+    
+    override var foregroundColor: CGColor? {
+        didSet {
+            guard let foregroundColor = foregroundColor,
+                  let attributedString = string as? NSAttributedString else { return }
+            let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
+            mutableAttributedString.addAttribute(.foregroundColor, value: UIColor(cgColor: foregroundColor), range: NSMakeRange(0, attributedString.length))
+            string = mutableAttributedString
+        }
     }
 }

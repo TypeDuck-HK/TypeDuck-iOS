@@ -74,7 +74,7 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         super.viewDidLoad()
         
         let navTitle = UILabel()
-        navTitle.text = "TypeDuck"
+        navTitle.attributedText = "TypeDuck".toHKAttributedString
         navTitle.font = .systemFont(ofSize: 26, weight: .semibold)
         
         let logoImageView = UIImageView(image: UIImage(named: "AppIcon60x60")!.addPadding(2))
@@ -88,6 +88,7 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: navStackView)
         
         let skipButtonItem = UIBarButtonItem(title: LocalizedStrings.onboarding_skip, style: .plain, target: self, action: #selector(endOnboarding))
+        skipButtonItem.setTitleTextAttributes(String.HKAttribute, for: .normal)
         skipButtonItem.tintColor = .label
         navigationItem.rightBarButtonItem = skipButtonItem
         
@@ -111,7 +112,7 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
             let headingVideoPlayer = playerController.view!
             
             let headingLabel = UILabel()
-            headingLabel.text = page.heading
+            headingLabel.attributedText = page.heading.toHKAttributedString
             headingLabel.font = .systemFont(ofSize: 28, weight: .medium)
             headingLabel.numberOfLines = 0
             
@@ -122,7 +123,9 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.lineSpacing = 5
             // paragraphStyle.alignment = .justified
-            contentLabel.attributedText = NSMutableAttributedString(string: page.content, attributes: [.paragraphStyle: paragraphStyle])
+            var attributes = String.HKAttribute
+            attributes[.paragraphStyle] = paragraphStyle
+            contentLabel.attributedText = NSMutableAttributedString(string: page.content, attributes: attributes)
             
             let textStackView = UIStackView(arrangedSubviews: [headingLabel, contentLabel])
             textStackView.axis = .vertical
@@ -132,7 +135,7 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
             
             if let footnote = page.footnote {
                 let footnoteLabel = UILabel()
-                footnoteLabel.text = footnote
+                footnoteLabel.attributedText = footnote.toHKAttributedString
                 footnoteLabel.font = .preferredFont(forTextStyle: .footnote)
                 footnoteLabel.numberOfLines = 0
                 textStackView.addArrangedSubview(footnoteLabel)
@@ -141,9 +144,10 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
             if let buttonTitle = page.buttonTitle,
                let buttonAction = page.buttonAction {
                 let button = HighlightableButton()
-                button.setTitle(buttonTitle, for: .normal)
+                var attributes = String.HKAttribute
+                attributes[.foregroundColor] = UIColor.white
+                button.setAttributedTitle(NSAttributedString(string: buttonTitle, attributes: attributes), for: .normal)
                 button.titleLabel?.font = .systemFont(ofSize: 22)
-                button.tintColor = .white
                 button.backgroundColor = .systemBlue
                 button.layer.cornerRadius = 12
                 button.addTarget(self, action: buttonAction, for: .touchUpInside)

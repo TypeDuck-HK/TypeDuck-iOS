@@ -10,7 +10,7 @@ import UIKit
 extension UITableViewCell {
     convenience init(title: String? = nil, image: UIImage? = nil) {
         self.init()
-        textLabel?.text = title
+        textLabel?.attributedText = title?.toHKAttributedString
         imageView?.image = image
         accessoryType = .disclosureIndicator
     }

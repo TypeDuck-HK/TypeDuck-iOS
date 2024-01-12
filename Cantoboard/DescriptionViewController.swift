@@ -28,7 +28,7 @@ class DescriptionViewController: UIViewController {
         super.viewDidLoad()
 
         let titleLabel = UILabel()
-        titleLabel.text = option.title
+        titleLabel.attributedText = option.title.toHKAttributedString
         titleLabel.font = .systemFont(ofSize: 24, weight: .semibold)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(dismissDescription))
@@ -54,7 +54,7 @@ class DescriptionViewController: UIViewController {
         }
         
         let label = UILabel()
-        label.text = option.description
+        label.attributedText = option.description?.toHKAttributedString
         label.font = .preferredFont(forTextStyle: .body)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false

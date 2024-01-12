@@ -32,7 +32,7 @@ class CompositionLabel: UILabel {
     var composition: Composition? {
         didSet {
             if let composition = composition {
-                text = composition.text
+                attributedText = composition.text.toHKAttributedString
                 if caretView == nil {
                     let caretView = CAShapeLayer()
                     caretView.backgroundColor = Self.caretColor.resolvedColor(with: traitCollection).cgColor
@@ -43,7 +43,7 @@ class CompositionLabel: UILabel {
                     self.caretView = caretView
                 }
             } else {
-                text = nil
+                attributedText = nil
                 caretView?.removeFromSuperlayer()
                 caretView = nil
             }
