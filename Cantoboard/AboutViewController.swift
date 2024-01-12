@@ -55,7 +55,7 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return 0
+        case 0: return 1
         default: return Self.sections[section - 1].count
         }
     }
@@ -67,21 +67,28 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
-    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        switch section {
-        case 0: return LocalizedStrings.about_description
-        default: return nil
-        }
-    }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = Self.sections[indexPath.section - 1][indexPath.row]
-        return UITableViewCell(title: row.title, image: row.image)
+        switch indexPath.section {
+        case 0: return AboutTableViewCell(tableView: tableView)
+        default:
+            let row = Self.sections[indexPath.section - 1][indexPath.row]
+            return UITableViewCell(title: row.title, image: row.image)
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if let url = URL(string: Self.sections[indexPath.section - 1][indexPath.row].url) {
+        if indexPath.section > 0, var url = URL(string: Self.sections[indexPath.section - 1][indexPath.row].url) {
+            if url.scheme == "mailto" {
+                if #available(iOS 16.0, *) {
+                    url.append(queryItems: AboutTableViewCell.emailQuery)
+                } else if var urlComponent = URLComponents(url: url, resolvingAgainstBaseURL: true) {
+                    urlComponent.queryItems = (urlComponent.queryItems ?? []) + AboutTableViewCell.emailQuery
+                    if let newUrl = urlComponent.url {
+                        url = newUrl
+                    }
+                }
+            }
             UIApplication.shared.open(url)
         }
     }
