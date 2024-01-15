@@ -48,9 +48,9 @@ class WrappableStackView: UIStackView {
                 label.numberOfLines = 0
                 let textWidth = min(boundsWidth / 6 + 50, width)
                 shouldBreak = currOffset + textWidth > boundsWidth
-                if !shouldBreak, currOffset + width / 1.75 > boundsWidth {
+                if !shouldBreak, label.numberOfLines(withWidth: boundsWidth - currOffset) > 2 {
                     shouldBreak = width <= boundsWidth
-                    if i == allViews.endIndex - 1 && !shouldBreak {
+                    if !shouldBreak, i == allViews.endIndex - 1 {
                         lastIndentLabel = label
                         break
                     }
