@@ -16,7 +16,7 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
             (CellImage.sourceCode, LocalizedStrings.about_cantoboard, "https://github.com/Cantoboard/Cantoboard"),
         ],
         [
-            (CellImage.repository, "Rime Input Method Engine", "https://github.com/rime/librime"),
+            (CellImage.repository, "Rime Input Method Engine", "https://github.com/TypeDuck-HK/librime"),
             /*
             (CellImage.repository, "Rime Cantonese Input Schema", "https://github.com/rime/rime-cantonese"),
             (CellImage.repository, "Rime 倉頡三代", "https://github.com/Arthurmcarthur/Cangjie3-Plus"),
