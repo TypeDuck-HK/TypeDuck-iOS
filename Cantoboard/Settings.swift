@@ -86,7 +86,7 @@ private class Segment<T: Equatable>: Option {
         control = UISegmentedControl(items: options.map { $0.key })
         control.setTitleTextAttributes(String.HKAttribute, for: .normal)
         control.selectedSegmentIndex = options.firstIndex(where: { $1 == value })!
-        control.apportionsSegmentWidthsByContent = Bundle.main.preferredLocalizations[0] == "en"
+        control.apportionsSegmentWidthsByContent = key != \.interfaceLanguage && Bundle.main.preferredLocalizations[0] == "en"
         control.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         return OptionTableViewCell(option: self, optionView: control)
     }
@@ -97,6 +97,10 @@ private class Segment<T: Equatable>: Option {
         controller.settings[keyPath: key] = value
         controller.view.endEditing(true)
         Settings.save(controller.settings)
+        
+        if key == \.interfaceLanguage {
+            controller.appMovedToBackground()
+        }
     }
 }
 
@@ -104,6 +108,13 @@ extension Settings {
     private var enableCorrector: Bool {
         get { rimeSettings.enableCorrector }
         set { rimeSettings.enableCorrector = newValue }
+    }
+    
+    static var interfaceLanguageOption: Option {
+        Segment(LocalizedStrings.interfaceLanguage, \.interfaceLanguage, [
+            LocalizedStrings.interfaceLanguage_chinese: .chinese,
+            LocalizedStrings.interfaceLanguage_english: .english,
+        ])
     }
     
     static func buildSections() -> [Section] {

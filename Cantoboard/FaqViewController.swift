@@ -8,7 +8,7 @@
 import UIKit
 
 class FaqViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    static let faqs: [(question: String, answer: String)] = []
+    let faqs: [(question: String, answer: String)] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,10 +33,10 @@ class FaqViewController: UIViewController, UITableViewDelegate, UITableViewDataS
     
     func numberOfSections(in tableView: UITableView) -> Int { 1 }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { Self.faqs.count }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { faqs.count }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let faq = Self.faqs[indexPath.row]
+        let faq = faqs[indexPath.row]
         return FaqTableViewCell(question: faq.question, answer: faq.answer)
     }
     

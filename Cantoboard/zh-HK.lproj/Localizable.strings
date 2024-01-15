@@ -15,6 +15,10 @@
 
 由於 iOS 限制，若安裝或更新後 TypeDuck 選項消失或未能使用，請重新啟動裝置。";
 
+"interfaceLanguage" = "介面語言 (Interface Language)";
+"interfaceLanguage.chinese" = "中文";
+"interfaceLanguage.english" = "English";
+
 "testKeyboard" = "測試鍵盤";
 "testKeyboard.placeholder" = "於此處嘗試輸入⋯⋯";
 

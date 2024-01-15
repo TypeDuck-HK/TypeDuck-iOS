@@ -9,6 +9,11 @@ import Foundation
 
 import CocoaLumberjackSwift
 
+public enum InterfaceLanguage: String, Codable {
+    case chinese = "chinese"
+    case english = "english"
+}
+
 public enum CompositionMode: String, Codable {
     case multiStage = "multiStage"
     case immediate = "immediate"
@@ -236,6 +241,10 @@ public struct RimeSettings: Codable, Equatable {
 
 public struct Settings: Codable, Equatable {
     private static let settingsKeyName = "Settings"
+    private static let defaultInterfaceLanguage: InterfaceLanguage = {
+        let languageCodes: Set = ["cdo", "cjy", "cmn", "cnp", "cpx", "csp", "czh", "czo", "gan", "hak", "hsn", "lzh", "mnp", "nan", "wuu", "yue", "zh"]
+        return languageCodes.isDisjoint(with: Locale.preferredLanguages.compactMap { Locale(identifier: $0).languageCode }) ? .english : .chinese
+    }()
     private static let defaultMixedModeEnabled: Bool = false
     private static let defaultAutoCapEnabled: Bool = true
     private static let defaultSmartEnglishSpaceEnabled: Bool = true
@@ -267,6 +276,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultCangjieVersion: CangjieVersion = .cangjie5
     private static let defaultLanguageState: LanguageState = LanguageState()
 
+    public var interfaceLanguage: InterfaceLanguage
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
     public var isSmartEnglishSpaceEnabled: Bool
@@ -299,6 +309,7 @@ public struct Settings: Codable, Equatable {
     public var languageState: LanguageState
     
     public init() {
+        interfaceLanguage = Self.defaultInterfaceLanguage
         isMixedModeEnabled = Self.defaultMixedModeEnabled
         isAutoCapEnabled = Self.defaultAutoCapEnabled
         isSmartEnglishSpaceEnabled = Self.defaultSmartEnglishSpaceEnabled
@@ -333,6 +344,7 @@ public struct Settings: Codable, Equatable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.interfaceLanguage = try container.decodeIfPresent(InterfaceLanguage.self, forKey: .interfaceLanguage) ?? Settings.defaultInterfaceLanguage
         self.isMixedModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .isMixedModeEnabled) ?? Settings.defaultMixedModeEnabled
         self.isAutoCapEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAutoCapEnabled) ?? Settings.defaultAutoCapEnabled
         self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.defaultSmartFullStopEnabled

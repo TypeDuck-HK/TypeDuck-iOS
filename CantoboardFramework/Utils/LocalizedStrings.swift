@@ -9,22 +9,22 @@ import Foundation
 
 class LocalizedStrings {
     private static func localizedString(_ stringKeyName: String) -> String  {
-        NSLocalizedString(stringKeyName, bundle: Bundle(for: LocalizedStrings.self), comment: "Key Title of " + stringKeyName)
+        return NSLocalizedString(stringKeyName, bundle: Bundle(path: Bundle(for: LocalizedStrings.self).path(forResource: Settings.cached.interfaceLanguage == .chinese ? "zh-HK" : "en", ofType: "lproj")!)!, comment: "Key Title of " + stringKeyName)
     }
     
-    static let keyTitleNextPage = localizedString("KeyNextPage")
-    static let keyTitleSelect = localizedString("KeySelect")
-    static let keyTitleSpace = localizedString("KeySpace")
-    static let keyTitleFullWidthSpace = localizedString("KeyFullWidthSpace")
-    static let keyTitleConfirm = localizedString("KeyConfirm")
-    static let keyTitleGo = localizedString("KeyGo")
-    static let keyTitleNext = localizedString("KeyNext")
-    static let keyTitleSend = localizedString("KeySend")
-    static let keyTitleSearch = localizedString("KeySearch")
-    static let keyTitleContinue = localizedString("KeyContinue")
-    static let keyTitleDone = localizedString("KeyDone")
-    static let keyTitleSOS = localizedString("KeySOS")
-    static let keyTitleJoin = localizedString("KeyJoin")
-    static let keyTitleRoute = localizedString("KeyRoute")
-    static let keyTitleReturn = localizedString("KeyReturn")
+    static var keyTitleNextPage: String { localizedString("KeyNextPage") }
+    static var keyTitleSelect: String { localizedString("KeySelect") }
+    static var keyTitleSpace: String { localizedString("KeySpace") }
+    static var keyTitleFullWidthSpace: String { localizedString("KeyFullWidthSpace") }
+    static var keyTitleConfirm: String { localizedString("KeyConfirm") }
+    static var keyTitleGo: String { localizedString("KeyGo") }
+    static var keyTitleNext: String { localizedString("KeyNext") }
+    static var keyTitleSend: String { localizedString("KeySend") }
+    static var keyTitleSearch: String { localizedString("KeySearch") }
+    static var keyTitleContinue: String { localizedString("KeyContinue") }
+    static var keyTitleDone: String { localizedString("KeyDone") }
+    static var keyTitleSOS: String { localizedString("KeySOS") }
+    static var keyTitleJoin: String { localizedString("KeyJoin") }
+    static var keyTitleRoute: String { localizedString("KeyRoute") }
+    static var keyTitleReturn: String { localizedString("KeyReturn") }
 }

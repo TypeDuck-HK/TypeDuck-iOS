@@ -8,7 +8,7 @@
 import UIKit
 
 class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    static let sections: [[(image: UIImage, title: String, url: String)]] = [
+    let sections: [[(image: UIImage, title: String, url: String)]] = [
         [
             (CellImage.externalLink, LocalizedStrings.about_typeduckSite, "https://typeduck.hk"),
             (CellImage.externalLink, LocalizedStrings.about_jyutpingSite, "https://lshk.org/jyutping-scheme/"),
@@ -55,12 +55,12 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
         ])
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int { Self.sections.count + 1 }
+    func numberOfSections(in tableView: UITableView) -> Int { sections.count + 1 }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
-        default: return Self.sections[section - 1].count
+        default: return sections[section - 1].count
         }
     }
     
@@ -80,14 +80,14 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
         switch indexPath.section {
         case 0: return AboutTableViewCell(tableView: tableView)
         default:
-            let row = Self.sections[indexPath.section - 1][indexPath.row]
+            let row = sections[indexPath.section - 1][indexPath.row]
             return UITableViewCell(title: row.title, image: row.image)
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.section > 0, var url = URL(string: Self.sections[indexPath.section - 1][indexPath.row].url) {
+        if indexPath.section > 0, var url = URL(string: sections[indexPath.section - 1][indexPath.row].url) {
             /*
             if url.scheme == "mailto" {
                 if #available(iOS 16.0, *) {
