@@ -581,8 +581,10 @@ extension KeyView {
             defaultChildKeyCapTitle = keyCap.defaultChildKeyCapTitle
         }
         
-        let defaultKeyCapIndex: Int
-        defaultKeyCapIndex = keyCaps.firstIndex(where: { $0.buttonText == defaultChildKeyCapTitle || $0.isRimeTone }) ?? 0
+        let defaultKeyCapIndex: Int =
+            keyCaps.firstIndex { $0.isRimeTone } ??
+            keyCaps.firstIndex { $0 == "\"" || $0 == "'" } ??
+            keyCaps.firstIndex { $0.buttonText == defaultChildKeyCapTitle } ?? 0
         popupView.setup(keyCaps: keyCaps, defaultKeyCapIndex: defaultKeyCapIndex, direction: popupDirection)
         selectedAction = popupView.selectedAction
         
@@ -601,16 +603,6 @@ extension KeyView {
     
     private func computePopupDirection() -> KeyPopupView.PopupDirection {
         guard let superview = superview else { return .middle }
-        
-        // For tonal input keys, always show popup on the right.
-        if keyboardState?.activeSchema.supportCantoneseTonalInput ?? false &&
-           Settings.cached.toneInputMode == .longPress,
-            case .character(let c, _, _) = keyCap {
-            switch c.lowercased() {
-            case "f", "g", "h", "c", "v", "b": return .middle
-            default: ()
-            }
-        }
         
         let screenEdgeThreshold = bounds.width / 2
 
@@ -634,7 +626,19 @@ extension KeyView {
     
     private func computeKeyCap(isLongPress: Bool) -> [KeyCap] {
         if isLongPress {
-            return keyCap.childrenKeyCaps
+            var childrenKeyCaps = keyCap.childrenKeyCaps
+            if case .currency = keyCap {
+                let localCurrencySymbolKeyCap = KeyCap(SessionState.main.currencySymbol)
+                childrenKeyCaps.removeAll(where: { $0 == localCurrencySymbolKeyCap })
+                childrenKeyCaps.insert(localCurrencySymbolKeyCap, at: childrenKeyCaps.count / 2 - (keyboardState?.keyboardIdiom == .pad(.padShort) ? 3 : 2))
+            } else if keyboardState?.keyboardIdiom.isPad ?? false, keyCap == "0" {
+                childrenKeyCaps.removeAll(where: { $0 == "0" })
+                childrenKeyCaps.insert("0", at: keyboardState?.keyboardIdiom == .pad(.padFull5Rows) ? 3 : 1)
+            } else if keyboardState?.keyboardIdiom.isPadFull ?? false, keyCap == .doubleQuote {
+                childrenKeyCaps.removeAll(where: { $0 == "\"" })
+                childrenKeyCaps.insert("\"", at: 0)
+            }
+            return childrenKeyCaps
         } else {
             return [keyCap]
         }

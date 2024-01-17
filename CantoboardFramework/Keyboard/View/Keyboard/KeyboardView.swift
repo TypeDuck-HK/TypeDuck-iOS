@@ -33,6 +33,21 @@ class KeyboardView: UIView, BaseKeyboardView {
     private weak var emojiView: EmojiView?
     private var keyRows: [KeyRowView]!
     
+    private var letterKeySelfPositions: [String: Int] {
+        switch state.keyboardIdiom {
+        case .phone:
+            let commonPosition = state.showCommonSwipeDownKeysInLongPress ? 4 : 3
+            return ["e": commonPosition, "t": 4, "y": 3, "u": 7, "i": commonPosition, "o": 2, "a": 1, "s": 1,
+                    "d": 2, "g": commonPosition, "h": 3, "j": 1, "z": 1, "c": 2, "n": commonPosition, "m": 1]
+        case .pad(.padShort):
+            return ["e": 3, "t": 4, "y": 3, "u": 8, "i": 5, "o": 4, "g": 4, "h": 3, "n": 5]
+        case .pad(.padFull4Rows):
+            return ["e": 4, "t": 4, "y": 3, "u": 7, "i": 4, "o": 4, "a": 2, "g": 5, "h": 3, "n": 5]
+        case .pad(.padFull5Rows):
+            return ["e": 4, "t": 4, "y": 3, "u": 9, "i": 6, "o": 6, "a": 2, "g": 4, "h": 3, "n": 6]
+        }
+    }
+    
     private var touchHandler: TouchHandler?
     // Touch event near the screen edge are delayed.
     // Overriding preferredScreenEdgesDeferringSystemGestures doesnt work in UIInputViewController,
@@ -313,19 +328,8 @@ class KeyboardView: UIView, BaseKeyboardView {
                     let orgChildrenKeyCaps = KeyCap(keyChar).childrenKeyCaps.map { $0.withoutHints }
                     childrenKeyCaps = [longPressKeyCap] + orgChildrenKeyCaps
                 }
-            }
-            // Special handling to make sure children keys don't go out of screen.
-            // Move the parent key to the other side.
-            if c == "e" || c == "i" || c == "o" || c == "u" {
-                childrenKeyCaps = childrenKeyCaps ?? keyCap.childrenKeyCaps
-                if let selfKeyCap = childrenKeyCaps?.remove(at: 1) {
-                    childrenKeyCaps?.insert(selfKeyCap, at: 0)
-                }
-            }
-            
-            if isInCangjieMode && !isInEnglishMode && isLetterKey {
-                let keyCapHints = KeyCapHints(leftHint: leftHint, rightHint: isInMixedMode ? c : rightHint, bottomHint: bottomHint)
-                return .cangjie(keyChar, keyCapHints, childrenKeyCaps)
+            } else if c != keyChar {
+                childrenKeyCaps = KeyCap(keyChar).childrenKeyCaps
             }
             
             if !isInEnglishMode && state.activeSchema.supportCantoneseTonalInput {
@@ -348,7 +352,7 @@ class KeyboardView: UIView, BaseKeyboardView {
                 let orgChildren = childrenKeyCaps ?? keyCap.childrenKeyCaps
                 if c == "r" {
                     rightHint = "反"
-                    childrenKeyCaps = [.reverseLookup(Settings.cached.cangjieVersion.toRimeSchema)] + orgChildren + [.reverseLookup(.mandarin), .reverseLookup(.loengfan)]
+                    childrenKeyCaps = [.reverseLookup(Settings.cached.cangjieVersion.toRimeSchema), .reverseLookup(.loengfan), .reverseLookup(.mandarin)] + orgChildren
                 } else if state.isComposing {
                     if isInLongPressMode {
                         var toneKeyCap: KeyCap? = nil
@@ -374,8 +378,7 @@ class KeyboardView: UIView, BaseKeyboardView {
                         default: ()
                         }
                         if let toneKeyCap = toneKeyCap {
-                            childrenKeyCaps = orgChildren
-                            childrenKeyCaps?.insert(toneKeyCap, at: 1)
+                            childrenKeyCaps = [toneKeyCap] + orgChildren
                         }
                     } else {
                         switch c {
@@ -386,6 +389,21 @@ class KeyboardView: UIView, BaseKeyboardView {
                         }
                     }
                 }
+            }
+            
+            // Special handling to make sure children keys don't go out of screen.
+            // Move the parent key to the other side.
+            if isLetterKey {
+                var newChildren = childrenKeyCaps ?? keyCap.childrenKeyCaps
+                let selfPosition = letterKeySelfPositions[c] ?? 0
+                let selfKeyCap = newChildren.removeFirst()
+                newChildren.insert(selfKeyCap, at: selfPosition + (selfKeyCap.isRimeTone && rightHint != "6" && !state.keyboardIdiom.isPad ? 1 : 0))
+                childrenKeyCaps = newChildren
+            }
+            
+            if isInCangjieMode && !isInEnglishMode && isLetterKey {
+                let keyCapHints = KeyCapHints(leftHint: leftHint, rightHint: isInMixedMode ? c : rightHint, bottomHint: bottomHint)
+                return .cangjie(keyChar, keyCapHints, childrenKeyCaps)
             }
             
             let keyCapHints = leftHint == nil && rightHint == nil && bottomHint == nil ? nil : KeyCapHints(leftHint: leftHint, rightHint: rightHint, bottomHint: bottomHint)
