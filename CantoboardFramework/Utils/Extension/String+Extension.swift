@@ -78,19 +78,13 @@ extension String {
     }
     
     // Render the string in HK Chinese style. (標點置中)
-    static func HKAttributed(withFont font: UIFont? = nil) -> [NSAttributedString.Key : Any] {
+    static func HKAttributed(withFont font: UIFont? = nil, withForegroundColor foregroundColor: UIColor? = nil, withParagraphStyle paragraphStyle: NSMutableParagraphStyle? = nil) -> [NSAttributedString.Key : Any] {
         var attributes: [NSAttributedString.Key : Any] = [:]
         attributes[NSAttributedString.Key(kCTLanguageAttributeName as String)] = "zh-HK"
         
         if let font = font {
             attributes[.font] = font
         }
-        
-        return attributes
-    }
-    
-    func toHKAttributedString(withFont font: UIFont? = nil, withForegroundColor foregroundColor: UIColor? = nil, withParagraphStyle paragraphStyle: NSMutableParagraphStyle? = nil) -> NSAttributedString {
-        var attributes = Self.HKAttributed(withFont: font)
         
         if let foregroundColor = foregroundColor {
             attributes[.foregroundColor] = foregroundColor
@@ -100,7 +94,11 @@ extension String {
             attributes[.paragraphStyle] = paragraphStyle
         }
         
-        return NSAttributedString(string: self, attributes: attributes)
+        return attributes
+    }
+    
+    func toHKAttributedString(withFont font: UIFont? = nil, withForegroundColor foregroundColor: UIColor? = nil, withParagraphStyle paragraphStyle: NSMutableParagraphStyle? = nil) -> NSAttributedString {
+        NSAttributedString(string: self, attributes: Self.HKAttributed(withFont: font, withForegroundColor: foregroundColor, withParagraphStyle: paragraphStyle))
     }
     
     var toHKAttributedString: NSAttributedString {

@@ -13,6 +13,11 @@ struct CandidateInfo {
     let note: String
     let entries: [CandidateEntry]
     
+    let entry: CandidateEntry?
+    let hasDictionaryEntry: Bool
+    let romanization: String
+    let allEngTranslations: String?
+    
     init(_ text: String, _ comment: String?) {
         self.text = text
         let comment = Comment(comment ?? "")
@@ -25,6 +30,24 @@ struct CandidateInfo {
                     CandidateEntry(honzi: text, jyutping: String($0.hasSuffix("; ") ? $0.prefix($0.count - 2) : $0))
                 }
             : []
+        
+        entry = entries.first { $0.matchInputBuffer == "1" }
+        hasDictionaryEntry = entries.contains { $0.isDictionaryEntry }
+        romanization = entry?.jyutping ?? (isReverseLookup ? "" : note)
+        if Settings.cached.languageState.has(.eng),
+           entries.contains(where: { $0.properties.label?.split(separator: " ").contains("composition") ?? false }) {
+            var translations: [(honzi: String, eng: String)] = []
+            for entry in entries {
+                if entry.matchInputBuffer == "1", let honzi = entry.honzi, let eng = entry.properties.definition.eng, !translations.contains(where: { $0.honzi == honzi }) {
+                    translations.append((honzi, eng))
+                }
+            }
+            if !translations.isEmpty {
+                allEngTranslations = translations.map({ "\($0.honzi): \($0.eng)" }).joined(separator: " | ")
+                return
+            }
+        }
+        allEngTranslations = nil
     }
     
     static func getJyutping(_ comment: String?) -> String? {
@@ -44,10 +67,6 @@ struct CandidateInfo {
                     .first
             : nil
     }
-    
-    var entry: CandidateEntry? { entries.first { $0.matchInputBuffer == "1" } }
-    var hasDictionaryEntry: Bool { entries.contains { $0.isDictionaryEntry } }
-    var romanization: String { entry?.jyutping ?? (isReverseLookup ? "" : note) }
 }
 
 private class Comment {

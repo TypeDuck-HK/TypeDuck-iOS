@@ -223,6 +223,14 @@ public struct LanguageState: Codable, Equatable {
         deselected.insert(element, at: newIndex)
         return newIndex
     }
+    
+    public func has(_ language: Language) -> Bool {
+        selected.contains { $0 == language }
+    }
+    
+    public var shouldDisplayEngTag: Bool {
+        main == .ind
+    }
 }
 
 // If any of these settings is changed, we have to redeploy Rime.

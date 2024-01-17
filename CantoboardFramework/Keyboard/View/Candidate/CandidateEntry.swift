@@ -121,9 +121,13 @@ struct CandidateEntry {
         getDefinition(of: Settings.cached.languageState.main)
     }
     
+    var mainLanguageOrEng: String? {
+        mainLanguage ?? (Settings.cached.languageState.has(.eng) ? getDefinition(of: .eng) : nil)
+    }
+    
     var otherLanguages: [String] {
         let main = Settings.cached.languageState.main
-        return Settings.cached.languageState.selected.compactMap { $0 == main ? nil : getDefinition(of: $0) }
+        return Settings.cached.languageState.selected.compactMap { $0 == main || $0 == .eng ? nil : getDefinition(of: $0) }
     }
     
     var otherLanguagesWithNames: [(name: String, value: String)] {
@@ -138,8 +142,8 @@ struct CandidateEntry {
         properties.label?.split(separator: " ").map { "(\($0))" }
     }
     
-    var mainLanguageOrLabel: String? {
-        isDictionaryEntry ? mainLanguage : formattedLabels?.joined(separator: " ")
+    var joinedLabels: String? {
+        formattedLabels?.joined(separator: " ")
     }
     
     var otherLanguagesOrLabels: [String] {
@@ -155,7 +159,12 @@ struct CandidateEntry {
                 return true
             }
         }
-        return mainLanguage != nil || !otherLanguages.isEmpty
+        for language in Settings.cached.languageState.selected {
+            if getDefinition(of: language) != nil {
+                return true
+            }
+        }
+        return false
     }
 }
 

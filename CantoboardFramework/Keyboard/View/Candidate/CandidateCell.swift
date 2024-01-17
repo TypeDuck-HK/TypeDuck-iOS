@@ -206,11 +206,18 @@ class CandidateCell: UICollectionViewCell {
             let targetStack = mode == .row ? mainStack : textStack
             targetStack!.addArrangedSubview(label)
             
-            if let entry = entry, let mainLanguage = mode == .row ? entry.mainLanguageOrLabel : entry.mainLanguage {
+            if let entry = entry, let mainLanguage = info.allEngTranslations ?? (entry.isDictionaryEntry || mode == .table ? entry.mainLanguageOrEng : entry.joinedLabels) {
                 let translationLabel = self.translationLabel ?? UILabel()
                 translationLabel.textAlignment = mode == .row ? .center : .left
-                translationLabel.attributedText = mainLanguage.toHKAttributedString
-                translationLabel.textColor = entry.isDictionaryEntry ? ButtonColor.keyForegroundColor : ButtonColor.keyHintColor
+                if Settings.cached.languageState.shouldDisplayEngTag,
+                   info.allEngTranslations != nil || entry.isDictionaryEntry && entry.mainLanguage == nil {
+                    let attributedString = NSMutableAttributedString(string: "en: ", attributes: String.HKAttributed(withForegroundColor: ButtonColor.keyHintColor))
+                    attributedString.append(mainLanguage.toHKAttributedString(withForegroundColor: ButtonColor.keyForegroundColor))
+                    translationLabel.attributedText = attributedString
+                } else {
+                    translationLabel.attributedText = mainLanguage.toHKAttributedString
+                    translationLabel.textColor = info.allEngTranslations != nil || entry.isDictionaryEntry ? ButtonColor.keyForegroundColor : ButtonColor.keyHintColor
+                }
                 targetStack!.addArrangedSubview(translationLabel)
                 self.translationLabel = translationLabel
             } else {
@@ -441,7 +448,11 @@ class CandidateCell: UICollectionViewCell {
         }
         
         let entry = info.entry
-        if let entry = entry, let mainLanguage = mode == .row ? entry.mainLanguageOrLabel : entry.mainLanguage {
+        if let entry = entry, var mainLanguage = info.allEngTranslations ?? (entry.isDictionaryEntry || mode == .table ? entry.mainLanguageOrEng : entry.joinedLabels) {
+            if Settings.cached.languageState.shouldDisplayEngTag,
+               info.allEngTranslations != nil || entry.isDictionaryEntry && entry.mainLanguage == nil {
+                mainLanguage = "en: " + mainLanguage
+            }
             let commentWidth = mainLanguage.size(withFont: UIFont.systemFont(ofSize: mode == .row ? candidateCommentFontSize : candidateFontSize)).width
             cellWidth = mode == .row ? max(cellWidth, min(cellWidth + 70, commentWidth)) : cellWidth + Self.paddingText + commentWidth
         }
