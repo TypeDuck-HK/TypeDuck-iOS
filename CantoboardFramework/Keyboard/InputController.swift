@@ -57,7 +57,6 @@ struct KeyboardState: Equatable {
     var returnKeyType: ReturnKeyType
     var needsInputModeSwitchKey: Bool
     var spaceKeyMode: SpaceKeyMode
-    var charForm: CharForm
     
     var isKeyboardAppearing: Bool
     var isInCaretMovingMode: Bool
@@ -137,7 +136,6 @@ struct KeyboardState: Equatable {
         returnKeyType = .default
         needsInputModeSwitchKey = false
         spaceKeyMode = .space
-        charForm = SessionState.main.lastCharForm
         
         mainSchema = SessionState.main.lastPrimarySchema
         // Make sure we are using the user selected CJ version.
@@ -519,7 +517,6 @@ class InputController: NSObject {
             keyboardViewController?.keyboardView?.setPreserveCandidateOffset()
             candidateOrganizer.charForm = cs
             candidateOrganizer.updateCandidates(reload: true, targetCandidatesCount: currentCandidatesCount)
-            state.charForm = cs
             return
         case .toggleInputMode(let toInputMode):
             guard state.reverseLookupSchema == nil else {

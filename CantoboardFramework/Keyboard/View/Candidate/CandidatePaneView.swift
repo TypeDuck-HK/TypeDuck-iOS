@@ -240,7 +240,12 @@ class CandidatePaneView: UIControl {
         backspaceButton.setImage(adjustImageFontSize(ButtonImage.backspaceFilled), for: .highlighted)
         backspaceButton.isEnabled = keyboardState.enableState == .enabled
         
-        let charFormText = SessionState.main.lastCharForm.caption
+        var charFormText: String
+        if SessionState.main.lastCharForm == .simplified {
+            charFormText = "简"
+        } else {
+            charFormText = "繁"
+        }
         charFormButton.setAttributedTitle(charFormText.toHKAttributedString, for: .normal)
         charFormButton.isEnabled = keyboardState.enableState == .enabled
         

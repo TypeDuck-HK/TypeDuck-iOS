@@ -105,8 +105,7 @@ class KeyboardView: UIView, BaseKeyboardView {
             prevState.isComposing != newState.isComposing ||
             prevState.isPortrait != newState.isPortrait ||
             prevState.specialSymbolShapeOverride != newState.specialSymbolShapeOverride ||
-            prevState.isKeyboardAppearing != newState.isKeyboardAppearing ||
-            prevState.charForm != newState.charForm
+            prevState.isKeyboardAppearing != newState.isKeyboardAppearing
         
         if prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey {
             keyRows.forEach { $0.needsInputModeSwitchKey = newState.needsInputModeSwitchKey }
@@ -427,7 +426,7 @@ class KeyboardView: UIView, BaseKeyboardView {
                     let shouldShowEmojiKey = layoutConstants.ref.idiom.isPad || state.needsInputModeSwitchKey
                     return shouldShowEmojiKey ? KeyCap.keyboardType(.emojis) : nil
                 } else {
-                    return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema, true)
+                    return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema)
                 }
             default: return keyCap
             }
