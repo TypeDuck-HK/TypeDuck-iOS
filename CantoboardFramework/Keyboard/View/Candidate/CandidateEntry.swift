@@ -127,7 +127,10 @@ struct CandidateEntry {
     
     var otherLanguages: [String] {
         let main = Settings.cached.languageState.main
-        return Settings.cached.languageState.selected.compactMap { $0 == main || $0 == .eng ? nil : getDefinition(of: $0) }
+        let shouldExcludeEnglish = mainLanguage == nil
+        return Settings.cached.languageState.selected.compactMap {
+            $0 == main || shouldExcludeEnglish && $0 == .eng ? nil : getDefinition(of: $0)
+        }
     }
     
     var otherLanguagesWithNames: [(name: String, value: String)] {
