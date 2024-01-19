@@ -21,6 +21,7 @@ class InputTableViewCell: UITableViewCell, UITextFieldDelegate {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.returnKeyType = .done
         textField.attributedPlaceholder = LocalizedStrings.testKeyboard_placeholder.toHKAttributedString
+        textField.defaultTextAttributes = String.HKAttribute
         textField.font = .preferredFont(forTextStyle: .body)
         textField.delegate = self
         contentView.addSubview(textField)
