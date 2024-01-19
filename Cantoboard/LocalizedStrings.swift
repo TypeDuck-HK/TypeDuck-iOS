@@ -117,6 +117,7 @@ class LocalizedStrings {
     static var onboarding_2_content: String { localizedString("onboarding.2.content") }
     static var onboarding_3_heading: String { localizedString("onboarding.3.heading") }
     static var onboarding_3_content: String { localizedString("onboarding.3.content") }
+    static var onboarding_3_footnote: String { localizedString("onboarding.3.footnote") }
     static var onboarding_4_heading: String { localizedString("onboarding.4.heading") }
     static var onboarding_4_content: String { localizedString("onboarding.4.content") }
     static var onboarding_5_heading: String { localizedString("onboarding.5.heading") }

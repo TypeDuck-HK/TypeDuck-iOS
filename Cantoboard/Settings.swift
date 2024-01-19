@@ -121,9 +121,9 @@ extension Settings {
         let isPad = UIDevice.current.userInterfaceIdiom == .pad
         let inputMethodOptions: [Option?] = [
             Switch(LocalizedStrings.mixedMode, \.isMixedModeEnabled),
-            isPad ? nil : Switch(LocalizedStrings.longPressSymbolKeys, \.isLongPressSymbolKeysEnabled, LocalizedStrings.longPressSymbolKeys_description),
+            isPad ? nil : Switch(LocalizedStrings.longPressSymbolKeys, \.isLongPressSymbolKeysEnabled, LocalizedStrings.longPressSymbolKeys_description, "long_press_symbols"),
             Switch(LocalizedStrings.smartFullStop, \.isSmartFullStopEnabled,
-                   LocalizedStrings.smartFullStop_description, "Guide8-1"),
+                   LocalizedStrings.smartFullStop_description, "smart_full_stop"),
             Switch(LocalizedStrings.audioFeedback, \.isAudioFeedbackEnabled),
             isPad ? nil : Switch(LocalizedStrings.tapHapticFeedback, \.isTapHapticFeedbackEnabled),
             Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
@@ -170,7 +170,7 @@ extension Settings {
                             LocalizedStrings.compositionMode_immediate: .immediate,
                             LocalizedStrings.compositionMode_multiStage: .multiStage,
                         ],
-                        LocalizedStrings.compositionMode_description, "Guide2-1"
+                        LocalizedStrings.compositionMode_description
                     ),
                     Segment(LocalizedStrings.spaceAction, \.spaceAction, [
                             LocalizedStrings.spaceAction_nextPage: .nextPage,
@@ -184,7 +184,7 @@ extension Settings {
                     ]),
                     Switch(LocalizedStrings.showCodeInReverseLookup, \.showCodeInReverseLookup),
                     Switch(LocalizedStrings.enableCorrector, \.enableCorrector,
-                           LocalizedStrings.enableCorrector_description, "Guide12-1"),
+                           LocalizedStrings.enableCorrector_description, "autocorrect"),
                     Segment(LocalizedStrings.cantoneseKeyboardLayout, \.cantoneseKeyboardLayout, [
                             LocalizedStrings.cantoneseKeyboardLayout_qwerty: .qwerty,
                             LocalizedStrings.cantoneseKeyboardLayout_tenKeys: .tenKeys,
@@ -194,7 +194,7 @@ extension Settings {
                             LocalizedStrings.toneInputMode_vxq: .vxq,
                             LocalizedStrings.toneInputMode_longPress: .longPress,
                         ],
-                        LocalizedStrings.toneInputMode_description, "Guide3-2"
+                        LocalizedStrings.toneInputMode_description, "tone_input_mode"
                     ),
                     Segment(LocalizedStrings.cangjieVersion, \.cangjieVersion, [
                             LocalizedStrings.cangjie3: .cangjie3,

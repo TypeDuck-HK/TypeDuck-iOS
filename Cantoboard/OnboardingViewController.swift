@@ -45,7 +45,7 @@ class HighlightableButton: UIButton {
 }
 
 class OnboardingViewController: UIViewController, UIScrollViewDelegate {
-    static let videoAspectRatio: CGFloat = 374 / 298
+    static let videoAspectRatio: CGFloat = 390 / 306
 
     var pagesScrollView: UIScrollView!
     var pagesStackView: UIStackView!
@@ -59,14 +59,14 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
     var playerLoopers: [AVPlayerLooper]!
     
     private static let pages: [Page] = [
-        Page("Guide1-1", LocalizedStrings.onboarding_0_heading, LocalizedStrings.onboarding_0_content),
-        Page("Guide4-1", LocalizedStrings.onboarding_1_heading, LocalizedStrings.onboarding_1_content),
-        Page("Guide5-1", LocalizedStrings.onboarding_2_heading, LocalizedStrings.onboarding_2_content),
-        Page("Guide6-1", LocalizedStrings.onboarding_3_heading, LocalizedStrings.onboarding_3_content),
-        Page("Guide11-1", LocalizedStrings.onboarding_4_heading, LocalizedStrings.onboarding_4_content),
-        Page("Guide11-2", LocalizedStrings.onboarding_5_heading, LocalizedStrings.onboarding_5_content,
+        Page("1_welcome", LocalizedStrings.onboarding_0_heading, LocalizedStrings.onboarding_0_content),
+        Page("2_dictionary", LocalizedStrings.onboarding_1_heading, LocalizedStrings.onboarding_1_content),
+        Page("3_expand", LocalizedStrings.onboarding_2_heading, LocalizedStrings.onboarding_2_content),
+        Page("4_memory", LocalizedStrings.onboarding_3_heading, LocalizedStrings.onboarding_3_content, footnote: LocalizedStrings.onboarding_3_footnote),
+        Page("5_clear", LocalizedStrings.onboarding_4_heading, LocalizedStrings.onboarding_4_content),
+        Page("6_final_step", LocalizedStrings.onboarding_5_heading, LocalizedStrings.onboarding_5_content,
              buttonTitle: LocalizedStrings.onboarding_jumpToSettings, buttonAction: #selector(jumpToSettings), footnote: LocalizedStrings.onboarding_5_footnote),
-        Page("Guide1-2", LocalizedStrings.onboarding_5_installed_heading, LocalizedStrings.onboarding_5_installed_content,
+        Page("7_completion", LocalizedStrings.onboarding_5_installed_heading, LocalizedStrings.onboarding_5_installed_content,
              buttonTitle: LocalizedStrings.onboarding_done, buttonAction: #selector(endOnboarding)),
     ]
 
@@ -136,7 +136,7 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
             if let footnote = page.footnote {
                 let footnoteLabel = UILabel()
                 footnoteLabel.attributedText = footnote.toHKAttributedString
-                footnoteLabel.font = .preferredFont(forTextStyle: .footnote)
+                footnoteLabel.font = .systemFont(ofSize: 17, weight: .light)
                 footnoteLabel.numberOfLines = 0
                 textStackView.addArrangedSubview(footnoteLabel)
             }

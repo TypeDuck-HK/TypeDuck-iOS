@@ -10,7 +10,7 @@ import AVFoundation
 import AVKit
 
 class DescriptionViewController: UIViewController {
-    static let videoAspectRatio: CGFloat = 374 / 298
+    static let videoAspectRatio: CGFloat = 390 / 306
     static let stackViewInset = UIEdgeInsets(top: 10, left: 0, bottom: 15, right: 0)
     
     var option: Option!
