@@ -161,9 +161,11 @@ class CandidateCell: UICollectionViewCell {
         let entry = info.entry
         
         if isFilterCell {
+            mainStack!.isSided = false
             mainStack!.contentView.alignment = .center
             mainStack!.addArrangedSubview(label)
         } else {
+            mainStack!.isSided = true
             mainStack!.contentView.alignment = .fill
             
             var codeLabels: [UILabel] = []
