@@ -118,6 +118,30 @@ extension Settings {
     }
     
     static func buildSections() -> [Section] {
+        let isPad = UIDevice.current.userInterfaceIdiom == .pad
+        let inputMethodOptions: [Option?] = [
+            Switch(LocalizedStrings.mixedMode, \.isMixedModeEnabled),
+            isPad ? nil : Switch(LocalizedStrings.longPressSymbolKeys, \.isLongPressSymbolKeysEnabled, LocalizedStrings.longPressSymbolKeys_description),
+            Switch(LocalizedStrings.smartFullStop, \.isSmartFullStopEnabled,
+                   LocalizedStrings.smartFullStop_description, "Guide8-1"),
+            Switch(LocalizedStrings.audioFeedback, \.isAudioFeedbackEnabled),
+            isPad ? nil : Switch(LocalizedStrings.tapHapticFeedback, \.isTapHapticFeedbackEnabled),
+            Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
+            Segment(LocalizedStrings.candidateFontSize, \.candidateFontSize, [
+                    LocalizedStrings.candidateFontSize_small: .small,
+                    LocalizedStrings.candidateFontSize_normal: .normal,
+                    LocalizedStrings.candidateFontSize_large: .large,
+            ]),
+            Segment(LocalizedStrings.candidateGap, \.candidateGap, [
+                    LocalizedStrings.candidateGap_normal: .normal,
+                    LocalizedStrings.candidateGap_large: .large,
+            ]),
+            Segment(LocalizedStrings.symbolShape, \.symbolShape, [
+                    LocalizedStrings.symbolShape_half: .half,
+                    LocalizedStrings.symbolShape_full: .full,
+                    LocalizedStrings.symbolShape_smart: .smart,
+            ]),
+        ]
         let padSection = Section(
             LocalizedStrings.padSettings,
             [
@@ -135,35 +159,8 @@ extension Settings {
         )
         
         return [
-            Section(
-                LocalizedStrings.inputMethodSettings,
-                [
-                    Switch(LocalizedStrings.mixedMode, \.isMixedModeEnabled),
-                    Switch(LocalizedStrings.longPressSymbolKeys, \.isLongPressSymbolKeysEnabled, LocalizedStrings.longPressSymbolKeys_description),
-                    Switch(LocalizedStrings.smartFullStop, \.isSmartFullStopEnabled,
-                           LocalizedStrings.smartFullStop_description, "Guide8-1"),
-                    Switch(LocalizedStrings.audioFeedback, \.isAudioFeedbackEnabled),
-                ] + (UIDevice.current.userInterfaceIdiom == .pad ? [] : [
-                    Switch(LocalizedStrings.tapHapticFeedback, \.isTapHapticFeedbackEnabled),
-                ]) + [
-                    Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
-                    Segment(LocalizedStrings.candidateFontSize, \.candidateFontSize, [
-                            LocalizedStrings.candidateFontSize_small: .small,
-                            LocalizedStrings.candidateFontSize_normal: .normal,
-                            LocalizedStrings.candidateFontSize_large: .large,
-                    ]),
-                    Segment(LocalizedStrings.candidateGap, \.candidateGap, [
-                            LocalizedStrings.candidateGap_normal: .normal,
-                            LocalizedStrings.candidateGap_large: .large,
-                    ]),
-                    Segment(LocalizedStrings.symbolShape, \.symbolShape, [
-                            LocalizedStrings.symbolShape_half: .half,
-                            LocalizedStrings.symbolShape_full: .full,
-                            LocalizedStrings.symbolShape_smart: .smart,
-                    ]),
-                ]
-            ),
-            UIDevice.current.userInterfaceIdiom == .pad ? padSection : nil,
+            Section(LocalizedStrings.inputMethodSettings, inputMethodOptions.compactMap({ $0 })),
+            isPad ? padSection : nil,
             Section(
                 LocalizedStrings.chineseInputSettings,
                 [
