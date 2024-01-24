@@ -248,6 +248,7 @@ public struct RimeSettings: Codable, Equatable {
 }
 
 public struct Settings: Codable, Equatable {
+    private static let prevSettingsKeyName = "prevSettings"
     private static let settingsKeyName = "Settings"
     private static let defaultInterfaceLanguage: InterfaceLanguage = {
         let languageCodes: Set = ["cdo", "cjy", "cmn", "cnp", "cpx", "csp", "czh", "czo", "gan", "hak", "hsn", "lzh", "mnp", "nan", "wuu", "yue", "zh"]
@@ -423,6 +424,27 @@ public struct Settings: Codable, Equatable {
             userDefaults.set(encoded, forKey: settingsKeyName)
         } else {
             DDLogInfo("Failed to save \(settings)")
+        }
+    }
+    
+    public static var prev: Settings {
+        if let saved = userDefaults.object(forKey: prevSettingsKeyName) as? Data {
+            let decoder = JSONDecoder()
+            do {
+                return try decoder.decode(Settings.self, from: saved)
+            } catch {
+                DDLogInfo("Failed to load prev settings \(saved). Falling back to default settings. Error: \(error)")
+            }
+        }
+        return Settings()
+    }
+    
+    public static func savePrev() {
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(cached) {
+            userDefaults.set(encoded, forKey: prevSettingsKeyName)
+        } else {
+            DDLogInfo("Failed to save \(cached) to \(prevSettingsKeyName)")
         }
     }
     

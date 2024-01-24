@@ -513,8 +513,9 @@ open class KeyboardViewController: UIInputViewController {
     }
     
     private func reloadSettings() {
-        let prevSettings = Settings.cached
+        let prevSettings = Settings.prev
         let settings = Settings.reload()
+        Settings.savePrev()
         
         DDLogInfo("Reloaded Settings. prevSettings: \(prevSettings) newSettings: \(settings)")
         
