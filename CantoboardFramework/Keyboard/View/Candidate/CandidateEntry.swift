@@ -105,6 +105,22 @@ struct CandidateEntry {
             }
             jyutping = value
         }
+        if let label = properties.label {
+            let labels = label
+                .split(separator: " ")
+                .compactMap({
+                    $0.lazy
+                      .split(separator: "_")
+                      .compactMap({ DictionaryEntryView.labels[String($0)] })
+                      .first
+                })
+                .map({ "(\($0))" })
+            if labels.isEmpty {
+                properties.label = nil
+            } else {
+                formattedLabels = labels
+            }
+        }
     }
     
     private func getDefinition(of language: Language) -> String? {
@@ -141,9 +157,7 @@ struct CandidateEntry {
         }
     }
     
-    var formattedLabels: [String]? {
-        properties.label?.split(separator: " ").map { "(\($0))" }
-    }
+    var formattedLabels: [String]?
     
     var joinedLabels: String? {
         formattedLabels?.joined(separator: " ")

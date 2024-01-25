@@ -127,6 +127,19 @@ class DictionaryEntryView: UIStackView {
         "x": "non-morpheme 非語素",
     ]
     
+    public static let labels: [String: String] = [
+        "abbrev": "abbreviation 簡稱",
+        "astro": "astronomy 天文",
+        "ChinMeta": "sexagenary cycle 干支",
+        "horo": "horoscope 星座",
+        "org": "organisation 機構",
+        "person": "person 人名",
+        "place": "place 地名",
+        "reli": "religion 宗教",
+        "rare": "rare 罕見",
+        "composition": "compound 詞組",
+    ]
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
@@ -192,11 +205,10 @@ class DictionaryEntryView: UIStackView {
             registerLabel.attributedText = reg.toHKAttributedString
             definitionStackElements.append(registerLabel)
         }
-        if let label = entry.properties.label {
-            let labels = label.split(separator: " ")
+        if let labels = entry.formattedLabels {
             for (i, lbl) in labels.enumerated() {
                 let labelLabel = UILabel(color: ButtonColor.keyGrayedColor, font: .preferredFont(forTextStyle: .subheadline))
-                labelLabel.attributedText = "(\(lbl))".toHKAttributedString
+                labelLabel.attributedText = lbl.toHKAttributedString
                 labelLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
                 definitionStackElements.append(labelLabel)
                 if i != labels.endIndex - 1 {
