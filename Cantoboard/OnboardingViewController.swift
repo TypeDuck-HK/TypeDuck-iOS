@@ -58,7 +58,7 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
     var players: [AVQueuePlayer]!
     var playerLoopers: [AVPlayerLooper]!
     
-    private static let pages: [Page] = [
+    private let pageContents: [Page] = [
         Page("1_welcome", LocalizedStrings.onboarding_0_heading, LocalizedStrings.onboarding_0_content),
         Page("2_dictionary", LocalizedStrings.onboarding_1_heading, LocalizedStrings.onboarding_1_content),
         Page("3_expand", LocalizedStrings.onboarding_2_heading, LocalizedStrings.onboarding_2_content),
@@ -97,7 +97,7 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         
         players = []
         playerLoopers = []
-        pages = Self.pages.map { page in
+        pages = pageContents.map { page in
             let videoUrl = Bundle.main.url(forResource: "Guide/" + page.video, withExtension: "mp4")!
             
             let playerController = AVPlayerViewController()
