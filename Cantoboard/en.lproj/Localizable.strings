@@ -120,12 +120,13 @@ Welcome to TypeDuck";
 "onboarding.0.content" =
 "歡迎使用 TypeDuck 打得 —— 設有少數族裔語言提示粵拼輸入法！有字想打？一裝即用，毋須再等，即刻打得！
 Welcome to TypeDuck: a Cantonese input keyboard with minority language prompts! Got something you want to type? Have your fingers ready, get, set, TYPE DUCK!";
-"onboarding.1.heading" = "Input Editing";
-"onboarding.1.content" = "If you find an input error, you may move the cursor by long-pressing the spacebar for editing the input text.";
-"onboarding.2.heading" = "Reverse Lookup Feature";
-"onboarding.2.content" = "If you are not sure how to input a character in Jyutping, you may long press the r key to select other input methods for a lookup.";
-"onboarding.3.heading" = "Finding Candidates";
-"onboarding.3.content" = "Like the iOS built-in Chinese input method, TypeDuck can sort candidates by Jyutping/radicals/strokes.";
+"onboarding.1.heading" = "Dictionary Panel";
+"onboarding.1.content" = "Swipe down to view details of an entry. Display languages and the main language can be configurated in the settings.";
+"onboarding.2.heading" = "Finding Candidates";
+"onboarding.2.content" = "Press ⌵ to expand the candidate window. Click on ⓘ to open the dictionary panel inside the window. Like the iOS built-in Chinese input method, TypeDuck can sort candidates by Jyutping/radicals/strokes.";
+"onboarding.3.heading" = "Input Memorization";
+"onboarding.3.content" = "TypeDuck records what you typed for ease of input at a later time. Long press on a candidate to remove the record. The input data will only be stored in your device.";
+"onboarding.3.footnote" = "This app is not web-enabled and the University does not collect user input data through any means.";
 "onboarding.4.heading" = "Clearing Input";
 "onboarding.4.content" = "To give up candidate selection after input, swipe the backspace key to the left to clear the code your inputted.";
 "onboarding.5.heading" = "One More Step to Go…";
