@@ -9,15 +9,18 @@ import Foundation
 
 import CocoaLumberjackSwift
 
-private let patchHeader = "__patch:\n"
+private let patchHeader = "patch:\n  __patch:\n"
 
 enum RimeOption: String {
-    case separateCandidates = "separate_candidates"
+    case disableCompletion = "disable_completion"
     case enableCorrection = "enable_correction"
+    case disableSentence = "disable_sentence"
+    case disableLearning = "disable_learning"
+    case separateCandidates = "separate_candidates"
     case showFullCode = "show_full_code"
     
     var configLine: String {
-        "  - common:/\(self.rawValue)\n"
+        "    - common:/\(self.rawValue)\n"
     }
 }
 
@@ -58,9 +61,10 @@ extension RimeApi {
         try? FileManager.default.removeItem(atPath: jyutPingSchemaCustomPath)
         try? FileManager.default.removeItem(atPath: commonSchemaCustomPath)
         
-        if settings.rimeSettings.enableCorrector {
-            patchOptions.append(.enableCorrection)
-        }
+        if !settings.rimeSettings.enableCompletion { patchOptions.append(.disableCompletion) }
+        if settings.rimeSettings.enableCorrector { patchOptions.append(.enableCorrection) }
+        if !settings.rimeSettings.enableSentence { patchOptions.append(.disableSentence) }
+        if !settings.rimeSettings.enableLearning { patchOptions.append(.disableLearning) }
         
         if !patchOptions.isEmpty {
             let commonCustomPatch = patchHeader + patchOptions.map(\.configLine).joined()

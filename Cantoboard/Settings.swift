@@ -105,11 +105,6 @@ private class Segment<T: Equatable>: Option {
 }
 
 extension Settings {
-    private var enableCorrector: Bool {
-        get { rimeSettings.enableCorrector }
-        set { rimeSettings.enableCorrector = newValue }
-    }
-    
     static var interfaceLanguageOption: Option {
         Segment(LocalizedStrings.interfaceLanguage, \.interfaceLanguage, [
             LocalizedStrings.interfaceLanguage_chinese: .chinese,
@@ -183,8 +178,12 @@ extension Settings {
                             LocalizedStrings.showRomanizationMode_onlyInNonCantoneseMode: .onlyInNonCantoneseMode,
                     ]),
                     Switch(LocalizedStrings.showCodeInReverseLookup, \.showCodeInReverseLookup),
-                    Switch(LocalizedStrings.enableCorrector, \.enableCorrector,
+                    Switch(LocalizedStrings.enableCompletion, \.rimeSettings.enableCompletion),
+                    Switch(LocalizedStrings.enableCorrector, \.rimeSettings.enableCorrector,
                            LocalizedStrings.enableCorrector_description, "autocorrect"),
+                    Switch(LocalizedStrings.enableSentence, \.rimeSettings.enableSentence),
+                    Switch(LocalizedStrings.enableLearning, \.rimeSettings.enableLearning,
+                           LocalizedStrings.enableLearning_description, "4_memory"),
                     Segment(LocalizedStrings.cantoneseKeyboardLayout, \.cantoneseKeyboardLayout, [
                             LocalizedStrings.cantoneseKeyboardLayout_qwerty: .qwerty,
                             LocalizedStrings.cantoneseKeyboardLayout_tenKeys: .tenKeys,

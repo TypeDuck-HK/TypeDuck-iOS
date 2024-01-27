@@ -81,8 +81,12 @@ Two-stage mode: Imitates common Chinese input methods, which outputs after selec
 "chineseInputSettings.showRomanizationMode.always" = "always";
 "chineseInputSettings.showRomanizationMode.onlyInNonCantoneseMode" = "reverse lookup only";
 "chineseInputSettings.showCodeInReverseLookup" = "Reverse lookup code above candidates";
+"chineseInputSettings.enableCompletion" = "Auto-completion";
 "chineseInputSettings.enableCorrector" = "Auto-correction";
 "chineseInputSettings.enableCorrector.description" = "This may cause slight lags in some models.";
+"chineseInputSettings.enableSentence" = "Auto-composition";
+"chineseInputSettings.enableLearning" = "Input Memory";
+"chineseInputSettings.enableLearning.description" = "Records what you typed and prioritizes them in subsequent inputs. Long press on a candidate to remove the record.";
 "chineseInputSettings.cantoneseKeyboardLayout" = "Keyboard layout";
 "chineseInputSettings.cantoneseKeyboardLayout.qwerty" = "QWERTY";
 "chineseInputSettings.cantoneseKeyboardLayout.tenKeys" = "keypad";
@@ -124,8 +128,8 @@ Welcome to TypeDuck: a Cantonese input keyboard with minority language prompts! 
 "onboarding.1.content" = "Swipe down to view details of an entry. Display languages and the main language can be configurated in the settings.";
 "onboarding.2.heading" = "Finding Candidates";
 "onboarding.2.content" = "Press ⌵ to expand the candidate window. Click on ⓘ to open the dictionary panel inside the window. Like the iOS built-in Chinese input method, TypeDuck can sort candidates by Jyutping/radicals/strokes.";
-"onboarding.3.heading" = "Input Memorization";
-"onboarding.3.content" = "TypeDuck records what you typed for ease of input at a later time. Long press on a candidate to remove the record. The input data will only be stored in your device.";
+"onboarding.3.heading" = "Smart Input";
+"onboarding.3.content" = "TypeDuck learns your input patterns and prioritizes what you type. Long press on any candidates you find redundant. The input data will only be stored in your device.";
 "onboarding.3.footnote" = "This app is not web-enabled and the University does not collect user input data through any means.";
 "onboarding.4.heading" = "Clearing Input";
 "onboarding.4.content" = "To give up candidate selection after input, swipe the backspace key to the left to clear the code your inputted.";

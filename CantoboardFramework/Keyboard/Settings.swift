@@ -235,15 +235,29 @@ public struct LanguageState: Codable, Equatable {
 
 // If any of these settings is changed, we have to redeploy Rime.
 public struct RimeSettings: Codable, Equatable {
+    private static let defaultEnableCompletion: Bool = true
+    private static let defaultEnableCorrector: Bool = false
+    private static let defaultEnableSentence: Bool = true
+    private static let defaultEnableLearning: Bool = true
+    
+    public var enableCompletion: Bool
     public var enableCorrector: Bool
+    public var enableSentence: Bool
+    public var enableLearning: Bool
     
     public init() {
-        enableCorrector = false
+        enableCompletion = Self.defaultEnableCompletion
+        enableCorrector = Self.defaultEnableCorrector
+        enableSentence = Self.defaultEnableSentence
+        enableLearning = Self.defaultEnableLearning
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        enableCorrector = try container.decodeIfPresent(Bool.self, forKey: .enableCorrector) ?? false
+        enableCompletion = try container.decodeIfPresent(Bool.self, forKey: .enableCompletion) ?? Self.defaultEnableCompletion
+        enableCorrector = try container.decodeIfPresent(Bool.self, forKey: .enableCorrector) ?? Self.defaultEnableCorrector
+        enableSentence = try container.decodeIfPresent(Bool.self, forKey: .enableSentence) ?? Self.defaultEnableSentence
+        enableLearning = try container.decodeIfPresent(Bool.self, forKey: .enableLearning) ?? Self.defaultEnableLearning
     }
 }
 

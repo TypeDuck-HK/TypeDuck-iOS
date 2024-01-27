@@ -79,8 +79,12 @@ class LocalizedStrings {
     static var showRomanizationMode_always: String { localizedString("chineseInputSettings.showRomanizationMode.always") }
     static var showRomanizationMode_onlyInNonCantoneseMode: String { localizedString("chineseInputSettings.showRomanizationMode.onlyInNonCantoneseMode") }
     static var showCodeInReverseLookup: String { localizedString("chineseInputSettings.showCodeInReverseLookup") }
+    static var enableCompletion: String { localizedString("chineseInputSettings.enableCompletion") }
     static var enableCorrector: String { localizedString("chineseInputSettings.enableCorrector") }
     static var enableCorrector_description: String { localizedString("chineseInputSettings.enableCorrector.description") }
+    static var enableSentence: String { localizedString("chineseInputSettings.enableSentence") }
+    static var enableLearning: String { localizedString("chineseInputSettings.enableLearning") }
+    static var enableLearning_description: String { localizedString("chineseInputSettings.enableLearning.description") }
     static var cantoneseKeyboardLayout: String { localizedString("chineseInputSettings.cantoneseKeyboardLayout") }
     static var cantoneseKeyboardLayout_qwerty: String { localizedString("chineseInputSettings.cantoneseKeyboardLayout.qwerty") }
     static var cantoneseKeyboardLayout_tenKeys: String { localizedString("chineseInputSettings.cantoneseKeyboardLayout.tenKeys") }
