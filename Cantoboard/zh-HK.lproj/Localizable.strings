@@ -82,7 +82,6 @@ Click on an item to set as the main language.";
 "chineseInputSettings.showRomanizationMode.never" = "隱藏";
 "chineseInputSettings.showRomanizationMode.always" = "顯示";
 "chineseInputSettings.showRomanizationMode.onlyInNonCantoneseMode" = "僅反查";
-"chineseInputSettings.showCodeInReverseLookup" = "顯示反查碼";
 "chineseInputSettings.enableCompletion" = "自動完成";
 "chineseInputSettings.enableCorrector" = "自動校正";
 "chineseInputSettings.enableCorrector.description" = "對於部分機型，啟用後輸入速度可能會稍微下降。";
@@ -101,9 +100,12 @@ Click on an item to set as the main language.";
 vxq: 按一下 v/x/q 輸入 1/2/3 聲；
 　　 按兩下 v/x/q 輸入 4/5/6 聲。
 長按：長按鍵盤中間六個按鍵以選擇聲調。";
-"chineseInputSettings.cangjieVersion" = "反查倉頡版本";
-"chineseInputSettings.cangjie3" = "三代";
-"chineseInputSettings.cangjie5" = "五代";
+
+"reverseLookupSettings" = "反查設定";
+"reverseLookupSettings.showCodeInReverseLookup" = "顯示完整輸入碼";
+"reverseLookupSettings.cangjieVersion" = "倉頡版本";
+"reverseLookupSettings.cangjie3" = "三代";
+"reverseLookupSettings.cangjie5" = "五代";
 
 "englishInputSettings" = "英文輸入設定";
 "englishInputSettings.autoCap" = "自動大階";

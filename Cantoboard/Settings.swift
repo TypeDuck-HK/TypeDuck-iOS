@@ -177,7 +177,6 @@ extension Settings {
                             LocalizedStrings.showRomanizationMode_always: .always,
                             LocalizedStrings.showRomanizationMode_onlyInNonCantoneseMode: .onlyInNonCantoneseMode,
                     ]),
-                    Switch(LocalizedStrings.showCodeInReverseLookup, \.showCodeInReverseLookup),
                     Switch(LocalizedStrings.enableCompletion, \.rimeSettings.enableCompletion),
                     Switch(LocalizedStrings.enableCorrector, \.rimeSettings.enableCorrector,
                            LocalizedStrings.enableCorrector_description, "autocorrect"),
@@ -195,6 +194,12 @@ extension Settings {
                         ],
                         LocalizedStrings.toneInputMode_description, "tone_input_mode"
                     ),
+                ]
+            ),
+            Section(
+                LocalizedStrings.reverseLookupSettings,
+                [
+                    Switch(LocalizedStrings.showCodeInReverseLookup, \.showCodeInReverseLookup),
                     Segment(LocalizedStrings.cangjieVersion, \.cangjieVersion, [
                             LocalizedStrings.cangjie3: .cangjie3,
                             LocalizedStrings.cangjie5: .cangjie5,

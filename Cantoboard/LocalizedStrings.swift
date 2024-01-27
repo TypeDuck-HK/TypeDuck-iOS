@@ -78,7 +78,6 @@ class LocalizedStrings {
     static var showRomanizationMode_never: String { localizedString("chineseInputSettings.showRomanizationMode.never") }
     static var showRomanizationMode_always: String { localizedString("chineseInputSettings.showRomanizationMode.always") }
     static var showRomanizationMode_onlyInNonCantoneseMode: String { localizedString("chineseInputSettings.showRomanizationMode.onlyInNonCantoneseMode") }
-    static var showCodeInReverseLookup: String { localizedString("chineseInputSettings.showCodeInReverseLookup") }
     static var enableCompletion: String { localizedString("chineseInputSettings.enableCompletion") }
     static var enableCorrector: String { localizedString("chineseInputSettings.enableCorrector") }
     static var enableCorrector_description: String { localizedString("chineseInputSettings.enableCorrector.description") }
@@ -92,9 +91,12 @@ class LocalizedStrings {
     static var toneInputMode_vxq: String { localizedString("chineseInputSettings.toneInputMode.vxq") }
     static var toneInputMode_longPress: String { localizedString("chineseInputSettings.toneInputMode.longPress") }
     static var toneInputMode_description: String { localizedString("chineseInputSettings.toneInputMode.description") }
-    static var cangjieVersion: String { localizedString("chineseInputSettings.cangjieVersion") }
-    static var cangjie3: String { localizedString("chineseInputSettings.cangjie3") }
-    static var cangjie5: String { localizedString("chineseInputSettings.cangjie5") }
+    
+    static var reverseLookupSettings: String { localizedString("reverseLookupSettings") }
+    static var showCodeInReverseLookup: String { localizedString("reverseLookupSettings.showCodeInReverseLookup") }
+    static var cangjieVersion: String { localizedString("reverseLookupSettings.cangjieVersion") }
+    static var cangjie3: String { localizedString("reverseLookupSettings.cangjie3") }
+    static var cangjie5: String { localizedString("reverseLookupSettings.cangjie5") }
     
     static var englishInputSettings: String { localizedString("englishInputSettings") }
     static var autoCap: String { localizedString("englishInputSettings.autoCap") }
