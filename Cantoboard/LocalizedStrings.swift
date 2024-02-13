@@ -135,6 +135,7 @@ class LocalizedStrings {
     static var about_links: String { localizedString("about.links") }
     static var about_description: String { localizedString("about.description") }
     static var about_typeduckSite: String { localizedString("about.typeduckSite") }
+    static var about_learnduckSite: String { localizedString("about.learnduckSite") }
     static var about_jyutpingSite: String { localizedString("about.jyutpingSite") }
     static var about_sourceCode: String { localizedString("about.sourceCode") }
     static var about_cantoboard: String { localizedString("about.cantoboard") }

@@ -152,6 +152,7 @@ Should you have any enquiries, please email info@typeduck.hk or lchaakming@eduhk
 This input method is developed by the Department of Linguistics and Modern Language Studies, the Education University of Hong Kong. Special thanks to the Standing Committee on Language Education and Research for funding this project.";
 "about.links" = "Links";
 "about.typeduckSite" = "TypeDuck Website";
+"about.learnduckSite" = "LearnDuck: Introduction to Cantonese Jyutping Typing";
 "about.jyutpingSite" = "粵拼 Jyutping";
 "about.sourceCode" = "TypeDuck Source Code";
 "about.cantoboard" = "Cantoboard Source Code";
