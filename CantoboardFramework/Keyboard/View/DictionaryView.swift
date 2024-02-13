@@ -200,14 +200,14 @@ class DictionaryEntryView: UIStackView {
             }
         }
         if let register = entry.properties.register, let reg = Self.register[register] {
-            let registerLabel = UILabel(color: ButtonColor.keyGrayedColor, font: .italicSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
+            let registerLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .italicSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
             registerLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
             registerLabel.attributedText = reg.toHKAttributedString
             definitionStackElements.append(registerLabel)
         }
         if let labels = entry.formattedLabels {
             for (i, lbl) in labels.enumerated() {
-                let labelLabel = UILabel(color: ButtonColor.keyGrayedColor, font: .preferredFont(forTextStyle: .subheadline))
+                let labelLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .subheadline))
                 labelLabel.attributedText = lbl.toHKAttributedString
                 labelLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
                 definitionStackElements.append(labelLabel)
