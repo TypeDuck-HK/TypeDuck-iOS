@@ -15,23 +15,23 @@
 
 由於 iOS 限制，若安裝或更新後 TypeDuck 選項消失或未能使用，請重新啟動裝置。";
 
-"interfaceLanguage" = "介面語言 (Interface Language)";
+"interfaceLanguage" = "介面語言 Interface Language";
 "interfaceLanguage.chinese" = "中文";
 "interfaceLanguage.english" = "English";
 
 "testKeyboard" = "測試鍵盤";
 "testKeyboard.placeholder" = "於此處嘗試輸入⋯⋯";
 
-"displayLanguages" = "顯示語言 (Display Languages)";
-"displayLanguages.eng" = "英語 (English)";
-"displayLanguages.hin" = "印地語 (Hindi)";
-"displayLanguages.ind" = "印尼語 (Indonesian)";
-"displayLanguages.nep" = "尼泊爾語 (Nepali)";
-"displayLanguages.urd" = "烏爾都語 (Urdu)";
+"displayLanguages" = "顯示語言 Display Languages";
+"displayLanguages.eng" = "英語 English";
+"displayLanguages.hin" = "印地語 Hindi";
+"displayLanguages.ind" = "印尼語 Indonesian";
+"displayLanguages.nep" = "尼泊爾語 Nepali";
+"displayLanguages.urd" = "烏爾都語 Urdu";
 "displayLanguages.description" =
 "按一下項目以設為主要語言。
 Click on an item to set as the main language.";
-"moreLanguages" = "更多語言 (More Languages)";
+"moreLanguages" = "更多語言 More Languages";
 
 "inputMethodSettings" = "輸入法設定";
 "inputMethodSettings.mixedMode" = "粵英混合輸入";
