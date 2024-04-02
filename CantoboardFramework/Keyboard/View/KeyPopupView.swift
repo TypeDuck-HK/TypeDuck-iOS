@@ -140,31 +140,35 @@ class KeyPopupView: UIView {
         let keyboardWidth = layoutConstants.keyboardWidth
         
         var buttonSize: CGSize
-        if actions.count < 10 {
-            let bodyInsets = actions.count >= 8 ? KeyPopupView.bodyInsetsThin : KeyPopupView.bodyInsets
+        var widthAdjustment = KeyPopupView.bodyInsets.wrap(width: 0)
+        let keys = Set(keyCaps.compactMap { $0.character?.lowercasedChar })
+        if actions.count <= 10 {
+            if keys.contains(where: \.isEnglishLetter) {
+                widthAdjustment += keyWidth * (keys.contains("s") ? 1 : 1.5)
+            }
+            let maxPossibleWidth = (keyboardWidth - widthAdjustment) / CGFloat(actions.count)
             buttonSize = CGSize(
-                width: layoutConstants.idiom.isPad || keyCaps.contains(where: \.isReverseLookup) ? keyWidth : bodyInsets.wrap(width: keyWidth),
+                width: layoutConstants.idiom.isPad || keyCaps.contains(where: \.isReverseLookup) ? keyWidth : min(KeyPopupView.bodyInsets.wrap(width: keyWidth), maxPossibleWidth),
                 height: keyHeight)
         } else {
             // Adjust the width a bit so children keys don't go out of screen.
             // TODO Implement width calculation logic according to defaultKeyCapIndex
-            let keys = Set(keyCaps.compactMap { $0.character?.lowercasedChar })
-            var widthAdjustment = KeyPopupView.bodyInsets.wrap(width: 0)
             if layoutConstants.idiom.isPad && !layoutConstants.isPortrait {
                 widthAdjustment *= layoutConstants.idiom == .pad(.padFull4Rows) ? 3 : 2
             }
             switch layoutConstants.idiom {
             case .phone:
-                if keys.contains("〇") || keys.isSuperset(of: "u7") {
+                if keys.contains("〇") {
                     widthAdjustment += Self.smallKeyPadding * (layoutConstants.isPortrait ? 1 : 2)
                 } else if !keys.contains(where: \.isDigit) || keys.contains(where: \.isEnglishLetter) {
                     fallthrough
                 }
             case .pad:
-                widthAdjustment += parentKeyView.frame.width / (
+                widthAdjustment += keyWidth / (
                     layoutConstants.idiom == .pad(.padShort) && !keys.isDisjoint(with: "a¤") ||
-                    !keys.isDisjoint(with: "mnstz\"'") && keys.isDisjoint(with: ";；") ? 1 :
-                    !keys.isDisjoint(with: "ei") && keys.isDisjoint(with: "38") ? 1.5 : 2
+                    !keys.isDisjoint(with: "mnstz\"'") && keys.isDisjoint(with: "5;；") ? 1 :
+                    !keys.isDisjoint(with: "ei") && keys.isDisjoint(with: "38") ||
+                    keys.isSuperset(of: "u7") ? 1.5 : 2
                 )
             }
             buttonSize = CGSize(

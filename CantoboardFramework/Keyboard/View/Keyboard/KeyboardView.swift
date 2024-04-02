@@ -36,15 +36,13 @@ class KeyboardView: UIView, BaseKeyboardView {
     private var letterKeySelfPositions: [String: Int] {
         switch state.keyboardIdiom {
         case .phone:
-            let commonPosition = state.showCommonSwipeDownKeysInLongPress ? 4 : 3
-            return ["e": commonPosition, "t": 4, "y": 3, "u": 7, "i": commonPosition, "o": 2, "a": 1, "s": 1,
-                    "d": 2, "g": commonPosition, "h": 3, "j": 1, "z": 1, "c": 2, "n": commonPosition, "m": 1]
+            return ["e": 4, "t": state.showCommonSwipeDownKeysInLongPress ? 5 : 4, "y": 3, "u": 7, "i": 4, "o": 2, "a": 1, "s": 1, "d": 2, "g": 4, "h": 3, "j": 1, "z": 1, "c": 2, "n": 4, "m": 1]
         case .pad(.padShort):
-            return ["e": 3, "t": 4, "y": 3, "u": 8, "i": 5, "o": 4, "g": 4, "h": 3, "n": 5]
+            return ["e": 3, "t": 4, "y": 3, "u": 8, "i": 5, "o": 4, "g": 4, "h": 3, "n": 6, "m": 3]
         case .pad(.padFull4Rows):
-            return ["e": 4, "t": 4, "y": 3, "u": 7, "i": 4, "o": 4, "a": 2, "g": 5, "h": 3, "n": 5]
+            return ["e": 5, "t": 4, "y": 3, "u": 8, "i": 5, "o": 4, "a": 2, "g": 4, "h": 3, "n": 5, "m": 3]
         case .pad(.padFull5Rows):
-            return ["e": 4, "t": 4, "y": 3, "u": 9, "i": 6, "o": 6, "a": 2, "g": 4, "h": 3, "n": 6]
+            return ["e": 4, "t": 4, "y": 3, "u": 9, "i": 6, "o": 6, "a": 2, "g": 4, "h": 4, "n": 6, "m": 3]
         }
     }
     

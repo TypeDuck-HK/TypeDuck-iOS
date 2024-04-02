@@ -627,16 +627,29 @@ extension KeyView {
     private func computeKeyCap(isLongPress: Bool) -> [KeyCap] {
         if isLongPress {
             var childrenKeyCaps = keyCap.childrenKeyCaps
-            if case .currency = keyCap {
+            switch keyCap {
+            case .currency:
                 let localCurrencySymbolKeyCap = KeyCap(SessionState.main.currencySymbol)
                 childrenKeyCaps.removeAll(where: { $0 == localCurrencySymbolKeyCap })
                 childrenKeyCaps.insert(localCurrencySymbolKeyCap, at: childrenKeyCaps.count / 2 - (keyboardState?.keyboardIdiom == .pad(.padShort) ? 3 : 2))
-            } else if keyboardState?.keyboardIdiom.isPad ?? false, keyCap == "0" {
+            case "@" where keyboardState?.keyboardIdiom == .phone:
+                childrenKeyCaps.removeAll(where: { $0 == "@" })
+                childrenKeyCaps.insert("@", at: 1)
+            case "0" where keyboardState?.keyboardIdiom.isPad ?? false:
                 childrenKeyCaps.removeAll(where: { $0 == "0" })
                 childrenKeyCaps.insert("0", at: keyboardState?.keyboardIdiom == .pad(.padFull5Rows) ? 3 : 1)
-            } else if keyboardState?.keyboardIdiom.isPadFull ?? false, keyCap == .doubleQuote {
+            case .doubleQuote where keyboardState?.keyboardIdiom.isPadFull ?? false:
                 childrenKeyCaps.removeAll(where: { $0 == "\"" })
                 childrenKeyCaps.insert("\"", at: 0)
+            case "<", ">", "〈", "〉":
+                if keyboardState?.keyboardIdiom.isPad ?? false {
+                    childrenKeyCaps.removeAll(where: { $0 == keyCap })
+                    childrenKeyCaps.insert(keyCap, at: keyboardState?.keyboardIdiom == .pad(.padFull5Rows) ? 2 : 3)
+                    if keyboardState?.keyboardIdiom == .pad(.padFull5Rows) {
+                        childrenKeyCaps = Array(childrenKeyCaps[2..<6]) + Array(childrenKeyCaps[0..<2]) + Array(childrenKeyCaps[6...])
+                    }
+                }
+            default: ()
             }
             return childrenKeyCaps
         } else {
