@@ -82,8 +82,8 @@ class DescriptionViewController: UIViewController {
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 20),
             stackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -20),
-            stackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -Self.stackViewInset.bottom),
-            stackView.topAnchor.constraint(greaterThanOrEqualTo: view.topAnchor, constant: Self.stackViewInset.top),
+            stackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -15),
+            stackView.topAnchor.constraint(greaterThanOrEqualTo: safeArea.topAnchor, constant: -36),
             titleView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
             titleView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
             label.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
@@ -98,8 +98,10 @@ class DescriptionViewController: UIViewController {
             trailingConstraint.priority = .defaultLow
             
             NSLayoutConstraint.activate([
-                leadingConstraint, trailingConstraint,
-                playerView.widthAnchor.constraint(equalTo: playerView.heightAnchor, multiplier: Self.videoAspectRatio)
+                leadingConstraint,
+                trailingConstraint,
+                playerView.widthAnchor.constraint(equalTo: playerView.heightAnchor, multiplier: Self.videoAspectRatio),
+                playerView.heightAnchor.constraint(lessThanOrEqualToConstant: 400),
             ])
         }
     }
