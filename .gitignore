@@ -60,5 +60,6 @@ fastlane/screenshots
 fastlane/test_output
 
 NGramBuilder/zh_HK.ngram
+MissingGlyphRemover/main
 
 __pycache__
