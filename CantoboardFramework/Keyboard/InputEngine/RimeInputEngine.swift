@@ -104,13 +104,6 @@ class RimeInputEngine: NSObject, InputEngine {
         }
     }
     
-    var charForm: CharForm = SessionState.main.lastCharForm {
-        didSet {
-            guard oldValue != charForm else { return }
-            setCharForm(isSimplification: charForm == .simplified)
-        }
-    }
-    
     init(schema: RimeSchema) {
         self.schema = schema
         super.init()
@@ -333,7 +326,7 @@ class RimeInputEngine: NSObject, InputEngine {
     }
     
     private func refreshCharForm() {
-        setCharForm(isSimplification: charForm == .simplified)
+        setCharForm(isSimplification: Settings.cached.charForm == .simplified)
     }
     
     private func setCharForm(isSimplification: Bool) {

@@ -80,6 +80,9 @@ Two-stage mode: Imitates common Chinese input methods, which outputs after selec
 "chineseInputSettings.showRomanizationMode.never" = "never";
 "chineseInputSettings.showRomanizationMode.always" = "always";
 "chineseInputSettings.showRomanizationMode.onlyInNonCantoneseMode" = "reverse lookup only";
+"chineseInputSettings.charForm" = "Character form";
+"chineseInputSettings.charForm.traditional" = "traditional";
+"chineseInputSettings.charForm.simplified" = "simplified";
 "chineseInputSettings.enableCompletion" = "Auto-completion";
 "chineseInputSettings.enableCorrector" = "Auto-correction";
 "chineseInputSettings.enableCorrector.description" = "This may cause slight lags in some models.";

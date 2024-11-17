@@ -78,7 +78,6 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     shiftUp, // TODO remove
     shiftRelax,
     rime(RimeChar),
-    setCharForm(CharForm),
     toggleInputMode(InputMode),
     toggleSymbolShape,
     reverseLookup(RimeSchema),

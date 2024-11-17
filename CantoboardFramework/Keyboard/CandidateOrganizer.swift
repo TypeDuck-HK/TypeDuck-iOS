@@ -178,7 +178,7 @@ class InputEngineCandidateSource: CandidateSource {
                 })
                 .reduce([.T, .G] as IICore, { $0.intersection($1) })
             
-            let iicoreMask = inputEngine.charForm == .traditional ? IICore.T : IICore.G
+            let iicoreMask = Settings.cached.charForm == .traditional ? IICore.T : IICore.G
             if !iicoreCombined.contains(iicoreMask) {
                 return true
             }
@@ -537,19 +537,13 @@ class CandidateOrganizer {
     var candidateSource: CandidateSource?
     var autoSuggestionType: AutoSuggestionType?
     var suggestionContextualText: String = ""
-    var charForm: CharForm {
-        didSet {
-            predictiveTextEngine = PredictiveTextEngine.getPredictiveTextEngine(charForm: charForm)
-        }
-    }
     
     private weak var inputController: InputController?
     private var predictiveTextEngine: PredictiveTextEngine
     
     init(inputController: InputController) {
         self.inputController = inputController
-        charForm = inputController.inputEngine.charForm
-        predictiveTextEngine = PredictiveTextEngine.getPredictiveTextEngine(charForm: charForm)
+        predictiveTextEngine = PredictiveTextEngine.getPredictiveTextEngine(charForm: Settings.cached.charForm)
     }
     
     func requestMoreCandidates(section: Int) {

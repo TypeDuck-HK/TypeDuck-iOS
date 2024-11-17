@@ -110,6 +110,11 @@ public enum CandidateGap: String, Codable {
     }
 }
 
+public enum CharForm: String, Codable {
+    case traditional = "zh-HK"
+    case simplified = "zh-CN"
+}
+
 public enum CangjieVersion: String, Codable {
     case cangjie3 = "cangjie3"
     case cangjie5 = "cangjie5"
@@ -282,6 +287,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultRimeSettings: RimeSettings = RimeSettings()
     private static let defaultEnglishLocale: EnglishLocale = .gb
     private static let defaultShowRomanizationMode: ShowRomanizationMode = .always
+    private static let defaultCharForm: CharForm = .traditional
     private static let defaultShowCodeInReverseLookup: Bool = true
     private static let defaultAudioFeedbackEnabled: Bool = true
     private static let defaultTapHapticFeedbackEnabled: Bool = false
@@ -314,6 +320,7 @@ public struct Settings: Codable, Equatable {
     public var rimeSettings: RimeSettings
     public var englishLocale: EnglishLocale
     public var showRomanizationMode: ShowRomanizationMode
+    public var charForm: CharForm
     public var showCodeInReverseLookup: Bool
     public var isAudioFeedbackEnabled: Bool
     public var isTapHapticFeedbackEnabled: Bool
@@ -347,6 +354,7 @@ public struct Settings: Codable, Equatable {
         rimeSettings = Self.defaultRimeSettings
         englishLocale = Self.defaultEnglishLocale
         showRomanizationMode = Self.defaultShowRomanizationMode
+        charForm = Self.defaultCharForm
         showCodeInReverseLookup = Self.defaultShowCodeInReverseLookup
         isAudioFeedbackEnabled = Self.defaultAudioFeedbackEnabled
         isTapHapticFeedbackEnabled = Self.defaultTapHapticFeedbackEnabled
@@ -382,6 +390,7 @@ public struct Settings: Codable, Equatable {
         self.rimeSettings = try container.decodeIfPresent(RimeSettings.self, forKey: .rimeSettings) ?? Settings.defaultRimeSettings
         self.englishLocale = try container.decodeIfPresent(EnglishLocale.self, forKey: .englishLocale) ?? Settings.defaultEnglishLocale
         self.showRomanizationMode = try container.decodeIfPresent(ShowRomanizationMode.self, forKey: .showRomanizationMode) ?? Settings.defaultShowRomanizationMode
+        self.charForm = try container.decodeIfPresent(CharForm.self, forKey: .charForm) ?? Settings.defaultCharForm
         self.showCodeInReverseLookup = try container.decodeIfPresent(Bool.self, forKey: .showCodeInReverseLookup) ?? Settings.defaultShowCodeInReverseLookup
         self.isAudioFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAudioFeedbackEnabled) ?? Settings.defaultAudioFeedbackEnabled
         self.isTapHapticFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTapHapticFeedbackEnabled) ?? Settings.defaultTapHapticFeedbackEnabled

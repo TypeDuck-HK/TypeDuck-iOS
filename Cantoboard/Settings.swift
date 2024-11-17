@@ -177,6 +177,10 @@ extension Settings {
                             LocalizedStrings.showRomanizationMode_always: .always,
                             LocalizedStrings.showRomanizationMode_onlyInNonCantoneseMode: .onlyInNonCantoneseMode,
                     ]),
+                    Segment(LocalizedStrings.charForm, \.charForm, [
+                            LocalizedStrings.charForm_traditional: .traditional,
+                            LocalizedStrings.charForm_simplified: .simplified,
+                    ]),
                     Switch(LocalizedStrings.enableCompletion, \.rimeSettings.enableCompletion),
                     Switch(LocalizedStrings.enableCorrector, \.rimeSettings.enableCorrector,
                            LocalizedStrings.enableCorrector_description, "autocorrect"),

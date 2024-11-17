@@ -9,17 +9,11 @@ import Foundation
 
 import CocoaLumberjackSwift
 
-public enum CharForm: String, Codable {
-    case traditional = "zh-HK"
-    case simplified = "zh-CN"
-}
-
 public struct SessionState: Codable, Equatable {
     private static let sessionKeyName = "SessionState"
     
     private static let defaultInputMode: InputMode = .mixed
     private static let defaultPrimarySchema: RimeSchema = .jyutping
-    private static let defaultCharForm: CharForm = .traditional
     private static let defaultCurrency = "$"
     private static let defaultDomain = "hk"
 
@@ -51,22 +45,16 @@ public struct SessionState: Codable, Equatable {
     public var lastPrimarySchema: RimeSchema {
         didSet { save() }
     }
-    
-    public var lastCharForm: CharForm {
-        didSet { save() }
-    }
 
     private init() {
         lastInputMode = Self.defaultInputMode
         lastPrimarySchema = Self.defaultPrimarySchema
-        lastCharForm = Self.defaultCharForm
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         lastInputMode = try container.decodeIfPresent(InputMode.self, forKey: .lastInputMode) ?? Self.defaultInputMode
         lastPrimarySchema = try container.decodeIfPresent(RimeSchema.self, forKey: .lastPrimarySchema) ?? Self.defaultPrimarySchema
-        lastCharForm = try container.decodeIfPresent(CharForm.self, forKey: .lastCharForm) ?? Self.defaultCharForm
     }
     
     private func save() {

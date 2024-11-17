@@ -140,7 +140,7 @@ class CandidatePaneView: UIControl {
     }
     
     private weak var collectionView: CandidateCollectionView!
-    private weak var backspaceButton, charFormButton: UIButton!
+    private weak var backspaceButton: UIButton!
     private weak var expandButton, inputModeButton: StatusButton!
     private weak var leftSeparator, middleSeparator, rightSeparator: UIView!
     weak var delegate: CandidatePaneViewDelegate?
@@ -197,9 +197,6 @@ class CandidatePaneView: UIControl {
         
         backspaceButton = createAndAddButton(UIButton())
         backspaceButton.addTarget(self, action: #selector(self.backspaceButtonClick), for: .touchUpInside)
-        
-        charFormButton = createAndAddButton(StatusButton())
-        charFormButton.addTarget(self, action: #selector(self.charFormButtonClick), for: .touchUpInside)
     }
     
     private func createAndAddButton<T: UIButton>(_ button: T) -> T {
@@ -240,23 +237,12 @@ class CandidatePaneView: UIControl {
         backspaceButton.setImage(adjustImageFontSize(ButtonImage.backspaceFilled), for: .highlighted)
         backspaceButton.isEnabled = keyboardState.enableState == .enabled
         
-        var charFormText: String
-        if SessionState.main.lastCharForm == .simplified {
-            charFormText = "简"
-        } else {
-            charFormText = "繁"
-        }
-        charFormButton.setAttributedTitle(charFormText.toHKAttributedString, for: .normal)
-        charFormButton.isEnabled = keyboardState.enableState == .enabled
-        
         if mode == .table {
             expandButton.isHidden = false
             inputModeButton.isHidden = false || title == nil
             inputModeButton.isMini = false
             inputModeButton.isUserInteractionEnabled = true
             backspaceButton.isHidden = false
-            // Always show char form toggle for switching predictive text.
-            charFormButton.isHidden = false
         } else {
             let cannotExpand = !keyboardState.keyboardType.isAlphabetic ||
                                collectionView.visibleCells.isEmpty ||
@@ -269,7 +255,6 @@ class CandidatePaneView: UIControl {
             inputModeButton.isMini = !cannotExpand
             inputModeButton.isUserInteractionEnabled = cannotExpand
             backspaceButton.isHidden = true
-            charFormButton.isHidden = true
         }
         
         layoutButtons()
@@ -358,16 +343,6 @@ class CandidatePaneView: UIControl {
         delegate?.handleKey(.backspace)
     }
     
-    @objc private func charFormButtonClick() {
-        FeedbackProvider.rigidImpact.impactOccurred()
-        FeedbackProvider.play(keyboardAction: .none)
-        
-        let currentCharForm = SessionState.main.lastCharForm
-        let newCharForm: CharForm = currentCharForm == .simplified ? .traditional : .simplified
-        delegate?.handleKey(.setCharForm(newCharForm))
-        setupButtons()
-    }
-    
     private func handleKey(_ action: KeyboardAction) {
         delegate?.handleKey(action)
     }
@@ -421,7 +396,7 @@ class CandidatePaneView: UIControl {
     private func layoutButtons() {
         guard let superview = superview else { return }
         
-        let buttons = [expandButton, inputModeButton, backspaceButton, charFormButton]
+        let buttons = [expandButton, inputModeButton, backspaceButton]
         var buttonY = mode == .row ? Self.topMargin + (rowHeight - expandButtonWidth) / 2 : 0
         let candidatePaneViewLeftRightInset = isFullPadCandidateBar ? 0 : layoutConstants.ref.candidatePaneViewLeftRightInset
         let candidateViewWidth = superview.bounds.width - (expandButton.isHidden ? directionalLayoutMargins.trailing - StatusButton.statusInset : candidatePaneViewLeftRightInset)

@@ -511,13 +511,6 @@ class InputController: NSObject {
             updateSpaceState()
             refreshInputSettings()
             return
-        case .setCharForm(let cs):
-            inputEngine.charForm = cs
-            let currentCandidatesCount = candidateOrganizer.getCandidateCount(section: 0)
-            keyboardViewController?.keyboardView?.setPreserveCandidateOffset()
-            candidateOrganizer.charForm = cs
-            candidateOrganizer.updateCandidates(reload: true, targetCandidatesCount: currentCandidatesCount)
-            return
         case .toggleInputMode(let toInputMode):
             guard state.reverseLookupSchema == nil else {
                 changeSchema()

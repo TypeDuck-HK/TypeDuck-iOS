@@ -30,14 +30,6 @@ class BilingualInputEngine: InputEngine {
         englishInputEngine = EnglishInputEngine()
     }
 
-    var charForm: CharForm {
-        get { rimeInputEngine.charForm }
-        set {
-            SessionState.main.lastCharForm = newValue
-            rimeInputEngine.charForm = newValue
-        }
-    }
-
     var rimeSchema: RimeSchema {
         get { rimeInputEngine.schema }
         set { rimeInputEngine.schema = newValue }

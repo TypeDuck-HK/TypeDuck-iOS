@@ -78,6 +78,9 @@ class LocalizedStrings {
     static var showRomanizationMode_never: String { localizedString("chineseInputSettings.showRomanizationMode.never") }
     static var showRomanizationMode_always: String { localizedString("chineseInputSettings.showRomanizationMode.always") }
     static var showRomanizationMode_onlyInNonCantoneseMode: String { localizedString("chineseInputSettings.showRomanizationMode.onlyInNonCantoneseMode") }
+    static var charForm: String { localizedString("chineseInputSettings.showRomanizationMode") }
+    static var charForm_traditional: String { localizedString("chineseInputSettings.charForm.traditional") }
+    static var charForm_simplified: String { localizedString("chineseInputSettings.charForm.simplified") }
     static var enableCompletion: String { localizedString("chineseInputSettings.enableCompletion") }
     static var enableCorrector: String { localizedString("chineseInputSettings.enableCorrector") }
     static var enableCorrector_description: String { localizedString("chineseInputSettings.enableCorrector.description") }
