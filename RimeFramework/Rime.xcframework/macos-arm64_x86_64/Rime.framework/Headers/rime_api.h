@@ -114,6 +114,7 @@ typedef struct {
 typedef struct rime_candidate_t {
   char* text;
   char* comment;
+  double quality;
   void* reserved;
 } RimeCandidate;
 
@@ -292,6 +293,15 @@ RIME_API Bool RimeFreeStatus(RimeStatus* status);
 // Accessing candidate list
 RIME_API Bool RimeCandidateListBegin(RimeSessionId session_id,
                                      RimeCandidateListIterator* iterator);
+RIME_API Bool RimeConfigListAppendBool(RimeConfig* config,
+                                       const char* key,
+                                       Bool value);
+RIME_API Bool RimeConfigListAppendInt(RimeConfig* config,
+                                      const char* key,
+                                      int value);
+RIME_API Bool RimeConfigListAppendDouble(RimeConfig* config,
+                                         const char* key,
+                                         double value);
 RIME_API Bool RimeConfigListAppendString(RimeConfig* config,
                                          const char* key,
                                          const char* value);
@@ -300,6 +310,10 @@ RIME_API void RimeCandidateListEnd(RimeCandidateListIterator* iterator);
 RIME_API Bool RimeCandidateListFromIndex(RimeSessionId session_id,
                                          RimeCandidateListIterator* iterator,
                                          int index);
+RIME_API Bool RimeChangePage(RimeSessionId session_id, Bool backward);
+RIME_API Bool RimeHighlightCandidate(RimeSessionId session_id, size_t index);
+RIME_API Bool RimeHighlightCandidateOnCurrentPage(RimeSessionId session_id,
+                                                  size_t index);
 RIME_API Bool RimeSelectCandidate(RimeSessionId session_id, size_t index);
 RIME_API Bool RimeSelectCandidateOnCurrentPage(RimeSessionId session_id,
                                                size_t index);
@@ -417,14 +431,47 @@ RIME_API RimeModule* RimeFindModule(const char* module_name);
 //! Run a registered task
 RIME_API Bool RimeRunTask(const char* task_name);
 
+RIME_API const char* RimeGetUserId(void);
+
+RIME_API void RimeGetUserDataSyncDir(char* dir, size_t buffer_size);
+
 //! \deprecated use RimeApi::get_shared_data_dir_s instead.
 RIME_API const char* RimeGetSharedDataDir(void);
 //! \deprecated use RimeApi::get_user_data_dir_s instead.
 RIME_API const char* RimeGetUserDataDir(void);
+//! \deprecated use RimeApi::get_prebuilt_data_dir_s instead.
+RIME_API const char* RimeGetPrebuiltDataDir(void);
+//! \deprecated use RimeApi::get_staging_dir_s instead.
+RIME_API const char* RimeGetStagingDir(void);
 //! \deprecated use RimeApi::get_sync_dir_s instead.
 RIME_API const char* RimeGetSyncDir(void);
 
-RIME_API const char* RimeGetUserId(void);
+RIME_API void RimeGetSharedDataDirSecure(char* dir, size_t buffer_size);
+
+RIME_API void RimeGetUserDataDirSecure(char* dir, size_t buffer_size);
+
+RIME_API void RimeGetPrebuiltDataDirSecure(char* dir, size_t buffer_size);
+
+RIME_API void RimeGetStagingDirSecure(char* dir, size_t buffer_size);
+
+RIME_API void RimeGetSyncDirSecure(char* dir, size_t buffer_size);
+
+RIME_API const char* RimeGetInput(RimeSessionId session_id);
+
+RIME_API size_t RimeGetCaretPos(RimeSessionId session_id);
+
+RIME_API void RimeSetCaretPos(RimeSessionId session_id, size_t caret_pos);
+
+RIME_API const char* RimeGetVersion(void);
+
+RIME_API const char* RimeGetStateLabel(RimeSessionId session_id,
+                                       const char* option_name,
+                                       Bool state);
+
+RIME_API RimeStringSlice RimeGetStateLabelAbbreviated(RimeSessionId session_id,
+                                                      const char* option_name,
+                                                      Bool state,
+                                                      Bool abbreviated);
 
 /*! The API structure
  *  RimeApi is for rime v1.0+
@@ -560,6 +607,12 @@ typedef struct rime_api_t {
   const char* (*get_shared_data_dir)(void);
   //! \deprecated use get_user_data_dir_s instead.
   const char* (*get_user_data_dir)(void);
+  //! prebuilt data directory.
+  //! \deprecated use get_prebuilt_data_dir_s instead.
+  const char* (*get_prebuilt_data_dir)(void);
+  //! staging directory, stores data files deployed to a Rime client.
+  //! \deprecated use get_staging_dir_s instead.
+  const char* (*get_staging_dir)(void);
   //! \deprecated use get_sync_dir_s instead.
   const char* (*get_sync_dir)(void);
 
@@ -642,13 +695,6 @@ typedef struct rime_api_t {
   Bool (*candidate_list_from_index)(RimeSessionId session_id,
                                     RimeCandidateListIterator* iterator,
                                     int index);
-
-  //! prebuilt data directory.
-  //! \deprecated use get_prebuilt_data_dir_s instead.
-  const char* (*get_prebuilt_data_dir)(void);
-  //! staging directory, stores data files deployed to a Rime client.
-  //! \deprecated use get_staging_dir_s instead.
-  const char* (*get_staging_dir)(void);
 
   //! \deprecated for capnproto API, use "proto" module from librime-proto
   //! plugin.
