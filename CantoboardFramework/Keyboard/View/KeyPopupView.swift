@@ -167,7 +167,7 @@ class KeyPopupView: UIView {
                 widthAdjustment += keyWidth / (
                     layoutConstants.idiom == .pad(.padShort) && !keys.isDisjoint(with: "a¤") ||
                     !keys.isDisjoint(with: "mnstz\"'") && keys.isDisjoint(with: "5;；") ? 1 :
-                    !keys.isDisjoint(with: "ei") && keys.isDisjoint(with: "38") ||
+                    !keys.isDisjoint(with: "eio") && keys.isDisjoint(with: "38") ||
                     keys.isSuperset(of: "u7") ? 1.5 : 2
                 )
             }
