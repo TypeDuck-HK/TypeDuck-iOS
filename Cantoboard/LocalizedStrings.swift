@@ -42,6 +42,7 @@ class LocalizedStrings {
     static var audioFeedback: String { localizedString("inputMethodSettings.audioFeedback") }
     static var tapHapticFeedback: String { localizedString("inputMethodSettings.tapHapticFeedback") }
     static var enableCharPreview: String { localizedString("inputMethodSettings.enableCharPreview") }
+    static var enableSystemLexicon: String { localizedString("inputMethodSettings.enableSystemLexicon") }
     static var candidateFontSize: String { localizedString("inputMethodSettings.candidateFontSize") }
     static var candidateFontSize_small: String { localizedString("inputMethodSettings.candidateFontSize.small") }
     static var candidateFontSize_normal: String { localizedString("inputMethodSettings.candidateFontSize.normal") }
@@ -49,6 +50,9 @@ class LocalizedStrings {
     static var candidateGap: String { localizedString("inputMethodSettings.candidateGap") }
     static var candidateGap_normal: String { localizedString("inputMethodSettings.candidateGap.normal") }
     static var candidateGap_large: String { localizedString("inputMethodSettings.candidateGap.large") }
+    static var candidateSelectMode: String { localizedString("inputMethodSettings.candidateSelectMode") }
+    static var candidateSelectMode_expandDownward: String { localizedString("inputMethodSettings.candidateSelectMode.expandDownward") }
+    static var candidateSelectMode_scrollRight: String { localizedString("inputMethodSettings.candidateSelectMode.scrollRight") }
     static var symbolShape: String { localizedString("inputMethodSettings.symbolShape") }
     static var symbolShape_half: String { localizedString("inputMethodSettings.symbolShape.half") }
     static var symbolShape_full: String { localizedString("inputMethodSettings.symbolShape.full") }
@@ -98,8 +102,11 @@ class LocalizedStrings {
     static var reverseLookupSettings: String { localizedString("reverseLookupSettings") }
     static var showCodeInReverseLookup: String { localizedString("reverseLookupSettings.showCodeInReverseLookup") }
     static var cangjieVersion: String { localizedString("reverseLookupSettings.cangjieVersion") }
-    static var cangjie3: String { localizedString("reverseLookupSettings.cangjie3") }
-    static var cangjie5: String { localizedString("reverseLookupSettings.cangjie5") }
+    static var cangjieVersion_cangjie3: String { localizedString("reverseLookupSettings.cangjieVersion.cangjie3") }
+    static var cangjieVersion_cangjie5: String { localizedString("reverseLookupSettings.cangjieVersion.cangjie5") }
+    static var cangjieKeyCapMode: String { localizedString("reverseLookupSettings.cangjieKeyCapMode") }
+    static var cangjieKeyCapMode_letter: String { localizedString("reverseLookupSettings.cangjieKeyCapMode.letter") }
+    static var cangjieKeyCapMode_cangjieRoot: String { localizedString("reverseLookupSettings.cangjieKeyCapMode.cangjieRoot") }
     
     static var englishInputSettings: String { localizedString("englishInputSettings") }
     static var autoCap: String { localizedString("englishInputSettings.autoCap") }

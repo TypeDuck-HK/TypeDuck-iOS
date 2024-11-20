@@ -122,6 +122,7 @@ extension Settings {
             Switch(LocalizedStrings.audioFeedback, \.isAudioFeedbackEnabled),
             isPad ? nil : Switch(LocalizedStrings.tapHapticFeedback, \.isTapHapticFeedbackEnabled),
             Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
+            Switch(LocalizedStrings.enableSystemLexicon, \.enableSystemLexicon),
             Segment(LocalizedStrings.candidateFontSize, \.candidateFontSize, [
                     LocalizedStrings.candidateFontSize_small: .small,
                     LocalizedStrings.candidateFontSize_normal: .normal,
@@ -130,6 +131,10 @@ extension Settings {
             Segment(LocalizedStrings.candidateGap, \.candidateGap, [
                     LocalizedStrings.candidateGap_normal: .normal,
                     LocalizedStrings.candidateGap_large: .large,
+            ]),
+            Segment(LocalizedStrings.candidateSelectMode, \.candidateSelectMode, [
+                    LocalizedStrings.candidateSelectMode_expandDownward: .expandDownward,
+                    LocalizedStrings.candidateSelectMode_scrollRight: .scrollRight,
             ]),
             Segment(LocalizedStrings.symbolShape, \.symbolShape, [
                     LocalizedStrings.symbolShape_half: .half,
@@ -205,8 +210,13 @@ extension Settings {
                 [
                     Switch(LocalizedStrings.showCodeInReverseLookup, \.showCodeInReverseLookup),
                     Segment(LocalizedStrings.cangjieVersion, \.cangjieVersion, [
-                            LocalizedStrings.cangjie3: .cangjie3,
-                            LocalizedStrings.cangjie5: .cangjie5,
+                            LocalizedStrings.cangjieVersion_cangjie3: .cangjie3,
+                            LocalizedStrings.cangjieVersion_cangjie5: .cangjie5,
+                        ]
+                    ),
+                    Segment(LocalizedStrings.cangjieKeyCapMode, \.cangjieKeyCapMode, [
+                            LocalizedStrings.cangjieKeyCapMode_letter: .letter,
+                            LocalizedStrings.cangjieKeyCapMode_cangjieRoot: .cangjieRoot,
                         ]
                     ),
                 ]

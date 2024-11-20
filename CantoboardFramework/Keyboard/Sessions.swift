@@ -67,6 +67,7 @@ public struct SessionState: Codable, Equatable {
     }
     
     static var main: SessionState = Self.load()
+    static var systemLexicon: UILexicon?
     
     private static func load() -> SessionState {
         var state = SessionState()

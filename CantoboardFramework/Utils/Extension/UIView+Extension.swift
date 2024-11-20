@@ -48,7 +48,10 @@ internal extension UIView {
         var height = superlayerBounds.height * heightRatio // * wightAdjustmentRatio
         height = max(height, minHeight)
         
-        let font = UIFont.systemFont(ofSize: KeyHintLayer.fontSizePerHeight * height)
+        let hasFullWidthChar = attributedString.string.contains(where: { $0.isChineseChar })
+        let fullWidthMultipler = hasFullWidthChar ? 0.8 : 1
+        
+        let font = UIFont.systemFont(ofSize: KeyHintLayer.fontSizePerHeight * height * fullWidthMultipler)
         let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
         mutableAttributedString.addAttribute(.font, value: font, range: NSMakeRange(0, attributedString.length))
         textLayer.string = mutableAttributedString

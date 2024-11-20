@@ -140,7 +140,7 @@ class CandidatePaneView: UIControl {
     }
     
     private weak var collectionView: CandidateCollectionView!
-    private weak var backspaceButton: UIButton!
+    private weak var backspaceButton, scrollUpButton, scrollDownButton: UIButton!
     private weak var expandButton, inputModeButton: StatusButton!
     private weak var leftSeparator, middleSeparator, rightSeparator: UIView!
     weak var delegate: CandidatePaneViewDelegate?
@@ -197,6 +197,12 @@ class CandidatePaneView: UIControl {
         
         backspaceButton = createAndAddButton(UIButton())
         backspaceButton.addTarget(self, action: #selector(self.backspaceButtonClick), for: .touchUpInside)
+        
+        scrollUpButton = createAndAddButton(UIButton())
+        scrollUpButton.addTarget(self, action: #selector(self.scrollUpButtonClick), for: .touchUpInside)
+        
+        scrollDownButton = createAndAddButton(UIButton())
+        scrollDownButton.addTarget(self, action: #selector(self.scrollDownButtonClick), for: .touchUpInside)
     }
     
     private func createAndAddButton<T: UIButton>(_ button: T) -> T {
@@ -212,9 +218,21 @@ class CandidatePaneView: UIControl {
     }
     
     func setupButtons() {
-        let expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
+        let isKeyboardEnabled = keyboardState.enableState == .enabled
+        
+        var expandButtonImage: UIImage
+        switch Settings.cached.candidateSelectMode {
+        case .expandDownward:
+            expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
+        case .scrollRight:
+            if !collectionView.isAtRightmostPosition {
+                expandButtonImage = ButtonImage.paneScrollRightButtonImage
+            } else {
+                expandButtonImage = ButtonImage.paneScrollToBeginningButtonImage
+            }
+        }
         expandButton.setImage(adjustImageFontSize(expandButtonImage), for: .normal)
-        expandButton.isEnabled = keyboardState.enableState == .enabled
+        expandButton.isEnabled = isKeyboardEnabled
         
         var title: String?
         if statusIndicatorMode == .lang {
@@ -231,11 +249,19 @@ class CandidatePaneView: UIControl {
             }
         }
         inputModeButton.setAttributedTitle(title?.toHKAttributedString, for: .normal)
-        inputModeButton.isEnabled = keyboardState.enableState == .enabled
+        inputModeButton.isEnabled = isKeyboardEnabled
 
         backspaceButton.setImage(adjustImageFontSize(ButtonImage.backspace), for: .normal)
         backspaceButton.setImage(adjustImageFontSize(ButtonImage.backspaceFilled), for: .highlighted)
-        backspaceButton.isEnabled = keyboardState.enableState == .enabled
+        backspaceButton.isEnabled = isKeyboardEnabled
+        
+        scrollUpButton.setImage(tintWithLabel(adjustImageFontSize(ButtonImage.paneScrollUpButtonImage)), for: .normal)
+        // scrollUpButton.setImage(adjustImageFontSize(ButtonImage.paneScrollUpHighlightedButtonImage), for: .highlighted)
+        scrollUpButton.isEnabled = isKeyboardEnabled && collectionView.contentOffset.y > rowHeight
+
+        scrollDownButton.setImage(tintWithLabel(adjustImageFontSize(ButtonImage.paneScrollDownButtonImage)), for: .normal)
+        // scrollDownButton.setImage(adjustImageFontSize(ButtonImage.paneScrollDownHighlightedButtonImage), for: .highlighted)
+        scrollDownButton.isEnabled = isKeyboardEnabled && collectionView.contentOffset.y < collectionView.contentSize.height - collectionView.frame.height - 0.25 * rowHeight
         
         if mode == .table {
             expandButton.isHidden = false
@@ -243,6 +269,8 @@ class CandidatePaneView: UIControl {
             inputModeButton.isMini = false
             inputModeButton.isUserInteractionEnabled = true
             backspaceButton.isHidden = false
+            scrollUpButton.isHidden = false
+            scrollDownButton.isHidden = false
         } else {
             let cannotExpand = !keyboardState.keyboardType.isAlphabetic ||
                                collectionView.visibleCells.isEmpty ||
@@ -255,6 +283,8 @@ class CandidatePaneView: UIControl {
             inputModeButton.isMini = !cannotExpand
             inputModeButton.isUserInteractionEnabled = cannotExpand
             backspaceButton.isHidden = true
+            scrollUpButton.isHidden = true
+            scrollDownButton.isHidden = true
         }
         
         layoutButtons()
@@ -324,7 +354,12 @@ class CandidatePaneView: UIControl {
     @objc private func expandButtonClick() {
         FeedbackProvider.rigidImpact.impactOccurred()
         
-        changeMode(mode == .row ? .table : .row)
+        switch Settings.cached.candidateSelectMode {
+        case .expandDownward:
+            changeMode(mode == .row ? .table : .row)
+        case .scrollRight:
+            scrollRightToNextPageInRowMode()
+        }
     }
     
     @objc private func filterButtonClick() {
@@ -341,6 +376,23 @@ class CandidatePaneView: UIControl {
     @objc private func backspaceButtonClick() {
         FeedbackProvider.play(keyboardAction: .backspace)
         delegate?.handleKey(.backspace)
+    }
+    
+    @objc private func scrollUpButtonClick() {
+        scrollButtonClick(isScrollingUp: true)
+    }
+    
+    @objc private func scrollDownButtonClick() {
+        scrollButtonClick(isScrollingUp: false)
+    }
+    
+    @objc private func scrollButtonClick(isScrollingUp: Bool) {
+        FeedbackProvider.rigidImpact.impactOccurred()
+        FeedbackProvider.play(keyboardAction: .none)
+        
+        scrollInTableMode(isScrollingUp: isScrollingUp)
+        
+        setupButtons()
     }
     
     private func handleKey(_ action: KeyboardAction) {
@@ -396,7 +448,7 @@ class CandidatePaneView: UIControl {
     private func layoutButtons() {
         guard let superview = superview else { return }
         
-        let buttons = [expandButton, inputModeButton, backspaceButton]
+        let buttons = [expandButton, inputModeButton, backspaceButton, scrollUpButton, scrollDownButton]
         var buttonY = mode == .row ? Self.topMargin + (rowHeight - expandButtonWidth) / 2 : 0
         let candidatePaneViewLeftRightInset = isFullPadCandidateBar ? 0 : layoutConstants.ref.candidatePaneViewLeftRightInset
         let candidateViewWidth = superview.bounds.width - (expandButton.isHidden ? directionalLayoutMargins.trailing - StatusButton.statusInset : candidatePaneViewLeftRightInset)
@@ -428,6 +480,10 @@ class CandidatePaneView: UIControl {
     
     private func adjustImageFontSize(_ image: UIImage) -> UIImage {
         image.withConfiguration(UIImage.SymbolConfiguration(pointSize: statusSize))
+    }
+    
+    private func tintWithLabel(_ image: UIImage) -> UIImage {
+        image.withTintColor(.label)
     }
 }
 
@@ -502,15 +558,44 @@ extension CandidatePaneView {
         return self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: candidateCharSize.width / 2, y: candidateCharSize.height / 2 + 2 * rowHeight), to: self.collectionView))
     }
     
-    func scrollToNextPageInRowMode() {
+    func scrollRightToNextPageInRowMode() {
+        let candidateCellMarginWidth = CandidateCell.margin.left + CandidateCell.margin.right
         guard mode == .row,
               let collectionView = self.collectionView else { return }
-        var targetOffset = CGPoint(x: collectionView.contentOffset.x + collectionView.frame.width, y: collectionView.contentOffset.y)
+        
+        guard !collectionView.isAtRightmostPosition else {
+            let origin = CGPoint(x: 0, y: collectionView.contentOffset.y)
+            collectionView.scrollRectToVisible(CGRect(origin: origin, size: CGSize(width: 1, height: 1)), animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
+                FeedbackProvider.rigidImpact.impactOccurred()
+            })
+            return
+        }
+        
+        var targetOffset = CGPoint(x: collectionView.contentOffset.x + collectionView.frame.width + candidateCellMarginWidth, y: collectionView.contentOffset.y)
         if let indexPathAtTargetOffset = collectionView.indexPathForItem(at: targetOffset),
            let cellAtTargetOffset = collectionView.cellForItem(at: indexPathAtTargetOffset) {
             targetOffset.x = cellAtTargetOffset.frame.minX
         }
         targetOffset.x = max(0, min(targetOffset.x, collectionView.contentSize.width - collectionView.frame.width))
+        collectionView.setContentOffset(targetOffset, animated: true)
+    }
+    
+    func scrollInTableMode(isScrollingUp: Bool) {
+        let candidateCellMarginHeight = CandidateCell.margin.top + CandidateCell.margin.bottom
+        guard mode == .table,
+              let collectionView = self.collectionView else { return }
+        
+        let numOfRowsOfCandidatePerPage = floor((collectionView.frame.height / rowHeight) + 0.25)
+
+        let offsetY = (isScrollingUp ? -1 : 1) * numOfRowsOfCandidatePerPage * rowHeight
+        var targetOffset = CGPoint(x: collectionView.contentOffset.x + 15, y: collectionView.contentOffset.y + offsetY)
+        if let indexPathAtTargetOffset = collectionView.indexPathForItem(at: targetOffset),
+           let cellAtTargetOffset = collectionView.cellForItem(at: indexPathAtTargetOffset) {
+            targetOffset.y = cellAtTargetOffset.frame.minY
+        }
+        targetOffset.x = collectionView.contentOffset.x
+        targetOffset.y = targetOffset.y.clamped(to: rowHeight...collectionView.contentSize.height - collectionView.frame.height)
         collectionView.setContentOffset(targetOffset, animated: true)
     }
     
@@ -677,6 +762,9 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
 extension CandidatePaneView: CandidateCollectionViewDelegate {
     func selectItem(_ collectionView: UICollectionView, at indexPath: IndexPath) {
         FeedbackProvider.play(keyboardAction: .none)
+        if Settings.cached.isTapHapticFeedbackEnabled {
+            FeedbackProvider.lightImpact.impactOccurred()
+        }
         delegate?.candidatePaneViewCandidateSelected(translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
     }
     
@@ -734,6 +822,10 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
         if let view = view as? CandidateSectionHeader {
             view.free()
         }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        setupButtons()
     }
 }
 

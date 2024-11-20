@@ -110,6 +110,11 @@ public enum CandidateGap: String, Codable {
     }
 }
 
+public enum CandidateSelectMode: String, Codable {
+    case expandDownward = "expandDownward"
+    case scrollRight = "scrollRight"
+}
+
 public enum CharForm: String, Codable {
     case traditional = "zh-HK"
     case simplified = "zh-CN"
@@ -125,6 +130,11 @@ public enum CangjieVersion: String, Codable {
         case .cangjie5: return .cangjie5
         }
     }
+}
+
+public enum CangjieKeyCapMode: String, Codable {
+    case letter = "letter"
+    case cangjieRoot = "cangjieRoot"
 }
 
 public enum ShowRomanizationMode: String, Codable {
@@ -279,6 +289,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultSmartFullStopEnabled: Bool = true
     private static let defaultCandidateFontSize: CandidateFontSize = .normal
     private static let defaultCandidateGap: CandidateGap = .normal
+    private static let defaultCandidateSelectMode: CandidateSelectMode = .expandDownward
     private static let defaultSymbolShape: SymbolShape = .smart
     private static let defaultSmartSymbolShapeDefault: SymbolShape = .full
     private static let defaultSpaceAction: SpaceAction = .insertCandidate
@@ -294,6 +305,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultShowEnglishExactMatch: Bool = true
     private static let defaultCompositionMode: CompositionMode = .multiStage
     private static let defaultEnableCharPreview: Bool = true
+    private static let defaultEnableSystemLexicon: Bool = false
     private static let defaultPressSymbolKeysEnabled: Bool = true
     private static let defaultEnableHKCorrection: Bool = true
     private static let defaultFullWidthSpaceMode: FullWidthSpaceMode = .shift
@@ -302,7 +314,8 @@ public struct Settings: Codable, Equatable {
     private static let defaultFullPadCandidateBar: Bool = true
     private static let defaultPadLeftSysKeyAsKeyboardType: Bool = false
     private static let defaultShowBottomLeftSwitchLangButton: Bool = false
-    private static let defaultCangjieVersion: CangjieVersion = .cangjie5
+    private static let defaultCangjieVersion: CangjieVersion = .cangjie3
+    private static let defaultCangjieKeyCapMode: CangjieKeyCapMode = .cangjieRoot
     private static let defaultLanguageState: LanguageState = LanguageState()
 
     public var interfaceLanguage: InterfaceLanguage
@@ -312,6 +325,7 @@ public struct Settings: Codable, Equatable {
     public var isSmartFullStopEnabled: Bool
     public var candidateFontSize: CandidateFontSize
     public var candidateGap: CandidateGap
+    public var candidateSelectMode: CandidateSelectMode
     public var symbolShape: SymbolShape
     public var smartSymbolShapeDefault: SymbolShape
     public var spaceAction: SpaceAction
@@ -327,6 +341,7 @@ public struct Settings: Codable, Equatable {
     public var shouldShowEnglishExactMatch: Bool
     public var compositionMode: CompositionMode
     public var enableCharPreview: Bool
+    public var enableSystemLexicon: Bool
     public var isLongPressSymbolKeysEnabled: Bool
     public var enableHKCorrection: Bool
     public var fullWidthSpaceMode: FullWidthSpaceMode
@@ -336,6 +351,7 @@ public struct Settings: Codable, Equatable {
     public var padLeftSysKeyAsKeyboardType: Bool
     public var showBottomLeftSwitchLangButton: Bool
     public var cangjieVersion: CangjieVersion
+    public var cangjieKeyCapMode: CangjieKeyCapMode
     public var languageState: LanguageState
     
     public init() {
@@ -346,6 +362,7 @@ public struct Settings: Codable, Equatable {
         isSmartFullStopEnabled = Self.defaultSmartFullStopEnabled
         candidateFontSize = Self.defaultCandidateFontSize
         candidateGap = Self.defaultCandidateGap
+        candidateSelectMode = Self.defaultCandidateSelectMode
         symbolShape = Self.defaultSymbolShape
         smartSymbolShapeDefault = Self.defaultSmartSymbolShapeDefault
         spaceAction = Self.defaultSpaceAction
@@ -361,6 +378,7 @@ public struct Settings: Codable, Equatable {
         shouldShowEnglishExactMatch = Self.defaultShowEnglishExactMatch
         compositionMode = Self.defaultCompositionMode
         enableCharPreview = Self.defaultEnableCharPreview
+        enableSystemLexicon = Self.defaultEnableSystemLexicon
         isLongPressSymbolKeysEnabled = Self.defaultPressSymbolKeysEnabled
         enableHKCorrection = Self.defaultEnableHKCorrection
         fullWidthSpaceMode = Self.defaultFullWidthSpaceMode
@@ -370,6 +388,7 @@ public struct Settings: Codable, Equatable {
         padLeftSysKeyAsKeyboardType = Self.defaultPadLeftSysKeyAsKeyboardType
         showBottomLeftSwitchLangButton = Self.defaultShowBottomLeftSwitchLangButton
         cangjieVersion = Self.defaultCangjieVersion
+        cangjieKeyCapMode = Self.defaultCangjieKeyCapMode
         languageState = Self.defaultLanguageState
     }
     
@@ -382,6 +401,7 @@ public struct Settings: Codable, Equatable {
         self.isSmartEnglishSpaceEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartEnglishSpaceEnabled) ?? Settings.defaultSmartEnglishSpaceEnabled
         self.candidateFontSize = try container.decodeIfPresent(CandidateFontSize.self, forKey: .candidateFontSize) ?? Settings.defaultCandidateFontSize
         self.candidateGap = try container.decodeIfPresent(CandidateGap.self, forKey: .candidateGap) ?? Settings.defaultCandidateGap
+        self.candidateSelectMode = try container.decodeIfPresent(CandidateSelectMode.self, forKey: .candidateSelectMode) ?? Settings.defaultCandidateSelectMode
         self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.defaultSymbolShape
         self.smartSymbolShapeDefault = try container.decodeIfPresent(SymbolShape.self, forKey: .smartSymbolShapeDefault) ?? Settings.defaultSmartSymbolShapeDefault
         self.spaceAction = try container.decodeIfPresent(SpaceAction.self, forKey: .spaceAction) ?? Settings.defaultSpaceAction
@@ -397,6 +417,7 @@ public struct Settings: Codable, Equatable {
         self.shouldShowEnglishExactMatch = try container.decodeIfPresent(Bool.self, forKey: .shouldShowEnglishExactMatch) ?? Settings.defaultShowEnglishExactMatch
         self.compositionMode = try container.decodeIfPresent(CompositionMode.self, forKey: .compositionMode) ?? Settings.defaultCompositionMode
         self.enableCharPreview = try container.decodeIfPresent(Bool.self, forKey: .enableCharPreview) ?? Settings.defaultEnableCharPreview
+        self.enableSystemLexicon = try container.decodeIfPresent(Bool.self, forKey: .enableSystemLexicon) ?? Settings.defaultEnableSystemLexicon
         self.isLongPressSymbolKeysEnabled = try container.decodeIfPresent(Bool.self, forKey: .isLongPressSymbolKeysEnabled) ?? Settings.defaultPressSymbolKeysEnabled
         self.enableHKCorrection = try container.decodeIfPresent(Bool.self, forKey: .enableHKCorrection) ?? Settings.defaultEnableHKCorrection
         self.fullWidthSpaceMode = try container.decodeIfPresent(FullWidthSpaceMode.self, forKey: .fullWidthSpaceMode) ?? Settings.defaultFullWidthSpaceMode
@@ -406,6 +427,7 @@ public struct Settings: Codable, Equatable {
         self.padLeftSysKeyAsKeyboardType = try container.decodeIfPresent(Bool.self, forKey: .padLeftSysKeyAsKeyboardType) ?? Settings.defaultPadLeftSysKeyAsKeyboardType
         self.showBottomLeftSwitchLangButton = try container.decodeIfPresent(Bool.self, forKey: .showBottomLeftSwitchLangButton) ?? Settings.defaultShowBottomLeftSwitchLangButton
         self.cangjieVersion = try container.decodeIfPresent(CangjieVersion.self, forKey: .cangjieVersion) ?? Settings.defaultCangjieVersion
+        self.cangjieKeyCapMode = try container.decodeIfPresent(CangjieKeyCapMode.self, forKey: .cangjieKeyCapMode) ?? Settings.defaultCangjieKeyCapMode
         self.languageState = try container.decodeIfPresent(LanguageState.self, forKey: .languageState) ?? Settings.defaultLanguageState
     }
     

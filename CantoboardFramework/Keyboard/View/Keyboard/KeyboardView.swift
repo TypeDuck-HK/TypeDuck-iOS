@@ -161,7 +161,7 @@ class KeyboardView: UIView, BaseKeyboardView {
     }
     
     func scrollCandidatePaneToNextPageInRowMode() {
-        candidatePaneView?.scrollToNextPageInRowMode()
+        candidatePaneView?.scrollRightToNextPageInRowMode()
     }
     
     func setPreserveCandidateOffset() {
@@ -401,7 +401,7 @@ class KeyboardView: UIView, BaseKeyboardView {
             
             if isInCangjieMode && !isInEnglishMode && isLetterKey {
                 let keyCapHints = KeyCapHints(leftHint: leftHint, rightHint: isInMixedMode ? c : rightHint, bottomHint: bottomHint)
-                return .cangjie(keyChar, keyCapHints, childrenKeyCaps)
+                return .cangjie(keyChar, keyCapHints, childrenKeyCaps, Settings.cached.cangjieKeyCapMode)
             }
             
             let keyCapHints = leftHint == nil && rightHint == nil && bottomHint == nil ? nil : KeyCapHints(leftHint: leftHint, rightHint: rightHint, bottomHint: bottomHint)
