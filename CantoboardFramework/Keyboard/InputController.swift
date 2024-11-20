@@ -629,7 +629,7 @@ class InputController: NSObject {
         let activeSchema = state.activeSchema
         let is10Keys = activeSchema == .jyutping10keys && state.inputMode != .english
         keyboardViewController?.hasFilterBar = is10Keys && state.keyboardType != .emojis
-        keyboardViewController?.hasCompositionView = (isImmediateMode || activeSchema.isCangjieFamily && state.inputMode == .mixed)
+        keyboardViewController?.hasCompositionView = (isImmediateMode || activeSchema.isCangjieFamily && state.inputMode != .english)
         keyboardViewController?.hasCompositionResetButton = isImmediateMode && state.isComposing
     }
     
