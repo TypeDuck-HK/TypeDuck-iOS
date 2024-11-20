@@ -343,9 +343,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonRightHint: String? {
         switch self {
         case .character(_, let hint, _), .rime(_, let hint, _): return hint?.rightHint ?? barHint
-        case .cangjie(_, let hint, _, let cangjieKeyCapMode):
-            let rightHint = hint?.rightHint ?? barHint
-            return cangjieKeyCapMode == .cangjieRoot ? rightHint : CangjieConstants.cangjieKeyCaps(hint?.rightHint ?? "")
+        case .cangjie(let letter, _, _, let cangjieKeyCapMode): return cangjieKeyCapMode == .cangjieRoot ? letter : CangjieConstants.cangjieKeyCaps(letter)
         case .space: return "TypeDuck"
         default: return barHint
         }
