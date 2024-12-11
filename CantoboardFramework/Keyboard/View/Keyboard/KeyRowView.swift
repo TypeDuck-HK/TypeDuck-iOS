@@ -11,7 +11,6 @@ import UIKit
 class KeyRowView: UIView {
     private(set) var leftKeys, middleKeys, rightKeys: [KeyView]!
     private(set) var rowId: Int = -1
-    var needsInputModeSwitchKey = false
     
     private var layoutConstants: Reference<LayoutConstants>
     
@@ -102,7 +101,7 @@ class KeyRowView: UIView {
             var keyCap = keyCaps[i]
             
             switch keyCap {
-                case .nextKeyboard: keyCap = needsInputModeSwitchKey ? KeyCap.nextKeyboard : KeyCap.keyboardType(.emojis)
+                case .nextKeyboard where !keyboardState.needsInputModeSwitchKey: keyCap = .keyboardType(.emojis)
                 default: ()
             }
             keys[i].setKeyCap(keyCap, keyboardState: keyboardState, isPadTopRowButton: isPadTopRow)

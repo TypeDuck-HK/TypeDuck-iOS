@@ -108,7 +108,7 @@ class KeyboardView: UIView, BaseKeyboardView {
     }
     
     private func changeState(prevState: KeyboardState, newState: KeyboardState) {
-        var isViewDirty = prevState.keyboardType != newState.keyboardType ||
+        let isViewDirty = prevState.keyboardType != newState.keyboardType ||
             prevState.keyboardContextualType != newState.keyboardContextualType ||
             prevState.symbolShape != newState.symbolShape ||
             prevState.activeSchema != newState.activeSchema ||
@@ -118,12 +118,8 @@ class KeyboardView: UIView, BaseKeyboardView {
             prevState.isComposing != newState.isComposing ||
             prevState.isPortrait != newState.isPortrait ||
             prevState.specialSymbolShapeOverride != newState.specialSymbolShapeOverride ||
-            prevState.isKeyboardAppearing != newState.isKeyboardAppearing
-        
-        if prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey {
-            keyRows.forEach { $0.needsInputModeSwitchKey = newState.needsInputModeSwitchKey }
-            isViewDirty = true
-        }
+            prevState.isKeyboardAppearing != newState.isKeyboardAppearing ||
+            prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey
         
         if prevState.returnKeyType != newState.returnKeyType {
             newLineKey?.setKeyCap(.returnKey(newState.returnKeyType), keyboardState: state)
