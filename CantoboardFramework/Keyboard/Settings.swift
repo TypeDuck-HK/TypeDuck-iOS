@@ -48,11 +48,13 @@ public enum SpaceAction: String, Codable {
 public enum CantoneseKeyboardLayout: String, Codable {
     case qwerty = "qwerty"
     case tenKeys = "tenKeys"
+    case initialFinal = "initialFinal"
     
     var toRimeSchema: RimeSchema {
         switch self {
         case .qwerty: return .jyutping
         case .tenKeys: return .jyutping10keys
+        case .initialFinal: return .jyutpingInitialFinal
         }
     }
 }

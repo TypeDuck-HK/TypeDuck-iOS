@@ -94,6 +94,7 @@ class LocalizedStrings {
     static var cantoneseKeyboardLayout: String { localizedString("chineseInputSettings.cantoneseKeyboardLayout") }
     static var cantoneseKeyboardLayout_qwerty: String { localizedString("chineseInputSettings.cantoneseKeyboardLayout.qwerty") }
     static var cantoneseKeyboardLayout_tenKeys: String { localizedString("chineseInputSettings.cantoneseKeyboardLayout.tenKeys") }
+    static var cantoneseKeyboardLayout_initialFinal: String { localizedString("chineseInputSettings.cantoneseKeyboardLayout.initialFinal") }
     static var toneInputMode: String { localizedString("chineseInputSettings.toneInputMode") }
     static var toneInputMode_vxq: String { localizedString("chineseInputSettings.toneInputMode.vxq") }
     static var toneInputMode_longPress: String { localizedString("chineseInputSettings.toneInputMode.longPress") }

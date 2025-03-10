@@ -98,6 +98,7 @@ Click on an item to set as the main language.";
 "chineseInputSettings.cantoneseKeyboardLayout" = "鍵盤佈局";
 "chineseInputSettings.cantoneseKeyboardLayout.qwerty" = "QWERTY";
 "chineseInputSettings.cantoneseKeyboardLayout.tenKeys" = "九宮格";
+"chineseInputSettings.cantoneseKeyboardLayout.initialFinal" = "聲母韻母";
 "chineseInputSettings.toneInputMode" = "聲調輸入";
 "chineseInputSettings.toneInputMode.vxq" = "vxq";
 "chineseInputSettings.toneInputMode.longPress" = "長按";

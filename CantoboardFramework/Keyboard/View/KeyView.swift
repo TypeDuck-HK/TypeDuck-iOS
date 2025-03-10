@@ -171,6 +171,9 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         if keyboardIdiom.isPad && !keyboardState.isPortrait {
             titleLabelFontSize *= Self.padLandscapeFontRatio
         }
+        if case .jyutPingInitialFinal = keyCap {
+            contentEdgeInsets = .zero
+        }
         
         var maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]
         var shadowOpacity: Float = 1.0

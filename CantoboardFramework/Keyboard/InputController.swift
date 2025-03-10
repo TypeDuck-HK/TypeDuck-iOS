@@ -141,7 +141,7 @@ struct KeyboardState: Equatable {
         // Make sure we are using the user selected CJ version.
         if mainSchema == .cangjie3 || mainSchema == .cangjie5 {
             mainSchema = Settings.cached.cangjieVersion.toRimeSchema
-        } else if mainSchema == .jyutping || mainSchema == .jyutping10keys {
+        } else if mainSchema == .jyutping || mainSchema == .jyutping10keys || mainSchema == .jyutpingInitialFinal {
             mainSchema = Settings.cached.cantoneseKeyboardLayout.toRimeSchema
         }
         
@@ -389,9 +389,26 @@ class InputController: NSObject {
         
         switch action {
         case .moveCursorForward, .moveCursorBackward:
+            if state.activeSchema == .jyutpingInitialFinal, let rimeRawInput = inputEngine.rimeRawInput {
+                // raw input does not contain whitespaces
+                if action == .moveCursorForward, rimeRawInput.caretIndex < rimeRawInput.text.count {
+                    let currentIndex = rimeRawInput.text.index(rimeRawInput.text.startIndex, offsetBy: rimeRawInput.caretIndex)
+                    if rimeRawInput.text[currentIndex] == "9", let endIndex = rimeRawInput.text.suffix(from: currentIndex).firstIndex(of: "0") {
+                        let indexAfterEndIndex = rimeRawInput.text.index(after: endIndex)
+                        moveCursor(offset: rimeRawInput.text.distance(from: currentIndex, to: indexAfterEndIndex))
+                        break
+                    }
+                }
+                if action == .moveCursorBackward, rimeRawInput.caretIndex > 0 {
+                    let prevIndex = rimeRawInput.text.index(rimeRawInput.text.startIndex, offsetBy: rimeRawInput.caretIndex - 1)
+                    if rimeRawInput.text[prevIndex] == "0", let startIndex = rimeRawInput.text.prefix(upTo: prevIndex).lastIndex(of: "9") {
+                        let indexBeforeStartIndex = rimeRawInput.text.index(before: startIndex)
+                        moveCursor(offset: rimeRawInput.text.distance(from: prevIndex, to: indexBeforeStartIndex))
+                        break
+                    }
+                }
+            }
             moveCursor(offset: action == .moveCursorBackward ? -1 : 1)
-            updateComposition()
-            return
         case .character(let c):
             guard let char = c.first else { return }
             if !isComposing && shouldApplyChromeSearchBarHack {
@@ -412,6 +429,24 @@ class InputController: NSObject {
             if !isHoldingShift && state.keyboardType == .some(.alphabetic(.uppercased)) {
                 state.keyboardType = .alphabetic(.lowercased)
                 state.lastKeyboardTypeChangeFromAutoCap = false
+            }
+        case .initialFinalTone(let chars):
+            if !isComposing && shouldApplyChromeSearchBarHack {
+                textDocumentProxy.insertText("")
+            }
+            var i = 0
+            while i < chars.count {
+                if !inputEngine.processChar(chars.char(at: i)!) {
+                    break
+                }
+                i += 1
+            }
+            if i < chars.count {
+                let composition = Composition(text: chars, caretIndex: i).transformForInitialFinalSchema()
+                let remainingChars = String(composition.text.suffix(from: composition.text.index(composition.text.startIndex, offsetBy: composition.caretIndex)))
+                if !insertComposingText(appendBy: remainingChars) {
+                    insertText(remainingChars)
+                }
             }
         case .rime(let rc):
             guard isComposing || rc == .sym else { return }
@@ -465,6 +500,21 @@ class InputController: NSObject {
                         }
                         updateComposition()
                         return
+                    } else if action == .backspace && state.activeSchema == .jyutpingInitialFinal {
+                        // Remove the whole final (rhyme), which is enclosed between 9 and 0.
+                        guard let rimeRawInput = inputEngine.rimeRawInput else { return }
+                        let charToBeDeleted = rimeRawInput.text.char(at: rimeRawInput.caretIndex - 1)
+                        if charToBeDeleted == "0" {
+                            while inputEngine.processBackspace(), let rimeRawInput = inputEngine.rimeRawInput {
+                                let nextCharToBeDeleted = rimeRawInput.text.char(at: rimeRawInput.caretIndex - 1)
+                                if nextCharToBeDeleted == "9" {
+                                    _ = inputEngine.processBackspace()
+                                    break
+                                }
+                            }
+                            updateComposition()
+                            return
+                        }
                     }
                     _ = inputEngine.processBackspace()
                 }
@@ -790,6 +840,13 @@ class InputController: NSObject {
             return
         }
         
+        if state.activeSchema == .jyutpingInitialFinal && state.inputMode != .english {
+            let composition = inputEngine.composition?.transformForInitialFinalSchema(insertSpaces: true)
+            updateComposition(composition)
+            keyboardViewController?.compositionLabelView?.composition = composition
+            return
+        }
+        
         switch state.inputMode {
         case .chinese, .mixed: updateComposition(inputEngine.composition)
         case .english: updateComposition(inputEngine.englishComposition)
@@ -847,12 +904,14 @@ class InputController: NSObject {
            var composingText = inputEngine.composition?.text.filter({ $0 != " " }),
            !composingText.isEmpty {
             if inputEngine.rimeSchema.is10Keys && state.inputMode != .english {
-                let rimeCompositionText = inputEngine.rimeComposition?.text.filter({ $0 != " "}) ?? ""
+                let rimeCompositionText = inputEngine.rimeComposition?.text.filter({ $0 != " " }) ?? ""
                 let rimeRawInput = inputEngine.rimeRawInput?.text ?? ""
                 let inputRemaining = rimeRawInput.commonSuffix(with: rimeCompositionText)
                 let selectedInput = rimeCompositionText.prefix(rimeCompositionText.count - inputRemaining.count)
                 let bestCandidate = inputEngine.getRimeCandidate(0) ?? ""
                 composingText = selectedInput + bestCandidate
+            } else if inputEngine.rimeSchema == .jyutpingInitialFinal && state.inputMode != .english {
+                composingText = inputEngine.composition!.transformForInitialFinalSchema().text.filter({ $0 != " " })
             } else if inputEngine.rimeSchema == .stroke && state.inputMode != .english {
                 let hasCandidate = inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
                 
@@ -1074,5 +1133,62 @@ class InputController: NSObject {
 extension InputController: KeyboardViewDelegate {
     func handleInputModeList(from: UIView, with: UIEvent) {
         keyboardViewController?.handleInputModeList(from: from, with: with)
+    }
+}
+
+extension Composition {
+    fileprivate func transformForInitialFinalSchema(insertSpaces: Bool = false) -> Composition {
+        var newText = ""
+        var newCaretIndex = caretIndex
+        var currentIndex = 0
+        var inFinal = false
+        
+        var charIterator = PeekableIterator(text.makeIterator())
+        while let char = charIterator.next() {
+            switch char {
+            case "G":
+                newText.append("gw")
+                if currentIndex < caretIndex {
+                    newCaretIndex += 1
+                }
+            case "K":
+                newText.append("kw")
+                if currentIndex < caretIndex {
+                    newCaretIndex += 1
+                }
+            case "N":
+                newText.append("ng")
+                if currentIndex < caretIndex {
+                    newCaretIndex += 1
+                }
+            case "9":
+                inFinal = true
+                if currentIndex < caretIndex {
+                    newCaretIndex -= 1
+                }
+            case "0":
+                inFinal = false
+                if currentIndex < caretIndex {
+                    newCaretIndex -= 1
+                }
+            default:
+                newText.append(char)
+            }
+            // TODO s(m)s 算唔算, s(ng)c 食午餐 (becomes `sm s` and `sng c` when caret moves); h(ng) 下午 (always interpreted as hng 哼)
+            // ' separator / zero initial for h'aa 係啊 ?
+            if insertSpaces, !inFinal, char.isEnglishLetterOrDigit, // exclude spaces and Chinese characters
+               let nextChar = charIterator.peek(), nextChar != " ",
+               char == "0" ? !("1"..."6" ~= nextChar) : // spaces should not be inserted between final and tone
+                    "1"..."6" ~= char ? true :          // spaces should always be inserted after tone
+                    nextChar != "9" {                   // spaces should not be inserted between initial and final
+                newText.append(" ")
+                if currentIndex < caretIndex - 1 { // caret should be placed before the space, thus - 1
+                    newCaretIndex += 1
+                }
+            }
+            currentIndex += 1
+        }
+        
+        return Composition(text: newText, caretIndex: newCaretIndex)
     }
 }

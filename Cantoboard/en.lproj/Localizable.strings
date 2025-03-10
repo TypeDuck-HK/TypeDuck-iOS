@@ -96,6 +96,7 @@ Two-stage mode: Imitates common Chinese input methods, which outputs after selec
 "chineseInputSettings.cantoneseKeyboardLayout" = "Keyboard layout";
 "chineseInputSettings.cantoneseKeyboardLayout.qwerty" = "QWERTY";
 "chineseInputSettings.cantoneseKeyboardLayout.tenKeys" = "keypad";
+"chineseInputSettings.cantoneseKeyboardLayout.initialFinal" = "initial-final";
 "chineseInputSettings.toneInputMode" = "Tone input mode";
 "chineseInputSettings.toneInputMode.vxq" = "vxq";
 "chineseInputSettings.toneInputMode.longPress" = "long press";

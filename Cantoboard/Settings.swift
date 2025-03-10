@@ -195,6 +195,7 @@ extension Settings {
                     Segment(LocalizedStrings.cantoneseKeyboardLayout, \.cantoneseKeyboardLayout, [
                             LocalizedStrings.cantoneseKeyboardLayout_qwerty: .qwerty,
                             LocalizedStrings.cantoneseKeyboardLayout_tenKeys: .tenKeys,
+                            LocalizedStrings.cantoneseKeyboardLayout_initialFinal: .initialFinal,
                         ]
                     ),
                     Segment(LocalizedStrings.toneInputMode, \.toneInputMode, [

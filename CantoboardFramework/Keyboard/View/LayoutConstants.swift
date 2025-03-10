@@ -895,6 +895,7 @@ extension LayoutConstants {
         switch keyCap {
         case .returnKey(.emergencyCall) where idiom == .phone: return 12
         case .keyboardType(.symbolic) where idiom == .phone, .keyboardType(.alphabetic) where idiom == .phone: return 14
+        case .keyboardType(.numeric) where idiom == .pad(.padShort), .keyboardType(.alphabetic) where idiom == .pad(.padShort): return 20
         case .keyboardType(.emojis): return 22
         case .character(".com", _, _),
              .jyutPing10Keys,
