@@ -41,10 +41,10 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
         ["u", "ui", nil, nil, "un", "ung", nil, "ut", "uk"], 
         ["oe", "eoi", nil, nil, "eon", "oeng", nil, "eot", "oek"], 
         ["yu", nil, nil, nil, "yun", nil, nil, "yut", nil], 
-        [nil, nil, nil, "m", nil, "ng", nil, nil, nil],
+        [nil, nil, nil, "m", nil, "ng", nil, "<", ">"],
     ]
     
-    private let bottomButtonLayout: [[KeyCap]] = [[.nextKeyboard, .toggleInputMode(.english, nil), .keyboardType(.numeric), .keyboardType(.emojis)], [.space(.space)], [.backspace, .returnKey(.default), .dismissKeyboard, .moveCursorBackward, .moveCursorForward]]
+    private let bottomButtonLayout: [[KeyCap]] = [[.nextKeyboard, .toggleInputMode(.english, nil), .keyboardType(.numeric), .keyboardType(.emojis)], [.space(.space)], [.backspace, .returnKey(.default), .dismissKeyboard]]
     
     private weak var candidatePaneView: CandidatePaneView?
     public var layoutConstants: Reference<LayoutConstants> = Reference(LayoutConstants.forMainScreen)
@@ -88,6 +88,7 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
         } else {
             let touchHandler = TouchHandler(keyboardView: self, keyboardIdiom: state.keyboardIdiom)
             touchHandler.isInKeyboardMode = state.activeSchema != .jyutpingInitialFinal
+            touchHandler.allowCaretMoving = state.activeSchema != .jyutpingInitialFinal // TODO FIXME
             self.touchHandler = touchHandler
         }
     }
@@ -142,7 +143,7 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
                 }
                 
                 button.colRowOrigin = CGPoint(x: x, y: y)
-                button.setKeyCap(.jyutPingInitialFinal(keyCapType, c), keyboardState: state)
+                button.setKeyCap(c == "<" ? .moveCursorBackward : c == ">" ? .moveCursorForward : .jyutPingInitialFinal(keyCapType, c), keyboardState: state)
                 button.isKeyEnabled = state.enableState == .enabled
                 buttonRow.append(button)
                 x += 1
@@ -156,6 +157,7 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
     
     private func setupView() {
         touchHandler?.isInKeyboardMode = state.activeSchema != .jyutpingInitialFinal
+        touchHandler?.allowCaretMoving = state.activeSchema != .jyutpingInitialFinal // TODO FIXME
         
         leftButtons = initLeftRightButtons(side: .left, buttonLayouts: leftButtonLayout, existingButtons: leftButtons)
         rightButtons = initLeftRightButtons(side: .right, buttonLayouts: rightButtonLayout, existingButtons: rightButtons)
