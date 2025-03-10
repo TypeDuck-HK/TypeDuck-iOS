@@ -23,7 +23,7 @@ protocol Option {
     var description: String? { get }
     var videoUrl: String? { get }
     func dequeueCell(with controller: MainViewController) -> UITableViewCell
-    func updateSettings()
+    func cellDidSelect()
 }
 
 private class Switch: Option {
@@ -52,12 +52,15 @@ private class Switch: Option {
         return OptionTableViewCell(option: self, optionView: control)
     }
     
+    func cellDidSelect() {}
+    
     @objc func updateSettings() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         value = control.isOn
         controller.settings[keyPath: key] = value
         controller.view.endEditing(true)
         Settings.save(controller.settings)
+        controller.rebuildCells()
     }
 }
 
@@ -91,16 +94,99 @@ private class Segment<T: Equatable>: Option {
         return OptionTableViewCell(option: self, optionView: control)
     }
     
+    func cellDidSelect() {}
+    
     @objc func updateSettings() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         value = options[control.selectedSegmentIndex].value
         controller.settings[keyPath: key] = value
         controller.view.endEditing(true)
         Settings.save(controller.settings)
-        
-        if key == \.interfaceLanguage {
-            controller.appMovedToBackground()
+        controller.rebuildCells()
+    }
+}
+
+private class ColorPicker<T: UIColor>: Option {
+    var title: String
+    var description: String?
+    var videoUrl: String?
+    var key: WritableKeyPath<Settings, T>
+    var value: T
+    
+    var controller: MainViewController!
+    var colorPreview: UIView!
+    var colorPickerDelegate: ColorPickerDelegate<T>?
+    
+    init(_ title: String, _ key: WritableKeyPath<Settings, T>, _ description: String? = nil, _ videoUrl: String? = nil) {
+        self.title = title
+        self.key = key
+        self.value = Settings.cached[keyPath: key]
+        self.description = description
+        self.videoUrl = videoUrl
+    }
+    
+    func dequeueCell(with controller: MainViewController) -> UITableViewCell {
+        self.controller = controller
+        colorPreview = RoundedUIView()
+        colorPreview.backgroundColor = value
+        let cell = OptionTableViewCell(option: self, optionView: colorPreview)
+        cell.selectionStyle = .default
+        NSLayoutConstraint.activate([
+            colorPreview.widthAnchor.constraint(greaterThanOrEqualToConstant: 24),
+            colorPreview.widthAnchor.constraint(equalTo: colorPreview.heightAnchor),
+            colorPreview.topAnchor.constraint(equalTo: cell.contentView.topAnchor, constant: 8),
+        ])
+        return cell
+    }
+    
+    func cellDidSelect() {
+        if #available(iOS 14.0, *) {
+            let colorPickerDelegate = colorPickerDelegate ?? ColorPickerDelegate(colorPicker: self)
+            self.colorPickerDelegate = colorPickerDelegate
+            let colorPicker = UIColorPickerViewController()
+            colorPicker.title = title
+            colorPicker.selectedColor = value
+            colorPicker.supportsAlpha = false
+            colorPicker.delegate = colorPickerDelegate
+            colorPicker.modalPresentationStyle = .popover
+            colorPicker.popoverPresentationController?.sourceView = colorPreview
+            controller.present(colorPicker, animated: true)
+        } else {
+            // Never mind
         }
+    }
+}
+
+private class RoundedUIView: UIView {
+    override public func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = frame.width / 2
+        layer.masksToBounds = true
+        layer.borderColor = UIColor.separator.cgColor
+        layer.borderWidth = 1
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        layer.borderColor = UIColor.separator.cgColor
+    }
+}
+
+private class ColorPickerDelegate<T: UIColor>: NSObject, UIColorPickerViewControllerDelegate {
+    let colorPicker: ColorPicker<T>!
+    
+    init(colorPicker: ColorPicker<T>) {
+        self.colorPicker = colorPicker
+    }
+    
+    @available(iOS 14.0, *)
+    func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
+        colorPicker.colorPreview.backgroundColor = color
+        guard let color = color as? T else { return }
+        colorPicker.value = color
+        colorPicker.controller.settings[keyPath: colorPicker.key] = colorPicker.value
+        colorPicker.controller.view.endEditing(true)
+        Settings.save(colorPicker.controller.settings)
     }
 }
 
@@ -114,14 +200,15 @@ extension Settings {
     
     static func buildSections() -> [Section] {
         let isPad = UIDevice.current.userInterfaceIdiom == .pad
+        let isQwerty = Settings.cached.cantoneseKeyboardLayout == .qwerty
         let inputMethodOptions: [Option?] = [
-            Switch(LocalizedStrings.mixedMode, \.isMixedModeEnabled),
+            isQwerty ? Switch(LocalizedStrings.mixedMode, \.isMixedModeEnabled) : nil,
             isPad ? nil : Switch(LocalizedStrings.longPressSymbolKeys, \.isLongPressSymbolKeysEnabled, LocalizedStrings.longPressSymbolKeys_description, "long_press_symbols"),
             Switch(LocalizedStrings.smartFullStop, \.isSmartFullStopEnabled,
                    LocalizedStrings.smartFullStop_description, "smart_full_stop"),
             Switch(LocalizedStrings.audioFeedback, \.isAudioFeedbackEnabled),
             isPad ? nil : Switch(LocalizedStrings.tapHapticFeedback, \.isTapHapticFeedbackEnabled),
-            Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
+            isPad ? nil : Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
             Switch(LocalizedStrings.enableSystemLexicon, \.enableSystemLexicon),
             Segment(LocalizedStrings.candidateFontSize, \.candidateFontSize, [
                     LocalizedStrings.candidateFontSize_small: .small,
@@ -157,6 +244,33 @@ extension Settings {
                 ),
             ]
         )
+        let jyutpingInitialFinalLayoutSettingsSection = Section(
+            LocalizedStrings.jyutpingInitialFinalLayoutSettings,
+            [
+                Switch(LocalizedStrings.customizeKeyColor, \.jyutpingInitialFinalLayoutSettings.customizeKeyColor),
+            ] + (Settings.cached.jyutpingInitialFinalLayoutSettings.customizeKeyColor ? [
+                ColorPicker(LocalizedStrings.initialKeyColor, \.jyutpingInitialFinalLayoutSettings.initialKeyColor),
+                ColorPicker(LocalizedStrings.finalKeyColor, \.jyutpingInitialFinalLayoutSettings.finalKeyColor),
+                ColorPicker(LocalizedStrings.toneKeyColor, \.jyutpingInitialFinalLayoutSettings.toneKeyColor),
+                ColorPicker(LocalizedStrings.punctuationKeyColor, \.jyutpingInitialFinalLayoutSettings.punctuationKeyColor),
+            ] : [])
+        )
+        let reverseLookupSettingsSection = Section(
+            LocalizedStrings.reverseLookupSettings,
+            [
+                Switch(LocalizedStrings.showCodeInReverseLookup, \.showCodeInReverseLookup),
+                Segment(LocalizedStrings.cangjieVersion, \.cangjieVersion, [
+                        LocalizedStrings.cangjieVersion_cangjie3: .cangjie3,
+                        LocalizedStrings.cangjieVersion_cangjie5: .cangjie5,
+                    ]
+                ),
+                Segment(LocalizedStrings.cangjieKeyCapMode, \.cangjieKeyCapMode, [
+                        LocalizedStrings.cangjieKeyCapMode_letter: .letter,
+                        LocalizedStrings.cangjieKeyCapMode_cangjieRoot: .cangjieRoot,
+                    ]
+                ),
+            ]
+        )
         
         return [
             Section(LocalizedStrings.inputMethodSettings, inputMethodOptions.compactMap({ $0 })),
@@ -186,9 +300,11 @@ extension Settings {
                             LocalizedStrings.charForm_traditional: .traditional,
                             LocalizedStrings.charForm_simplified: .simplified,
                     ]),
+                ] + (isQwerty ? [
                     Switch(LocalizedStrings.enableCompletion, \.rimeSettings.enableCompletion),
                     Switch(LocalizedStrings.enableCorrector, \.rimeSettings.enableCorrector,
                            LocalizedStrings.enableCorrector_description, "autocorrect"),
+                ] : []) + [
                     Switch(LocalizedStrings.enableSentence, \.rimeSettings.enableSentence),
                     Switch(LocalizedStrings.enableLearning, \.rimeSettings.enableLearning,
                            LocalizedStrings.enableLearning_description, "4_memory"),
@@ -198,30 +314,17 @@ extension Settings {
                             LocalizedStrings.cantoneseKeyboardLayout_initialFinal: .initialFinal,
                         ]
                     ),
+                ] + (isQwerty ? [
                     Segment(LocalizedStrings.toneInputMode, \.toneInputMode, [
                             LocalizedStrings.toneInputMode_vxq: .vxq,
                             LocalizedStrings.toneInputMode_longPress: .longPress,
                         ],
                         LocalizedStrings.toneInputMode_description, "tone_input_mode"
                     ),
-                ]
+                ] : [])
             ),
-            Section(
-                LocalizedStrings.reverseLookupSettings,
-                [
-                    Switch(LocalizedStrings.showCodeInReverseLookup, \.showCodeInReverseLookup),
-                    Segment(LocalizedStrings.cangjieVersion, \.cangjieVersion, [
-                            LocalizedStrings.cangjieVersion_cangjie3: .cangjie3,
-                            LocalizedStrings.cangjieVersion_cangjie5: .cangjie5,
-                        ]
-                    ),
-                    Segment(LocalizedStrings.cangjieKeyCapMode, \.cangjieKeyCapMode, [
-                            LocalizedStrings.cangjieKeyCapMode_letter: .letter,
-                            LocalizedStrings.cangjieKeyCapMode_cangjieRoot: .cangjieRoot,
-                        ]
-                    ),
-                ]
-            ),
+            Settings.cached.cantoneseKeyboardLayout == .initialFinal ? jyutpingInitialFinalLayoutSettingsSection : nil,
+            isQwerty ? reverseLookupSettingsSection : nil,
             Section(
                 LocalizedStrings.englishInputSettings,
                 [

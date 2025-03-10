@@ -174,6 +174,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBgColor: UIColor {
         switch self {
+        case .jyutPingInitialFinal(let type, _) where Settings.cached.jyutpingInitialFinalLayoutSettings.customizeKeyColor:
+            switch type {
+            case .initial: return Settings.cached.jyutpingInitialFinalLayoutSettings.initialKeyColor
+            case .final: return Settings.cached.jyutpingInitialFinalLayoutSettings.finalKeyColor
+            case .tone: return Settings.cached.jyutpingInitialFinalLayoutSettings.toneKeyColor
+            case .punctuation: return Settings.cached.jyutpingInitialFinalLayoutSettings.punctuationKeyColor
+            }
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
         case .returnKey: return UIColor.systemBlue
@@ -216,6 +223,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonFgColor: UIColor {
         switch self {
+        case .jyutPingInitialFinal where Settings.cached.jyutpingInitialFinalLayoutSettings.customizeKeyColor: return buttonBgColor.fgColor
         case .returnKey(.go), .returnKey(.search): return .white
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedForegroundColor
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.keyForegroundColor
@@ -225,7 +233,10 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     }
     
     var buttonHintFgColor: UIColor {
-        return ButtonColor.keyHintColor
+        switch self {
+        case .jyutPingInitialFinal where Settings.cached.jyutpingInitialFinalLayoutSettings.customizeKeyColor: return buttonBgColor.fgColor.withAlphaComponent(0.7)
+        default: return ButtonColor.keyHintColor
+        }
     }
     
     // TODO Return images < iOS 12
@@ -780,4 +791,8 @@ class ButtonColor {
     static let dictionaryViewBackgroundColor = colorAssets("dictionaryViewBackgroundColor")
     static let dictionaryViewForegroundColor = colorAssets("dictionaryViewForegroundColor")
     static let dictionaryViewGrayedColor = colorAssets("dictionaryViewGrayedColor")
+    static let jyutpingInitialFinalDefaultInitialKeyColor = colorAssets("jyutpingInitialFinalDefaultInitialKeyColor")
+    static let jyutpingInitialFinalDefaultFinalKeyColor = colorAssets("jyutpingInitialFinalDefaultFinalKeyColor")
+    static let jyutpingInitialFinalDefaultToneKeyColor = colorAssets("jyutpingInitialFinalDefaultToneKeyColor")
+    static let jyutpingInitialFinalDefaultPunctuationKeyColor = colorAssets("jyutpingInitialFinalDefaultPunctuationKeyColor")
 }

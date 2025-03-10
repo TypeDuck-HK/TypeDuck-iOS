@@ -100,6 +100,13 @@ class LocalizedStrings {
     static var toneInputMode_longPress: String { localizedString("chineseInputSettings.toneInputMode.longPress") }
     static var toneInputMode_description: String { localizedString("chineseInputSettings.toneInputMode.description") }
     
+    static var jyutpingInitialFinalLayoutSettings: String { localizedString("jyutpingInitialFinalLayoutSettings") }
+    static var customizeKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.customizeKeyColor") }
+    static var initialKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.initialKeyColor") }
+    static var finalKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.finalKeyColor") }
+    static var toneKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.toneKeyColor") }
+    static var punctuationKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.punctuationKeyColor") }
+    
     static var reverseLookupSettings: String { localizedString("reverseLookupSettings") }
     static var showCodeInReverseLookup: String { localizedString("reverseLookupSettings.showCodeInReverseLookup") }
     static var cangjieVersion: String { localizedString("reverseLookupSettings.cangjieVersion") }

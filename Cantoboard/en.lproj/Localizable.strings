@@ -107,6 +107,13 @@ vxq: Press v/x/q once to input tone 1/2/3;
 　　 Press v/x/q twice to input tone 4/5/6.
 Long press: Press and hold one of the six keys in the middle of the keyboard to select a tone.";
 
+"jyutpingInitialFinalLayoutSettings" = "Initial-Final Keyboard Layout Settings";
+"jyutpingInitialFinalLayoutSettings.customizeKeyColor" = "Customize key colour";
+"jyutpingInitialFinalLayoutSettings.initialKeyColor" = "Initial key colour";
+"jyutpingInitialFinalLayoutSettings.finalKeyColor" = "Final key colour";
+"jyutpingInitialFinalLayoutSettings.toneKeyColor" = "Tone key colour";
+"jyutpingInitialFinalLayoutSettings.punctuationKeyColor" = "Punctuation key colour";
+
 "reverseLookupSettings" = "Reverse Lookup Settings";
 "reverseLookupSettings.showCodeInReverseLookup" = "Full input code above candidates";
 "reverseLookupSettings.cangjieVersion" = "Cangjie version";
