@@ -120,6 +120,7 @@ class RimeInputEngine: NSObject, InputEngine {
         if rawInput?.text.last == "'" && char == "'" { return true }
         if let asciiValue = char.asciiValue {
             processKey(Int32(asciiValue))
+            refreshCandidates()
             return true
         }
         // Ignore non letter .
@@ -128,8 +129,7 @@ class RimeInputEngine: NSObject, InputEngine {
     
     func processBackspace() -> Bool {
         guard composition?.caretIndex ?? 0 > 0 else { return false }
-        rimeSession?.processKey(0xff08, modifier: 0)// Backspace
-        rimeSession?.setCandidateMenuToFirstPage()
+        rimeSession?.processKey(0xff08, modifier: 0) // Backspace
         refreshCandidates()
         return true
     }
@@ -149,7 +149,6 @@ class RimeInputEngine: NSObject, InputEngine {
         }
         
         rimeSession.processKey(keycode, modifier: modifier)
-        refreshCandidates()
     }
     
     private func refreshCandidates() {
@@ -177,18 +176,25 @@ class RimeInputEngine: NSObject, InputEngine {
         if isMovingLeft {
             guard rimeSession.compositionCaretBytePosition > 0 else { return false }
             processKey(0xff96)
-            return offset == -1 || moveCaret(offset: offset + 1)
+            if offset != -1 {
+                return moveCaret(offset: offset + 1)
+            }
         } else {
             guard rimeSession.compositionCaretBytePosition < preedit.utf8.count else { return false }
             processKey(0xff98)
-            return offset == 1 || moveCaret(offset: offset - 1)
+            if offset != 1 {
+                return moveCaret(offset: offset - 1)
+            }
         }
+        refreshCandidates()
+        return true
     }
     
     func clearInput() {
         guard let rimeSession = self.rimeSession else { return }
         rimeSession.processKey(0xff1b, modifier: 0) // Esc
         processKey(0xff1b)
+        refreshCandidates()
     }
     
     func getCandidate(_ index: Int) -> String? {
