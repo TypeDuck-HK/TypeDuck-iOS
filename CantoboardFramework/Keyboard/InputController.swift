@@ -485,7 +485,6 @@ class InputController: NSObject {
                 }
             }
         case .emoji(let e):
-            FeedbackProvider.play(keyboardAction: action)
             if !insertComposingText(appendBy: e, shouldDisableSmartSpace: true) {
                 textDocumentProxy.insertText(e)
             }

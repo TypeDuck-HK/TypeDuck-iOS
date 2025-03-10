@@ -609,14 +609,17 @@ extension KeyboardView {
 
 extension KeyboardView: EmojiViewDelegate {
     func emojiViewDidSelectEmoji(_ emoji: String, emojiView: EmojiView) {
+        FeedbackProvider.play(keyboardAction: .emoji(emoji))
         delegate?.handleKey(.emoji(emoji))
     }
     
     func emojiViewDidPressChangeKeyboardButton(_ emojiView: EmojiView) {
+        FeedbackProvider.play(keyboardAction: .keyboardType(.alphabetic(.lowercased)))
         delegate?.handleKey(.keyboardType(.alphabetic(.lowercased)))
     }
     
     func emojiViewDidPressDeleteBackwardButton(_ emojiView: EmojiView) {
+        FeedbackProvider.play(keyboardAction: .backspace)
         delegate?.handleKey(.backspace)
     }
 }
