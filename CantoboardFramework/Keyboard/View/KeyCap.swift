@@ -348,6 +348,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .jyutPingInitialFinal(.initial, "G"): return "gw"
         case .jyutPingInitialFinal(.initial, "K"): return "kw"
         case .jyutPingInitialFinal(.initial, "N"): return "ng"
+        case .jyutPingInitialFinal(.initial, "X"): return "＊"
         case .jyutPingInitialFinal(_, let c): return c
         case .selectRomanization: return "選拼音"
         case .exportFile(let namePrefix, _): return namePrefix.capitalized
@@ -379,6 +380,12 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .character(_, let hint, _), .rime(_, let hint, _): return hint?.rightHint ?? barHint
         case .cangjie(let letter, _, _, let cangjieKeyCapMode): return cangjieKeyCapMode == .cangjieRoot ? letter : CangjieConstants.cangjieKeyCaps(letter)
         case .space: return "TypeDuck"
+        case .jyutPingInitialFinal(.tone, "1"): return "陰平"
+        case .jyutPingInitialFinal(.tone, "2"): return "陰上"
+        case .jyutPingInitialFinal(.tone, "3"): return "陰去"
+        case .jyutPingInitialFinal(.tone, "4"): return "陽平"
+        case .jyutPingInitialFinal(.tone, "5"): return "陽上"
+        case .jyutPingInitialFinal(.tone, "6"): return "陽去"
         default: return barHint
         }
     }
@@ -386,12 +393,6 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonBottomHint: String? {
         switch self {
         case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _, _): return hints?.bottomHint
-        case .jyutPingInitialFinal(.tone, "1"): return "陰平"
-        case .jyutPingInitialFinal(.tone, "2"): return "陰上"
-        case .jyutPingInitialFinal(.tone, "3"): return "陰去"
-        case .jyutPingInitialFinal(.tone, "4"): return "陽平"
-        case .jyutPingInitialFinal(.tone, "5"): return "陽上"
-        case .jyutPingInitialFinal(.tone, "6"): return "陽去"
         default: return nil
         }
     }
@@ -579,10 +580,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "Z": return [self, "Ź", "Ẑ", "Ž", "Z̧", "Ż", "Ẓ", "Ƶ", "Ʒ"]
         case .jyutPingInitialFinal(.punctuation, "。"): return ["。", "."]
         case .jyutPingInitialFinal(.punctuation, "，"): return ["，", ","]
-        case .jyutPingInitialFinal(.punctuation, "、"): return ["、", "､"]
         case .jyutPingInitialFinal(.punctuation, "？"): return ["？", "?"]
         case .jyutPingInitialFinal(.punctuation, "！"): return ["！", "!"]
-        case .jyutPingInitialFinal(.punctuation, "："): return ["：", ":"]
         default: return [self]
         }
     }

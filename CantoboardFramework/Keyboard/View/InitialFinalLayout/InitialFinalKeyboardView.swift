@@ -27,21 +27,19 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
         ["d", "t", "n", "l"],
         ["z", "c", "s", "j"],
         ["g", "k", "N", "h"],
-        ["G", "K", "w", nil],
-        ["1", "2", "3", "4", "5", "6"],
-        ["。", "，", "、", "？", "！", "："],
+        ["G", "K", "w", "X"],
+        ["。", "，", "？", "！"],
     ]
     
     private let rightButtonLayout: [[String?]] = [
-        ["aa", "aai", "aau", "aam", "aan", "aang", "aap", "aat", "aak"],
-        [nil, "ai", "au", "am", "an", "ang", "ap", "at", "ak"],
-        ["e", "ei", "eu", "em", nil, "eng", "ep", nil, "ek"], 
-        ["i", nil, "iu", "im", "in", "ing", "ip", "it", "ik"], 
-        ["o", "oi", "ou", nil, "on", "ong", nil, "ot", "ok"], 
-        ["u", "ui", nil, nil, "un", "ung", nil, "ut", "uk"], 
-        ["oe", "eoi", nil, nil, "eon", "oeng", nil, "eot", "oek"], 
-        ["yu", nil, nil, nil, "yun", nil, nil, "yut", nil], 
-        [nil, nil, nil, "m", nil, "ng", nil, "<", ">"],
+        ["aa", "aai", "aau", "aam", "aan", "aang", "aap", "aat", "aak", "m"],
+        [nil, "ai", "au", "am", "an", "ang", "ap", "at", "ak", "ng"],
+        ["e", "ei", "eu", "em", nil, "eng", "ep", nil, "ek", "1"],
+        ["i", nil, "iu", "im", "in", "ing", "ip", "it", "ik", "2"],
+        ["o", "oi", "ou", nil, "on", "ong", nil, "ot", "ok", "3"],
+        ["u", "ui", nil, nil, "un", "ung", nil, "ut", "uk", "4"],
+        ["oe", "eoi", nil, nil, "eon", "oeng", nil, "eot", "oek", "5"],
+        ["yu", nil, nil, nil, "yun", nil, nil, "yut", nil, "6"],
     ]
     
     private let bottomButtonLayout: [[KeyCap]] = [[.nextKeyboard, .toggleInputMode(.english, nil), .keyboardType(.numeric), .keyboardType(.emojis)], [.space(.space)], [.backspace, .returnKey(.default), .dismissKeyboard]]
@@ -137,13 +135,13 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
                 let keyCapType: KeyCapType
                 switch side {
                 case .left where c.first!.isEnglishLetter: keyCapType = .initial
-                case .right: keyCapType = .final
-                case .left where c.first!.isDigit: keyCapType = .tone
                 case .left: keyCapType = .punctuation
+                case .right where c.first!.isDigit: keyCapType = .tone
+                case .right: keyCapType = .final
                 }
                 
                 button.colRowOrigin = CGPoint(x: x, y: y)
-                button.setKeyCap(c == "<" ? .moveCursorBackward : c == ">" ? .moveCursorForward : .jyutPingInitialFinal(keyCapType, c), keyboardState: state)
+                button.setKeyCap(.jyutPingInitialFinal(keyCapType, c), keyboardState: state)
                 button.isKeyEnabled = state.enableState == .enabled
                 buttonRow.append(button)
                 x += 1

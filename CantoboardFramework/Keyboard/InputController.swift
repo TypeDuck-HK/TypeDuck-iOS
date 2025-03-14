@@ -1161,6 +1161,8 @@ extension Composition {
                 if currentIndex < caretIndex {
                     newCaretIndex += 1
                 }
+            case "X":
+                newText.append("*")
             case "9":
                 inFinal = true
                 if currentIndex < caretIndex {
@@ -1180,7 +1182,7 @@ extension Composition {
                let nextChar = charIterator.peek(), nextChar != " ",
                char == "0" ? !("1"..."6" ~= nextChar) : // spaces should not be inserted between final and tone
                     "1"..."6" ~= char ? true :          // spaces should always be inserted after tone
-                    nextChar != "9" {                   // spaces should not be inserted between initial and final
+                    !("1"..."9" ~= nextChar) {          // spaces should not be inserted between initial and final, as well as between initial and tone
                 newText.append(" ")
                 if currentIndex < caretIndex - 1 { // caret should be placed before the space, thus - 1
                     newCaretIndex += 1
