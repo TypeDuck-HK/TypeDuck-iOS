@@ -329,6 +329,10 @@ class LayoutConstants: Copyable {
     
     let keypadButtonUnitSize: CGSize
     
+    let initialFinalLayoutTextHeight: CGFloat
+    let initialFinalLayoutButtonGap: CGFloat
+    let initialFinalLayoutButtonGroupGap: CGFloat
+    
     var keyboardWidth: CGFloat
     
     let candidatePaneViewLeftRightInset: CGFloat
@@ -381,6 +385,10 @@ class LayoutConstants: Copyable {
         let height = ((keyboardSize.height - Self.keyboardViewTopInset - keyboardViewBottomInset - autoCompleteBarHeight) - 3 * buttonGapX) / 4
         keypadButtonUnitSize = CGSize(width: width, height: height)
         
+        initialFinalLayoutTextHeight = (keyboardHeight - autoCompleteBarHeight - Self.keyboardViewTopInset - keyboardViewBottomInset - keyHeight) / 8
+        initialFinalLayoutButtonGap = keyboardWidth / 240
+        initialFinalLayoutButtonGroupGap = keyboardWidth / 120
+        
         switch idiom {
         case .phone:
             candidatePaneViewLeftRightInset = 0
@@ -408,6 +416,9 @@ class LayoutConstants: Copyable {
         self.buttonGapX = copyOf.buttonGapX
         self.keyRowGapY = copyOf.keyRowGapY
         self.keypadButtonUnitSize = copyOf.keypadButtonUnitSize
+        self.initialFinalLayoutTextHeight = copyOf.initialFinalLayoutTextHeight
+        self.initialFinalLayoutButtonGap = copyOf.initialFinalLayoutButtonGap
+        self.initialFinalLayoutButtonGroupGap = copyOf.initialFinalLayoutButtonGroupGap
         self.candidatePaneViewLeftRightInset = copyOf.candidatePaneViewLeftRightInset
         self.compositionViewHeight = copyOf.compositionViewHeight
         self.filterBarViewHeight = copyOf.filterBarViewHeight

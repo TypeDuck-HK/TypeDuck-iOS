@@ -171,9 +171,6 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         if keyboardIdiom.isPad && !keyboardState.isPortrait {
             titleLabelFontSize *= Self.padLandscapeFontRatio
         }
-        if case .jyutPingInitialFinal = keyCap {
-            contentEdgeInsets = .zero
-        }
         
         var maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]
         var shadowOpacity: Float = 1.0
@@ -260,6 +257,14 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
                 !(keyCap.keyCapType == .input || keyCap.keyCapType == .space) ? .bottom : .center
         }
         
+        if case .jyutPingInitialFinal = keyCap {
+            contentEdgeInsets = .zero
+            titleEdgeInsets = .zero
+            layer.cornerRadius = layoutConstants.ref.initialFinalLayoutButtonGap
+            titleLabelFontSize = KeyHintLayer.fontSizePerHeight * layoutConstants.ref.initialFinalLayoutTextHeight
+            titleLabel?.font = .systemFont(ofSize: titleLabelFontSize)
+        }
+        
         titleLabel?.adjustsFontSizeToFitWidth = true
         highlightedColor = setHighlightedBackground ? keyCap.buttonBgHighlightedColor : nil
         highlightedShadowColor = setHighlightedBackground ? keyCap.buttonBgHighlightedShadowColor : nil
@@ -327,7 +332,11 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         if let keyHintLayer = rightKeyHintLayer {
             keyHintLayer.isHidden = popupView != nil
-            layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.hintInsets)
+            if case .jyutPingInitialFinal = keyCap {
+                layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.hintInsets, heightRatio: 0.5)
+            } else {
+                layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.hintInsets)
+            }
         }
         
         if let keyHintLayer = bottomKeyHintLayer {
@@ -369,8 +378,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     }
     
     private func updateColorsAccordingToSwipeDownPercentage() {
-        guard let keyboardIdiom = keyboardState?.keyboardIdiom,
-              keyboardIdiom != .phone else { return }
+        guard let keyboardState = keyboardState,
+              keyboardState.keyboardIdiom.keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardState: keyboardState) != nil else { return }
         
         let reverseSwipeDownPercentage = 1 - swipeDownPercentage
         // Fade out original key faster by squaring
@@ -382,7 +391,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             titleAlpha = alphaPercentage
             
             if let swipeDownHintLayer = swipeDownHintLayer {
-                let isSwipeDownKeyShiftMorphing = keyboardIdiom.keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap)
+                let isSwipeDownKeyShiftMorphing = keyboardState.keyboardIdiom.keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap)
                 let swipeDownKeyCapTextColor = (isSwipeDownKeyShiftMorphing ? UIColor.label : UIColor.systemGray).resolvedColor(with: traitCollection).cgColor
                 let foregroundColor = swipeDownKeyCapTextColor.interpolate(mainTextColor.cgColor, fraction: swipeDownPercentage * 3)
                 if let swipeDownHintAttributedString = swipeDownHintLayer.string as? NSAttributedString {

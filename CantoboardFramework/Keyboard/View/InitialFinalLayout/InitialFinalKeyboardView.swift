@@ -9,9 +9,6 @@ import Foundation
 import UIKit
 
 class InitialFinalKeyboardView: UIView, BaseKeyboardView {
-    private static let buttonGap: CGFloat = 5
-    private static let buttonGroupGap: CGFloat = 10
-    
     weak var delegate: KeyboardViewDelegate?
     
     enum LayoutSide {
@@ -127,7 +124,7 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
                 if !existingButtons.isEmpty {
                     button = existingButtons.removeFirst()
                 } else {
-                    button = KeypadButton()
+                    button = KeypadButton(layoutConstants: layoutConstants)
                     button.titleLabel?.adjustsFontSizeToFitWidth = true
                     addSubview(button)
                 }
@@ -229,14 +226,14 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
         let rightButtonsMaxRowCount = CGFloat((rightButtons.max { a, b in a.count < b.count })!.count)
         let totalMaxRowCount = leftButtonsMaxRowCount + rightButtonsMaxRowCount
         let availableWidth = bounds.width - directionalLayoutMargins.leading - directionalLayoutMargins.trailing
-        let totalAvailableButtonWidth = availableWidth - Self.buttonGroupGap - Self.buttonGap * (totalMaxRowCount - 2)
+        let totalAvailableButtonWidth = availableWidth - layoutConstants.initialFinalLayoutButtonGroupGap - layoutConstants.initialFinalLayoutButtonGap * (totalMaxRowCount - 2)
         let minButtonWidth = totalAvailableButtonWidth / totalMaxRowCount
         
-        let leftButtonsAvailableWidth = minButtonWidth * leftButtonsMaxRowCount + Self.buttonGap * (leftButtonsMaxRowCount - 1)
-        let rightButtonsAvailableWidth = minButtonWidth * rightButtonsMaxRowCount + Self.buttonGap * (rightButtonsMaxRowCount - 1)
+        let leftButtonsAvailableWidth = minButtonWidth * leftButtonsMaxRowCount + layoutConstants.initialFinalLayoutButtonGap * (leftButtonsMaxRowCount - 1)
+        let rightButtonsAvailableWidth = minButtonWidth * rightButtonsMaxRowCount + layoutConstants.initialFinalLayoutButtonGap * (rightButtonsMaxRowCount - 1)
         
         let initialY = LayoutConstants.keyboardViewTopInset + candidatePaneView.rowHeight
-        let availableHeight = bounds.height - directionalLayoutMargins.top - directionalLayoutMargins.bottom - candidatePaneView.rowHeight - layoutConstants.keyHeight - Self.buttonGroupGap
+        let availableHeight = bounds.height - directionalLayoutMargins.top - directionalLayoutMargins.bottom - candidatePaneView.rowHeight - layoutConstants.keyHeight - layoutConstants.initialFinalLayoutButtonGroupGap
         
         layoutButtons(leftButtons,
                       initialX: layoutConstants.keyboardViewInsets.left,
@@ -245,13 +242,13 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
                       availableHeight: availableHeight,
                       layoutConstants: layoutConstants)
         layoutButtons(rightButtons,
-                      initialX: layoutConstants.keyboardViewInsets.left + leftButtonsAvailableWidth + Self.buttonGroupGap,
+                      initialX: layoutConstants.keyboardViewInsets.left + leftButtonsAvailableWidth + layoutConstants.initialFinalLayoutButtonGroupGap,
                       availableWidth: rightButtonsAvailableWidth,
                       initialY: initialY,
                       availableHeight: availableHeight,
                       layoutConstants: layoutConstants)
         
-        let keyRowMargin = NSDirectionalEdgeInsets(top: Self.buttonGroupGap, leading: 0, bottom: directionalLayoutMargins.bottom, trailing: 0) // leading: directionalLayoutMargins.leading, trailing: leading: directionalLayoutMargins.trailing
+        let keyRowMargin = NSDirectionalEdgeInsets(top: layoutConstants.initialFinalLayoutButtonGroupGap, leading: 0, bottom: directionalLayoutMargins.bottom, trailing: 0) // leading: directionalLayoutMargins.leading, trailing: leading: directionalLayoutMargins.trailing
         let keyRowHeight = keyRowMargin.top + layoutConstants.keyHeight + keyRowMargin.bottom
         bottomKeyRow?.frame = CGRect(x: 0, y: bounds.height - keyRowHeight, width: frame.width, height: keyRowHeight)
         bottomKeyRow?.directionalLayoutMargins = keyRowMargin
@@ -259,20 +256,20 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
     
     private func layoutButtons(_ buttons: [[KeypadButton?]], initialX: CGFloat, availableWidth: CGFloat, initialY: CGFloat, availableHeight: CGFloat, layoutConstants: LayoutConstants) {
         let numOfRows = CGFloat(buttons.count)
-        let unitHeight = (availableHeight - Self.buttonGap * (numOfRows - 1)) / numOfRows
+        let unitHeight = (availableHeight - layoutConstants.initialFinalLayoutButtonGap * (numOfRows - 1)) / numOfRows
         var x = initialX, y = initialY
         
         for row in buttons {
             let numOfButtonsInRow = CGFloat(row.count)
-            let unitWidth = (availableWidth - Self.buttonGap * (numOfButtonsInRow - 1)) / numOfButtonsInRow
+            let unitWidth = (availableWidth - layoutConstants.initialFinalLayoutButtonGap * (numOfButtonsInRow - 1)) / numOfButtonsInRow
             let buttonSize = CGSize(width: unitWidth, height: unitHeight)
             x = initialX
             for button in row {
                 let origin = CGPoint(x: x, y: y)
                 button?.frame = CGRect(origin: origin, size: buttonSize)
-                x += buttonSize.width + Self.buttonGap
+                x += buttonSize.width + layoutConstants.initialFinalLayoutButtonGap
             }
-            y += unitHeight + Self.buttonGap
+            y += unitHeight + layoutConstants.initialFinalLayoutButtonGap
         }
     }
     
