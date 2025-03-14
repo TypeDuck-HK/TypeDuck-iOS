@@ -106,6 +106,8 @@ class LocalizedStrings {
     static var finalKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.finalKeyColor") }
     static var toneKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.toneKeyColor") }
     static var punctuationKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.punctuationKeyColor") }
+    static var spaceKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.spaceKeyColor") }
+    static var systemKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.systemKeyColor") }
     
     static var reverseLookupSettings: String { localizedString("reverseLookupSettings") }
     static var showCodeInReverseLookup: String { localizedString("reverseLookupSettings.showCodeInReverseLookup") }

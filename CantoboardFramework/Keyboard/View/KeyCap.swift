@@ -172,15 +172,27 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
+    private var shouldUseCustomizedKeyColors: Bool {
+        guard Settings.cached.cantoneseKeyboardLayout == .initialFinal && Settings.cached.jyutpingInitialFinalLayoutSettings.customizeKeyColor else { return false }
+        if case .jyutPingInitialFinal = self { return true }
+        return keyCapType != .input
+    }
+    
     var buttonBgColor: UIColor {
-        switch self {
-        case .jyutPingInitialFinal(let type, _) where Settings.cached.jyutpingInitialFinalLayoutSettings.customizeKeyColor:
-            switch type {
-            case .initial: return Settings.cached.jyutpingInitialFinalLayoutSettings.initialKeyColor
-            case .final: return Settings.cached.jyutpingInitialFinalLayoutSettings.finalKeyColor
-            case .tone: return Settings.cached.jyutpingInitialFinalLayoutSettings.toneKeyColor
-            case .punctuation: return Settings.cached.jyutpingInitialFinalLayoutSettings.punctuationKeyColor
+        if shouldUseCustomizedKeyColors {
+            switch self {
+            case .jyutPingInitialFinal(let type, _):
+                switch type {
+                case .initial: return Settings.cached.jyutpingInitialFinalLayoutSettings.initialKeyColor
+                case .final: return Settings.cached.jyutpingInitialFinalLayoutSettings.finalKeyColor
+                case .tone: return Settings.cached.jyutpingInitialFinalLayoutSettings.toneKeyColor
+                case .punctuation: return Settings.cached.jyutpingInitialFinalLayoutSettings.punctuationKeyColor
+                }
+            case .space: return Settings.cached.jyutpingInitialFinalLayoutSettings.spaceKeyColor
+            default: return Settings.cached.jyutpingInitialFinalLayoutSettings.systemKeyColor
             }
+        }
+        switch self {
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
         case .returnKey: return UIColor.systemBlue
@@ -191,6 +203,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBgHighlightedColor: UIColor {
         switch self {
+        case _ where shouldUseCustomizedKeyColors: return buttonBgColor.blended(withFraction: 0.3, of: buttonBgColor.fgColor)
         case .shift(.uppercased), .shift(.capsLocked): return buttonBgColor
         case _ where keyCapType == .input || keyCapType == .space: return ButtonColor.inputKeyHighlightedBackgroundColor
         default: return ButtonColor.systemKeyHighlightedBackgroundColor
@@ -223,7 +236,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonFgColor: UIColor {
         switch self {
-        case .jyutPingInitialFinal where Settings.cached.jyutpingInitialFinalLayoutSettings.customizeKeyColor: return buttonBgColor.fgColor
+        case _ where shouldUseCustomizedKeyColors: return buttonBgColor.fgColor
         case .returnKey(.go), .returnKey(.search): return .white
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedForegroundColor
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.keyForegroundColor
@@ -233,10 +246,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     }
     
     var buttonHintFgColor: UIColor {
-        switch self {
-        case .jyutPingInitialFinal where Settings.cached.jyutpingInitialFinalLayoutSettings.customizeKeyColor: return buttonBgColor.fgColor.withAlphaComponent(0.7)
-        default: return ButtonColor.keyHintColor
-        }
+        return shouldUseCustomizedKeyColors ? buttonBgColor.fgColor.withAlphaComponent(0.7) : ButtonColor.keyHintColor
     }
     
     // TODO Return images < iOS 12
@@ -795,4 +805,6 @@ class ButtonColor {
     static let jyutpingInitialFinalDefaultFinalKeyColor = colorAssets("jyutpingInitialFinalDefaultFinalKeyColor")
     static let jyutpingInitialFinalDefaultToneKeyColor = colorAssets("jyutpingInitialFinalDefaultToneKeyColor")
     static let jyutpingInitialFinalDefaultPunctuationKeyColor = colorAssets("jyutpingInitialFinalDefaultPunctuationKeyColor")
+    static let jyutpingInitialFinalDefaultSpaceKeyColor = colorAssets("jyutpingInitialFinalDefaultSpaceKeyColor")
+    static let jyutpingInitialFinalDefaultSystemKeyColor = colorAssets("jyutpingInitialFinalDefaultSystemKeyColor")
 }

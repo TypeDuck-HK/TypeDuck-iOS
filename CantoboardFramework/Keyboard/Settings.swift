@@ -284,12 +284,16 @@ public struct JyutpingInitialFinalLayoutSettings: Codable, Equatable {
     private static let defaultFinalKeyColor: UIColor = ButtonColor.jyutpingInitialFinalDefaultFinalKeyColor
     private static let defaultToneKeyColor: UIColor = ButtonColor.jyutpingInitialFinalDefaultToneKeyColor
     private static let defaultPunctuationKeyColor: UIColor = ButtonColor.jyutpingInitialFinalDefaultPunctuationKeyColor
+    private static let defaultSpaceKeyColor: UIColor = ButtonColor.jyutpingInitialFinalDefaultSpaceKeyColor
+    private static let defaultSystemKeyColor: UIColor = ButtonColor.jyutpingInitialFinalDefaultSystemKeyColor
     
     public var customizeKeyColor: Bool
     public var initialKeyColor: UIColor
     public var finalKeyColor: UIColor
     public var toneKeyColor: UIColor
     public var punctuationKeyColor: UIColor
+    public var spaceKeyColor: UIColor
+    public var systemKeyColor: UIColor
     
     public init() {
         customizeKeyColor = Self.defaultCustomizeKeyColor
@@ -297,6 +301,8 @@ public struct JyutpingInitialFinalLayoutSettings: Codable, Equatable {
         finalKeyColor = Self.defaultFinalKeyColor
         toneKeyColor = Self.defaultToneKeyColor
         punctuationKeyColor = Self.defaultPunctuationKeyColor
+        spaceKeyColor = Self.defaultSpaceKeyColor
+        systemKeyColor = Self.defaultSystemKeyColor
     }
     
     public init(from decoder: Decoder) throws {
@@ -306,6 +312,8 @@ public struct JyutpingInitialFinalLayoutSettings: Codable, Equatable {
         finalKeyColor = try container.decodeIfPresent(UIColor.self, forKey: .finalKeyColor) ?? Self.defaultFinalKeyColor
         toneKeyColor = try container.decodeIfPresent(UIColor.self, forKey: .toneKeyColor) ?? Self.defaultToneKeyColor
         punctuationKeyColor = try container.decodeIfPresent(UIColor.self, forKey: .punctuationKeyColor) ?? Self.defaultPunctuationKeyColor
+        spaceKeyColor = try container.decodeIfPresent(UIColor.self, forKey: .spaceKeyColor) ?? Self.defaultSpaceKeyColor
+        systemKeyColor = try container.decodeIfPresent(UIColor.self, forKey: .systemKeyColor) ?? Self.defaultSystemKeyColor
     }
 }
 

@@ -113,6 +113,8 @@ Long press: Press and hold one of the six keys in the middle of the keyboard to 
 "jyutpingInitialFinalLayoutSettings.finalKeyColor" = "Final key colour";
 "jyutpingInitialFinalLayoutSettings.toneKeyColor" = "Tone key colour";
 "jyutpingInitialFinalLayoutSettings.punctuationKeyColor" = "Punctuation key colour";
+"jyutpingInitialFinalLayoutSettings.spaceKeyColor" = "Spacebar colour";
+"jyutpingInitialFinalLayoutSettings.systemKeyColor" = "Control key colour";
 
 "reverseLookupSettings" = "Reverse Lookup Settings";
 "reverseLookupSettings.showCodeInReverseLookup" = "Full input code above candidates";

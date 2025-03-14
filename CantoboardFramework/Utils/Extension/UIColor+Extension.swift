@@ -17,6 +17,22 @@ extension UIColor {
     static var clearInteractable: UIColor {
         UIColor(white: 1, alpha: 0.005)
     }
+    
+    // Backport of NSColor.blended: https://developer.apple.com/documentation/appkit/nscolor/blended(withfraction:of:)
+    func blended(withFraction fraction: CGFloat, of color: UIColor) -> UIColor {
+        var r1: CGFloat = 0, g1: CGFloat = 0, b1: CGFloat = 0, a1: CGFloat = 0
+        var r2: CGFloat = 0, g2: CGFloat = 0, b2: CGFloat = 0, a2: CGFloat = 0
+
+        getRed(&r1, green: &g1, blue: &b1, alpha: &a1)
+        color.getRed(&r2, green: &g2, blue: &b2, alpha: &a2)
+
+        return UIColor(
+            red: r1 * (1 - fraction) + r2 * fraction,
+            green: g1 * (1 - fraction) + g2 * fraction,
+            blue: b1 * (1 - fraction) + b2 * fraction,
+            alpha: a1 * (1 - fraction) + a2 * fraction
+        )
+    }
 }
 
 // Make UIColor Codable, keeping the data size tiny by storing only RGBA components: https://stackoverflow.com/a/71927562

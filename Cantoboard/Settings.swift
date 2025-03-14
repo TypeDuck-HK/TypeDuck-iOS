@@ -253,6 +253,8 @@ extension Settings {
                 ColorPicker(LocalizedStrings.finalKeyColor, \.jyutpingInitialFinalLayoutSettings.finalKeyColor),
                 ColorPicker(LocalizedStrings.toneKeyColor, \.jyutpingInitialFinalLayoutSettings.toneKeyColor),
                 ColorPicker(LocalizedStrings.punctuationKeyColor, \.jyutpingInitialFinalLayoutSettings.punctuationKeyColor),
+                ColorPicker(LocalizedStrings.spaceKeyColor, \.jyutpingInitialFinalLayoutSettings.spaceKeyColor),
+                ColorPicker(LocalizedStrings.systemKeyColor, \.jyutpingInitialFinalLayoutSettings.systemKeyColor),
             ] : [])
         )
         let reverseLookupSettingsSection = Section(
