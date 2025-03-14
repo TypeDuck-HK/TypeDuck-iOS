@@ -215,7 +215,7 @@ open class KeyboardViewController: UIInputViewController {
     }
     
     private var keyboardHeightWithoutTopView: CGFloat {
-        layoutConstants.ref.keyboardHeight * (keyboardView is InitialFinalKeyboardView ? 1.5 : 1) - layoutConstants.ref.autoCompleteBarHeight + candidateBarHeight
+        layoutConstants.ref.keyboardHeight * (keyboardView is InitialFinalKeyboardView ? 1.1 : 1) - layoutConstants.ref.autoCompleteBarHeight + candidateBarHeight
     }
     
     private var keyboardHeight: CGFloat {
