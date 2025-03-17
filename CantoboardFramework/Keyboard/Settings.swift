@@ -48,11 +48,13 @@ public enum SpaceAction: String, Codable {
 public enum CantoneseKeyboardLayout: String, Codable {
     case qwerty = "qwerty"
     case tenKeys = "tenKeys"
+    case initialFinal = "initialFinal"
     
     var toRimeSchema: RimeSchema {
         switch self {
         case .qwerty: return .jyutping
         case .tenKeys: return .jyutping10keys
+        case .initialFinal: return .jyutpingInitialFinal
         }
     }
 }
@@ -276,6 +278,45 @@ public struct RimeSettings: Codable, Equatable {
     }
 }
 
+public struct JyutpingInitialFinalLayoutSettings: Codable, Equatable {
+    private static let defaultCustomizeKeyColor: Bool = false
+    private static let defaultInitialKeyColor: UIColor = ButtonColor.jyutpingInitialFinalDefaultInitialKeyColor
+    private static let defaultFinalKeyColor: UIColor = ButtonColor.jyutpingInitialFinalDefaultFinalKeyColor
+    private static let defaultToneKeyColor: UIColor = ButtonColor.jyutpingInitialFinalDefaultToneKeyColor
+    private static let defaultPunctuationKeyColor: UIColor = ButtonColor.jyutpingInitialFinalDefaultPunctuationKeyColor
+    private static let defaultSpaceKeyColor: UIColor = ButtonColor.jyutpingInitialFinalDefaultSpaceKeyColor
+    private static let defaultSystemKeyColor: UIColor = ButtonColor.jyutpingInitialFinalDefaultSystemKeyColor
+    
+    public var customizeKeyColor: Bool
+    public var initialKeyColor: UIColor
+    public var finalKeyColor: UIColor
+    public var toneKeyColor: UIColor
+    public var punctuationKeyColor: UIColor
+    public var spaceKeyColor: UIColor
+    public var systemKeyColor: UIColor
+    
+    public init() {
+        customizeKeyColor = Self.defaultCustomizeKeyColor
+        initialKeyColor = Self.defaultInitialKeyColor
+        finalKeyColor = Self.defaultFinalKeyColor
+        toneKeyColor = Self.defaultToneKeyColor
+        punctuationKeyColor = Self.defaultPunctuationKeyColor
+        spaceKeyColor = Self.defaultSpaceKeyColor
+        systemKeyColor = Self.defaultSystemKeyColor
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        customizeKeyColor = try container.decodeIfPresent(Bool.self, forKey: .customizeKeyColor) ?? Self.defaultCustomizeKeyColor
+        initialKeyColor = try container.decodeIfPresent(UIColor.self, forKey: .initialKeyColor) ?? Self.defaultInitialKeyColor
+        finalKeyColor = try container.decodeIfPresent(UIColor.self, forKey: .finalKeyColor) ?? Self.defaultFinalKeyColor
+        toneKeyColor = try container.decodeIfPresent(UIColor.self, forKey: .toneKeyColor) ?? Self.defaultToneKeyColor
+        punctuationKeyColor = try container.decodeIfPresent(UIColor.self, forKey: .punctuationKeyColor) ?? Self.defaultPunctuationKeyColor
+        spaceKeyColor = try container.decodeIfPresent(UIColor.self, forKey: .spaceKeyColor) ?? Self.defaultSpaceKeyColor
+        systemKeyColor = try container.decodeIfPresent(UIColor.self, forKey: .systemKeyColor) ?? Self.defaultSystemKeyColor
+    }
+}
+
 public struct Settings: Codable, Equatable {
     private static let prevSettingsKeyName = "prevSettings"
     private static let settingsKeyName = "Settings"
@@ -317,6 +358,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultCangjieVersion: CangjieVersion = .cangjie3
     private static let defaultCangjieKeyCapMode: CangjieKeyCapMode = .cangjieRoot
     private static let defaultLanguageState: LanguageState = LanguageState()
+    private static let defaultJyutpingInitialFinalLayoutSettings: JyutpingInitialFinalLayoutSettings = JyutpingInitialFinalLayoutSettings()
 
     public var interfaceLanguage: InterfaceLanguage
     public var isMixedModeEnabled: Bool
@@ -353,6 +395,7 @@ public struct Settings: Codable, Equatable {
     public var cangjieVersion: CangjieVersion
     public var cangjieKeyCapMode: CangjieKeyCapMode
     public var languageState: LanguageState
+    public var jyutpingInitialFinalLayoutSettings: JyutpingInitialFinalLayoutSettings
     
     public init() {
         interfaceLanguage = Self.defaultInterfaceLanguage
@@ -390,6 +433,7 @@ public struct Settings: Codable, Equatable {
         cangjieVersion = Self.defaultCangjieVersion
         cangjieKeyCapMode = Self.defaultCangjieKeyCapMode
         languageState = Self.defaultLanguageState
+        jyutpingInitialFinalLayoutSettings = Self.defaultJyutpingInitialFinalLayoutSettings
     }
     
     public init(from decoder: Decoder) throws {
@@ -429,6 +473,7 @@ public struct Settings: Codable, Equatable {
         self.cangjieVersion = try container.decodeIfPresent(CangjieVersion.self, forKey: .cangjieVersion) ?? Settings.defaultCangjieVersion
         self.cangjieKeyCapMode = try container.decodeIfPresent(CangjieKeyCapMode.self, forKey: .cangjieKeyCapMode) ?? Settings.defaultCangjieKeyCapMode
         self.languageState = try container.decodeIfPresent(LanguageState.self, forKey: .languageState) ?? Settings.defaultLanguageState
+        self.jyutpingInitialFinalLayoutSettings = try container.decodeIfPresent(JyutpingInitialFinalLayoutSettings.self, forKey: .jyutpingInitialFinalLayoutSettings) ?? Settings.defaultJyutpingInitialFinalLayoutSettings
     }
     
     private static var _cached: Settings?

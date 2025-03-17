@@ -28,7 +28,7 @@ class InputTextBuffer {
     }
         
     func moveCaret(offset: Int) -> Bool {
-        guard abs(offset) == 1 else {
+        guard offset != 0 else {
             DDLogInfo("moveCaret offset \(offset) not supproted.")
             return false
         }
@@ -37,11 +37,11 @@ class InputTextBuffer {
         if isMovingLeft {
             guard caretIndex != _text.startIndex else { return false }
             caretIndex = _text.index(before: caretIndex)
-            return true
+            return offset == -1 || moveCaret(offset: offset + 1)
         } else {
             guard caretIndex != _text.endIndex else { return false }
             caretIndex = _text.index(after: caretIndex)
-            return true
+            return offset == 1 || moveCaret(offset: offset - 1)
         }
     }
     

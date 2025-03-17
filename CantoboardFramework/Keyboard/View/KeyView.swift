@@ -257,6 +257,14 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
                 !(keyCap.keyCapType == .input || keyCap.keyCapType == .space) ? .bottom : .center
         }
         
+        if case .jyutPingInitialFinal = keyCap {
+            layoutConstants.ref = LayoutConstants.forMainScreen // HACK: This ensures the font size is correct when screen orientation changes
+            contentEdgeInsets = .zero
+            titleEdgeInsets = .zero
+            layer.cornerRadius = layoutConstants.ref.initialFinalLayoutButtonGap
+            titleLabel?.font = .systemFont(ofSize: KeyHintLayer.fontSizePerHeight * layoutConstants.ref.initialFinalLayoutTextHeight)
+        }
+        
         titleLabel?.adjustsFontSizeToFitWidth = true
         highlightedColor = setHighlightedBackground ? keyCap.buttonBgHighlightedColor : nil
         highlightedShadowColor = setHighlightedBackground ? keyCap.buttonBgHighlightedShadowColor : nil
@@ -324,7 +332,11 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         if let keyHintLayer = rightKeyHintLayer {
             keyHintLayer.isHidden = popupView != nil
-            layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.hintInsets)
+            if case .jyutPingInitialFinal = keyCap {
+                layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.hintInsets, heightRatio: 0.5)
+            } else {
+                layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.hintInsets)
+            }
         }
         
         if let keyHintLayer = bottomKeyHintLayer {

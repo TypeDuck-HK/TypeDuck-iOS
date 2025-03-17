@@ -20,17 +20,17 @@ public enum RimeSchema: String, Codable {
     case stroke = "stroke"
     case loengfan = "loengfan"
     case jyutping10keys = "jyut6ping3_mobile_10keys"
+    case jyutpingInitialFinal = "jyut6ping3_mobile_initial_final"
     
     var signChar: String {
         switch self {
+        case .jyutping, .jyutping10keys, .jyutpingInitialFinal: return "粵"
         case .cangjie3, .cangjie5: return "倉"
         case .yale: return "耶"
         case .quick: return "速"
-        case .jyutping: return "粵"
         case .loengfan: return "兩"
         case .mandarin: return "普"
         case .stroke: return "筆"
-        case .jyutping10keys: return "粵"
         }
     }
     
@@ -44,12 +44,13 @@ public enum RimeSchema: String, Codable {
         case .mandarin: return "普拼"
         case .stroke: return "筆劃"
         case .jyutping10keys: return "粵格"
+        case .jyutpingInitialFinal: return "粵韻"
         }
     }
     
     var isKeypadBased: Bool {
         switch self {
-        case .stroke, .jyutping10keys: return true
+        case .stroke, .jyutping10keys, .jyutpingInitialFinal: return true
         default: return false
         }
     }
@@ -71,7 +72,7 @@ public enum RimeSchema: String, Codable {
     
     var isCantonese: Bool {
         switch self {
-        case .jyutping, .yale, .jyutping10keys: return true
+        case .jyutping, .yale, .jyutping10keys, .jyutpingInitialFinal: return true
         default: return false
         }
     }
@@ -79,13 +80,13 @@ public enum RimeSchema: String, Codable {
     var supportCantoneseTonalInput: Bool {
         switch self {
         case .jyutping, .yale, .loengfan: return true
-        default: return false
+        default: return false // .jyutpingInitialFinal does not support long press
         }
     }
     
     var supportMixedMode: Bool {
         switch self {
-        case .stroke, .jyutping10keys: return false
+        case .stroke, .jyutping10keys, .jyutpingInitialFinal: return false
         default: return true
         }
     }
@@ -115,10 +116,11 @@ class RimeInputEngine: NSObject, InputEngine {
     }
     
     func processChar(_ char: Character) -> Bool {
-        let char = schema != .jyutping10keys ? char.lowercasedChar : char
+        let char = schema != .jyutping10keys && schema != .jyutpingInitialFinal ? char.lowercasedChar : char
         if rawInput?.text.last == "'" && char == "'" { return true }
         if let asciiValue = char.asciiValue {
             processKey(Int32(asciiValue))
+            refreshCandidates()
             return true
         }
         // Ignore non letter .
@@ -127,8 +129,7 @@ class RimeInputEngine: NSObject, InputEngine {
     
     func processBackspace() -> Bool {
         guard composition?.caretIndex ?? 0 > 0 else { return false }
-        rimeSession?.processKey(0xff08, modifier: 0)// Backspace
-        rimeSession?.setCandidateMenuToFirstPage()
+        rimeSession?.processKey(0xff08, modifier: 0) // Backspace
         refreshCandidates()
         return true
     }
@@ -148,7 +149,6 @@ class RimeInputEngine: NSObject, InputEngine {
         }
         
         rimeSession.processKey(keycode, modifier: modifier)
-        refreshCandidates()
     }
     
     private func refreshCandidates() {
@@ -157,7 +157,7 @@ class RimeInputEngine: NSObject, InputEngine {
     }
         
     func moveCaret(offset: Int) -> Bool {
-        guard abs(offset) == 1 else {
+        guard offset != 0 else {
             DDLogInfo("moveCaret offset=\(offset) not supproted.")
             return false
         }
@@ -175,11 +175,18 @@ class RimeInputEngine: NSObject, InputEngine {
         let isMovingLeft = offset < 0
         if isMovingLeft {
             guard rimeSession.compositionCaretBytePosition > 0 else { return false }
+            processKey(0xff96)
+            if offset != -1 {
+                return moveCaret(offset: offset + 1)
+            }
         } else {
             guard rimeSession.compositionCaretBytePosition < preedit.utf8.count else { return false }
+            processKey(0xff98)
+            if offset != 1 {
+                return moveCaret(offset: offset - 1)
+            }
         }
-        
-        processKey(isMovingLeft ? 0xff96 : 0xff98)
+        refreshCandidates()
         return true
     }
     
@@ -187,6 +194,7 @@ class RimeInputEngine: NSObject, InputEngine {
         guard let rimeSession = self.rimeSession else { return }
         rimeSession.processKey(0xff1b, modifier: 0) // Esc
         processKey(0xff1b)
+        refreshCandidates()
     }
     
     func getCandidate(_ index: Int) -> String? {

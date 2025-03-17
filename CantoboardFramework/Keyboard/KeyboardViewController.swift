@@ -215,7 +215,7 @@ open class KeyboardViewController: UIInputViewController {
     }
     
     private var keyboardHeightWithoutTopView: CGFloat {
-        layoutConstants.ref.keyboardHeight - layoutConstants.ref.autoCompleteBarHeight + candidateBarHeight
+        layoutConstants.ref.keyboardHeight * (keyboardView is InitialFinalKeyboardView ? 1.1 : 1) - layoutConstants.ref.autoCompleteBarHeight + candidateBarHeight
     }
     
     private var keyboardHeight: CGFloat {
@@ -311,7 +311,7 @@ open class KeyboardViewController: UIInputViewController {
         let keyboardView: BaseKeyboardView
         
         if state.shouldUseKeypad {
-            keyboardView = KeypadView(state: state)
+            keyboardView = state.activeSchema == .jyutpingInitialFinal ? InitialFinalKeyboardView(state: state) : KeypadView(state: state)
         } else {
             keyboardView = KeyboardView(state: state)
         }
@@ -336,7 +336,7 @@ open class KeyboardViewController: UIInputViewController {
     
     private func recreateKeyboardViewIfNeeded() {
         if state.shouldUseKeypad && keyboardView is KeyboardView ||
-           !state.shouldUseKeypad && keyboardView is KeypadView {
+            !state.shouldUseKeypad && (keyboardView is KeypadView || keyboardView is InitialFinalKeyboardView) {
             keyboardView?.removeFromSuperview()
             createKeyboardView()
         }

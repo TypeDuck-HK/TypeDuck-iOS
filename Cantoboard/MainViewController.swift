@@ -67,7 +67,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
         
-        NotificationCenter.default.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(rebuildCells), name: UIApplication.willEnterForegroundNotification, object: nil)
         
         aboutCells = initAboutCells()
         
@@ -83,7 +83,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
-    @objc func appMovedToBackground() {
+    @objc func rebuildCells() {
         settings = Settings.reload()
         sections = Settings.buildSections()
         interfaceLanguageOption = Settings.interfaceLanguageOption
@@ -222,6 +222,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func showDescription(of option: Option) {
+        option.cellDidSelect()
+        
         guard option.videoUrl != nil || option.description != nil else { return }
         
         let description = UINavigationController(rootViewController: DescriptionViewController(option: option))

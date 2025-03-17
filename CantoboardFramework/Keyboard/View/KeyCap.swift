@@ -97,9 +97,12 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     cangjie(String, KeyCapHints?, /* children key caps */ [KeyCap]?, CangjieKeyCapMode),
     stroke(String),
     jyutPing10Keys(String),
+    jyutPingInitialFinal(InitialFinalKeyboardView.KeyCapType, String),
     selectRomanization,
     emoji(String),
     keyboardType(KeyboardType),
+    moveCursorBackward,
+    moveCursorForward,
     returnKey(ReturnKeyType),
     nextKeyboard,
     space(SpaceKeyMode),
@@ -136,9 +139,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .toggleInputMode(let toInputMode, _): return .toggleInputMode(toInputMode)
         case .character(let c, _, _): return .character(c)
         case .cangjie(let c, _, _, _): return .character(c)
-        case .stroke(let c), .jyutPing10Keys(let c): return .character(c)
+        case .stroke(let c), .jyutPing10Keys(let c), .jyutPingInitialFinal(.punctuation, let c): return .character(c)
+        case .jyutPingInitialFinal(.initial, let c), .jyutPingInitialFinal(.tone, let c): return .initialFinalTone(c)
+        case .jyutPingInitialFinal(.final, let c): return .initialFinalTone("9\(c)0")
         case .emoji(let e): return .emoji(e)
         case .keyboardType(let type): return .keyboardType(type)
+        case .moveCursorBackward: return .moveCursorBackward
+        case .moveCursorForward: return .moveCursorForward
         case .returnKey: return .newLine
         case .nextKeyboard: return .nextKeyboard
         case .space(let spaceKeyMode): return .space(spaceKeyMode)
@@ -165,7 +172,26 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
+    private var shouldUseCustomizedKeyColors: Bool {
+        guard Settings.cached.cantoneseKeyboardLayout == .initialFinal && Settings.cached.jyutpingInitialFinalLayoutSettings.customizeKeyColor else { return false }
+        if case .jyutPingInitialFinal = self { return true }
+        return keyCapType != .input
+    }
+    
     var buttonBgColor: UIColor {
+        if shouldUseCustomizedKeyColors {
+            switch self {
+            case .jyutPingInitialFinal(let type, _):
+                switch type {
+                case .initial: return Settings.cached.jyutpingInitialFinalLayoutSettings.initialKeyColor
+                case .final: return Settings.cached.jyutpingInitialFinalLayoutSettings.finalKeyColor
+                case .tone: return Settings.cached.jyutpingInitialFinalLayoutSettings.toneKeyColor
+                case .punctuation: return Settings.cached.jyutpingInitialFinalLayoutSettings.punctuationKeyColor
+                }
+            case .space: return Settings.cached.jyutpingInitialFinalLayoutSettings.spaceKeyColor
+            default: return Settings.cached.jyutpingInitialFinalLayoutSettings.systemKeyColor
+            }
+        }
         switch self {
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
@@ -177,6 +203,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBgHighlightedColor: UIColor {
         switch self {
+        case _ where shouldUseCustomizedKeyColors: return buttonBgColor.blended(withFraction: 0.3, of: buttonBgColor.fgColor)
         case .shift(.uppercased), .shift(.capsLocked): return buttonBgColor
         case _ where keyCapType == .input || keyCapType == .space: return ButtonColor.inputKeyHighlightedBackgroundColor
         default: return ButtonColor.systemKeyHighlightedBackgroundColor
@@ -193,7 +220,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var keyCapType: KeyCapType {
         switch self {
         case "\t": return .system
-        case .character, .cangjie, .contextual, .currency, .singleQuote, .doubleQuote, .stroke, .jyutPing10Keys, .rime, .combo: return .input
+        case .character, .cangjie, .contextual, .currency, .singleQuote, .doubleQuote, .stroke, .jyutPing10Keys, .jyutPingInitialFinal, .rime, .combo: return .input
         case .space: return .space
         case .returnKey: return .returnKey
         default: return .system
@@ -209,6 +236,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonFgColor: UIColor {
         switch self {
+        case _ where shouldUseCustomizedKeyColors: return buttonBgColor.fgColor
         case .returnKey(.go), .returnKey(.search): return .white
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedForegroundColor
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.keyForegroundColor
@@ -218,7 +246,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     }
     
     var buttonHintFgColor: UIColor {
-        return ButtonColor.keyHintColor
+        return shouldUseCustomizedKeyColors ? buttonBgColor.fgColor.withAlphaComponent(0.7) : ButtonColor.keyHintColor
     }
     
     // TODO Return images < iOS 12
@@ -232,6 +260,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .shift(.capsLocked): return ButtonImage.capLockFilled
         case .dismissKeyboard: return ButtonImage.dismissKeyboard
         case .keyboardType(.emojis): return ButtonImage.emojiKeyboardLight
+        case .moveCursorBackward: return ButtonImage.moveCursorBackward
+        case .moveCursorForward: return ButtonImage.moveCursorForward
         default: return nil
         }
     }
@@ -315,6 +345,11 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "W": return "W X Y Z"
             default: return nil
             }
+        case .jyutPingInitialFinal(.initial, "G"): return "gw"
+        case .jyutPingInitialFinal(.initial, "K"): return "kw"
+        case .jyutPingInitialFinal(.initial, "N"): return "ng"
+        case .jyutPingInitialFinal(.initial, "X"): return "＊"
+        case .jyutPingInitialFinal(_, let c): return c
         case .selectRomanization: return "選拼音"
         case .exportFile(let namePrefix, _): return namePrefix.capitalized
         case .currency: return SessionState.main.currencySymbol
@@ -345,6 +380,12 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .character(_, let hint, _), .rime(_, let hint, _): return hint?.rightHint ?? barHint
         case .cangjie(let letter, _, _, let cangjieKeyCapMode): return cangjieKeyCapMode == .cangjieRoot ? letter : CangjieConstants.cangjieKeyCaps(letter)
         case .space: return "TypeDuck"
+        case .jyutPingInitialFinal(.tone, "1"): return "陰平"
+        case .jyutPingInitialFinal(.tone, "2"): return "陰上"
+        case .jyutPingInitialFinal(.tone, "3"): return "陰去"
+        case .jyutPingInitialFinal(.tone, "4"): return "陽平"
+        case .jyutPingInitialFinal(.tone, "5"): return "陽上"
+        case .jyutPingInitialFinal(.tone, "6"): return "陽去"
         default: return barHint
         }
     }
@@ -537,6 +578,10 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "X": return [self, "X̧", "Ẋ", "X̣", "Ẍ"]
         case "Y": return [self, "Ỳ", "Ý", "Ȳ", "Ŷ", "Y̌", "Ÿ"]
         case "Z": return [self, "Ź", "Ẑ", "Ž", "Z̧", "Ż", "Ẓ", "Ƶ", "Ʒ"]
+        case .jyutPingInitialFinal(.punctuation, "。"): return ["。", "."]
+        case .jyutPingInitialFinal(.punctuation, "，"): return ["，", ","]
+        case .jyutPingInitialFinal(.punctuation, "？"): return ["？", "?"]
+        case .jyutPingInitialFinal(.punctuation, "！"): return ["！", "!"]
         default: return [self]
         }
     }
@@ -714,6 +759,8 @@ class ButtonImage {
     static let capLockFilled = imageAssets("capslock.fill")
     static let emojiKeyboardLight = imageAssets("face.smiling")
     static let emojiKeyboardDark = imageAssets("face.smiling.fill")
+    static let moveCursorBackward = imageAssets("arrowtriangle.backward.fill")
+    static let moveCursorForward = imageAssets("arrowtriangle.forward.fill")
     static let paneCollapseButtonImage = imageAssets("chevron.up")
     static let paneExpandButtonImage = imageAssets("chevron.down")
     static let paneScrollRightButtonImage = imageAssets("arrow.right")
@@ -753,4 +800,10 @@ class ButtonColor {
     static let dictionaryViewBackgroundColor = colorAssets("dictionaryViewBackgroundColor")
     static let dictionaryViewForegroundColor = colorAssets("dictionaryViewForegroundColor")
     static let dictionaryViewGrayedColor = colorAssets("dictionaryViewGrayedColor")
+    static let jyutpingInitialFinalDefaultInitialKeyColor = colorAssets("jyutpingInitialFinalDefaultInitialKeyColor")
+    static let jyutpingInitialFinalDefaultFinalKeyColor = colorAssets("jyutpingInitialFinalDefaultFinalKeyColor")
+    static let jyutpingInitialFinalDefaultToneKeyColor = colorAssets("jyutpingInitialFinalDefaultToneKeyColor")
+    static let jyutpingInitialFinalDefaultPunctuationKeyColor = colorAssets("jyutpingInitialFinalDefaultPunctuationKeyColor")
+    static let jyutpingInitialFinalDefaultSpaceKeyColor = colorAssets("jyutpingInitialFinalDefaultSpaceKeyColor")
+    static let jyutpingInitialFinalDefaultSystemKeyColor = colorAssets("jyutpingInitialFinalDefaultSystemKeyColor")
 }

@@ -65,6 +65,7 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     capsLock,
     character(String),
     emoji(String),
+    initialFinalTone(String),
     keyboardType(KeyboardType),
     moveCursorBackward,
     moveCursorForward,

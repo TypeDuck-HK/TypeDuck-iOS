@@ -33,6 +33,7 @@
 		1476930B2B5204BA001C182A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1476930D2B5204BA001C182A /* Localizable.strings */; };
 		147693102B53F18A001C182A /* OptionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1476930F2B53F18A001C182A /* OptionTableViewCell.swift */; };
 		14A430322B34A47A005549F5 /* AboutTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A430312B34A47A005549F5 /* AboutTableViewCell.swift */; };
+		14A88CAF2D6623B300957CDB /* InitialFinalKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A88CAE2D6623B300957CDB /* InitialFinalKeyboardView.swift */; };
 		14B9E1392742EC2B007E8679 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */; };
 		14BD07D629F9D18400DB8865 /* DictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14BD07D529F9D18400DB8865 /* DictionaryView.swift */; };
 		14D0990D29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D0990C29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift */; };
@@ -354,6 +355,7 @@
 		1476930E2B5204BF001C182A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1476930F2B53F18A001C182A /* OptionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionTableViewCell.swift; sourceTree = "<group>"; };
 		14A430312B34A47A005549F5 /* AboutTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTableViewCell.swift; sourceTree = "<group>"; };
+		14A88CAE2D6623B300957CDB /* InitialFinalKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialFinalKeyboardView.swift; sourceTree = "<group>"; };
 		14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		14BD07D529F9D18400DB8865 /* DictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryView.swift; sourceTree = "<group>"; };
 		14D0990C29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RandomAccessCollection+Extension.swift"; sourceTree = "<group>"; };
@@ -613,6 +615,14 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
+		14A88CAD2D6622ED00957CDB /* InitialFinalLayout */ = {
+			isa = PBXGroup;
+			children = (
+				14A88CAE2D6623B300957CDB /* InitialFinalKeyboardView.swift */,
+			);
+			path = InitialFinalLayout;
+			sourceTree = "<group>";
+		};
 		7904A1DA2771481200963CAB /* NGramBuilder */ = {
 			isa = PBXGroup;
 			children = (
@@ -810,6 +820,7 @@
 				79B9B5A625F34A1200238E80 /* KeyCap.swift */,
 				79B9B5A525F34A1200238E80 /* KeyHintLayer.swift */,
 				79BE977E26D74B1E0059E58A /* Keypad */,
+				14A88CAD2D6622ED00957CDB /* InitialFinalLayout */,
 				79B9B5A225F34A1200238E80 /* KeyPopupView.swift */,
 				79B9B5A025F34A1200238E80 /* KeyView.swift */,
 				79B9B5A325F34A1200238E80 /* LayoutConstants.swift */,
@@ -1531,6 +1542,7 @@
 				79B9B5F425F34A1200238E80 /* RimeApi.swift in Sources */,
 				796E53F126E6E3CD00C9B187 /* PadFull4RowsKeyboardViewLayout.swift in Sources */,
 				79B23738267832BD009FF854 /* KeypadView.swift in Sources */,
+				14A88CAF2D6623B300957CDB /* InitialFinalKeyboardView.swift in Sources */,
 				79B9B5F725F34A1200238E80 /* RimeInputEngine.swift in Sources */,
 				79B9B60825F34A1200238E80 /* KeyPopupView.swift in Sources */,
 				79B9B60325F34A1200238E80 /* Settings.swift in Sources */,
