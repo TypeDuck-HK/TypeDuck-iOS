@@ -24,6 +24,7 @@ protocol Option {
     var videoUrl: String? { get }
     func dequeueCell(with controller: MainViewController) -> UITableViewCell
     func cellDidSelect()
+    func updateSettings()
 }
 
 private class Switch: Option {
@@ -155,6 +156,13 @@ private class ColorPicker<T: UIColor>: Option {
             // Never mind
         }
     }
+    
+    func updateSettings() {
+        colorPreview.backgroundColor = value
+        controller.settings[keyPath: key] = value
+        controller.view.endEditing(true)
+        Settings.save(controller.settings)
+    }
 }
 
 private class RoundedUIView: UIView {
@@ -181,12 +189,9 @@ private class ColorPickerDelegate<T: UIColor>: NSObject, UIColorPickerViewContro
     
     @available(iOS 14.0, *)
     func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
-        colorPicker.colorPreview.backgroundColor = color
         guard let color = color as? T else { return }
         colorPicker.value = color
-        colorPicker.controller.settings[keyPath: colorPicker.key] = colorPicker.value
-        colorPicker.controller.view.endEditing(true)
-        Settings.save(colorPicker.controller.settings)
+        colorPicker.updateSettings()
     }
 }
 
