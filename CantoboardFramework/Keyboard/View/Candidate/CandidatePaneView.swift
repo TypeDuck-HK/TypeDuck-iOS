@@ -801,7 +801,8 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
             let dictionaryViewController = DictionaryViewController()
             dictionaryViewController.setup(info: candidateInfo)
             
-            let navigationController = UINavigationController(rootViewController: dictionaryViewController)
+            let navigationController = UINavigationController(navigationBarClass: DictionaryNavigationBar.self, toolbarClass: nil)
+            navigationController.setViewControllers([dictionaryViewController], animated: false)
             navigationController.modalPresentationStyle = .formSheet
             navigationController.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
             navigationController.navigationBar.shadowImage = UIImage()

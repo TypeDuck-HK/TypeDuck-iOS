@@ -32,11 +32,13 @@
 		147692FB2B51A3CD001C182A /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147692FA2B51A3CD001C182A /* String+Extension.swift */; };
 		1476930B2B5204BA001C182A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1476930D2B5204BA001C182A /* Localizable.strings */; };
 		147693102B53F18A001C182A /* OptionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1476930F2B53F18A001C182A /* OptionTableViewCell.swift */; };
+		147693182B55F6E1001C182A /* PronunciationLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147693172B55F6E1001C182A /* PronunciationLabel.swift */; };
 		14A430322B34A47A005549F5 /* AboutTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A430312B34A47A005549F5 /* AboutTableViewCell.swift */; };
 		14A88CAF2D6623B300957CDB /* InitialFinalKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A88CAE2D6623B300957CDB /* InitialFinalKeyboardView.swift */; };
 		14B9E1392742EC2B007E8679 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */; };
 		14BD07D629F9D18400DB8865 /* DictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14BD07D529F9D18400DB8865 /* DictionaryView.swift */; };
 		14D0990D29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D0990C29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift */; };
+		14F514752D8D50060095B774 /* SpeechProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F514742D8D50040095B774 /* SpeechProvider.swift */; };
 		14F677D32B0712400021B5F2 /* WrappableStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F677D22B0712400021B5F2 /* WrappableStackView.swift */; };
 		7904A1DC2771481200963CAB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7904A1DB2771481200963CAB /* main.cpp */; };
 		7904A1E127714ACE00963CAB /* libmarisa.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7904A1E027714A9900963CAB /* libmarisa.tbd */; };
@@ -354,11 +356,13 @@
 		1476930C2B5204BA001C182A /* zh-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		1476930E2B5204BF001C182A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1476930F2B53F18A001C182A /* OptionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionTableViewCell.swift; sourceTree = "<group>"; };
+		147693172B55F6E1001C182A /* PronunciationLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationLabel.swift; sourceTree = "<group>"; };
 		14A430312B34A47A005549F5 /* AboutTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTableViewCell.swift; sourceTree = "<group>"; };
 		14A88CAE2D6623B300957CDB /* InitialFinalKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialFinalKeyboardView.swift; sourceTree = "<group>"; };
 		14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		14BD07D529F9D18400DB8865 /* DictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryView.swift; sourceTree = "<group>"; };
 		14D0990C29EF6E2500CD3A87 /* RandomAccessCollection+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RandomAccessCollection+Extension.swift"; sourceTree = "<group>"; };
+		14F514742D8D50040095B774 /* SpeechProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechProvider.swift; sourceTree = "<group>"; };
 		14F677D22B0712400021B5F2 /* WrappableStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappableStackView.swift; sourceTree = "<group>"; };
 		7904A1D92771481200963CAB /* NGramBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NGramBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
 		7904A1DB2771481200963CAB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -781,6 +785,7 @@
 			children = (
 				799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */,
 				79B9B59125F34A1200238E80 /* FeedbackProvider.swift */,
+				14F514742D8D50040095B774 /* SpeechProvider.swift */,
 				79CA7AF326FD9386006B561E /* CompositionRenderer.swift */,
 				79B9B5A725F34A1200238E80 /* InputController.swift */,
 				79B9B58B25F34A1200238E80 /* InputEngine */,
@@ -829,6 +834,7 @@
 				14BD07D529F9D18400DB8865 /* DictionaryView.swift */,
 				142E66142A02D33B00CCD043 /* SidedStackView.swift */,
 				14F677D22B0712400021B5F2 /* WrappableStackView.swift */,
+				147693172B55F6E1001C182A /* PronunciationLabel.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1495,6 +1501,7 @@
 				79B9B60125F34A1200238E80 /* CGSize+Extension.swift in Sources */,
 				79D31ACD263FAC1300993949 /* InstanceCounter.swift in Sources */,
 				79607A65260FF09200E23D33 /* String+Extension.swift in Sources */,
+				14F514752D8D50060095B774 /* SpeechProvider.swift in Sources */,
 				798CC739281E22D000D21A33 /* TenKeysController.swift in Sources */,
 				79B9B5FC25F34A1200238E80 /* Collection+Extension.swift in Sources */,
 				79B9B5FF25F34A1200238E80 /* UIEdgeInsets+Extension.swift in Sources */,
@@ -1513,6 +1520,7 @@
 				79B9B5EE25F34A1200238E80 /* RKRimeApi.m in Sources */,
 				791DE95B263250F500AFA033 /* SwiftLCS.swift in Sources */,
 				79B9B60D25F34A1200238E80 /* InputController.swift in Sources */,
+				147693182B55F6E1001C182A /* PronunciationLabel.swift in Sources */,
 				79226FAB26084CAD005DB8C2 /* CandidateOrganizer.swift in Sources */,
 				7906D6E026D8D35E004C3C0F /* UIView+Extension.swift in Sources */,
 				792DF3C4274341F500F9828C /* Weak.swift in Sources */,

@@ -777,6 +777,7 @@ class ButtonImage {
     static let infoFilled = imageAssets("info.circle.fill")
     static let close = imageAssets("xmark")
     static let swipeDown = imageAssets("chevron.compact.down")
+    static let pronounce = imageAssets("speaker.wave.2.circle.fill")
 }
 
 class ButtonColor {
