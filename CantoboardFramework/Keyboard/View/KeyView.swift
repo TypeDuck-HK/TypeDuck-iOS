@@ -40,7 +40,6 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     private(set) var keyCap: KeyCap = .none
     private var keyboardState: KeyboardState? = nil
     private var isPadTopRowButton = false
-    private var action: KeyboardAction = .none
     private var comboCount: Int = 0
     private var comboTimer: Timer?
     private var inComboMode: Bool = false
@@ -55,7 +54,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         }
     }
     
-    var selectedAction: KeyboardAction = .none
+    var selectedKeyCap: KeyCap = .none
     
     var hitTestFrame: CGRect?
     
@@ -139,8 +138,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         let shouldDisableCombo = self.keyCap.isCombo != keyCap.isCombo
         self.keyCap = keyCap
-        self.action = keyCap.action
-        self.selectedAction = keyCap.action
+        self.selectedKeyCap = keyCap
         self.isPadTopRowButton = isPadTopRowButton
         self.keyboardState = newState
         if shouldDisableCombo {
@@ -465,7 +463,7 @@ extension KeyView {
 extension KeyView {
     func keyTouchBegan(_ touch: UITouch) {
         isHighlighted = true
-        selectedAction = keyCap.action
+        selectedKeyCap = keyCap
         updatePopup(isLongPress: false)
         layer.removeAllAnimations()
         
@@ -490,14 +488,14 @@ extension KeyView {
                 shouldAcceptLongPress = false
                 removePopup()
                 
-                selectedAction = delta.y >= swipeDownThreshold ? padSwipeDownKeyCap.action : keyCap.action
+                selectedKeyCap = delta.y >= swipeDownThreshold ? padSwipeDownKeyCap : keyCap
                 return
             }
         }
         
         if let popupView = popupView {
-            popupView.updateSelectedAction(touch)
-            selectedAction = popupView.selectedAction
+            popupView.updateSelectedKeyCap(touch)
+            selectedKeyCap = popupView.selectedKeyCap
         }
     }
     
@@ -599,7 +597,7 @@ extension KeyView {
             keyCaps.firstIndex { $0 == "\"" || $0 == "'" } ??
             keyCaps.firstIndex { $0.buttonText == defaultChildKeyCapTitle } ?? 0
         popupView.setup(keyCaps: keyCaps, defaultKeyCapIndex: defaultKeyCapIndex, direction: popupDirection)
-        selectedAction = popupView.selectedAction
+        selectedKeyCap = popupView.selectedKeyCap
         
         isPopupInLongPressMode = isLongPress
         setupView()
