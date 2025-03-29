@@ -420,6 +420,74 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
+    func enqueueForSpeaking() {
+        guard Settings.cached.accessibilitySettings.speechFeedbackEnabledForCharacters else { return }
+        if let fileName = audioFileName {
+            SpeechProvider.enqueue(.initialFinal, fileName)
+        } else if let text = spokenText {
+            SpeechProvider.enqueue(.character, text)
+        }
+    }
+    
+    var audioFileName: String? {
+        switch self {
+        case .jyutPingInitialFinal(.initial, "G"): return "gw"
+        case .jyutPingInitialFinal(.initial, "K"): return "kw"
+        case .jyutPingInitialFinal(.initial, "N"): return "ng"
+        case .jyutPingInitialFinal(.initial, let c): return c
+        case .jyutPingInitialFinal(.final, let c): return "_" + c
+        case .jyutPingInitialFinal(.tone, let c): return "__" + c
+        default: return nil
+        }
+    }
+    
+    var spokenText: String? {
+        switch self {
+        case .rime(.delimiter, _, _): return "分隔"
+        case .rime(.sym, _, _): return "符號"
+        case .rime: return buttonText
+        case .singleQuote, "'", "＇": return "單引號"
+        case .doubleQuote, "\"", "＂": return "雙引號"
+        case ".", "．": return "句點"
+        case "｡", "。": return "句號"
+        case ",", "，": return "逗號"
+        case "､", "、": return "頓號"
+        case "?", "？": return "問號"
+        case "!", "！": return "感歎號"
+        case ":", "：": return "冒號"
+        case ";", "；": return "分號"
+        case "…", "⋯", "⋯⋯": return "省略號"
+        case "–", "—", "——": return "破折號"
+        case "｢", "「": return "開引號"
+        case "｣", "」": return "閂引號"
+        case "(", "（": return "左括號"
+        case ")", "）": return "右括號"
+        case "[", "［": return "左方括號"
+        case "]", "］": return "右方括號"
+        case "{", "｛": return "左花括號"
+        case "}", "｝": return "右花括號"
+        case "/", "／": return "斜線"
+        case "\\", "＼": return "反斜線"
+        case "|", "｜": return "垂直線"
+        case .character(let text, _, _) where text.first?.isUppercase ?? false: return "大階" + text
+        case .character(let text, _, _): return text
+        case .emoji(let text): return text
+        case .stroke(let c):
+            switch c.lowercased() {
+            case "h": return "橫"
+            case "s": return "豎"
+            case "p": return "撇"
+            case "n": return "點"
+            case "z": return "折"
+            default: return nil
+            }
+        case .jyutPingInitialFinal(.initial, "X"): return "百搭"
+        case .jyutPingInitialFinal(.punctuation, let c): return KeyCap(c).spokenText
+        case .cangjie, .jyutPing10Keys, .currency, .keypadRimeDelimiter: return buttonText
+        default: return nil
+        }
+    }
+    
     private static var logsPath: String = DataFileManager.logsDirectory
     private static let userDataPath: String = DataFileManager.userDataDirectory
     private static let tmpPath: String = FileManager.default.temporaryDirectory.path

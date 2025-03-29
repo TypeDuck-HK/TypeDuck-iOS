@@ -11,7 +11,7 @@
 "installTypeDuck.description" =
 "To enable TypeDuck, click “Keyboard” → “TypeDuck” and “Allow Full Access” → “Allow” in the app settings.
 
-“Allow Full Access” is an optional item, but due to system limitations, this item needs to be enabled in order for the app to provide haptic feedback (vibration on keypress).
+“Allow Full Access” is an optional item, but due to system limitations, this item needs to be enabled in order for the app to provide haptic and spoken feedback (vibration and voice on keypress).
 
 Due to iOS limitations, if the TypeDuck option disappears or becomes unavailable after an installation or upgrade, please restart your device.";
 
@@ -133,6 +133,17 @@ Long press: Press and hold one of the six keys in the middle of the keyboard to 
 "englishInputSettings.englishLocale.gb" = "GB";
 "englishInputSettings.englishLocale.us" = "US";
 
+"accessibilitySettings" =
+"Accessibility Settings
+
+Important: Due to system limitations, “Allow Full Access” (see the top of this page) must be enabled for the following items to function.
+
+The following items are known to conflict with the settings in System Settings → “Accessibility” → “Spoken Content” → “Typing Feedback”.
+Confirm that they are turned off and use the following settings.";
+"accessibilitySettings.speechFeedbackEnabledForCharacters" = "Speak characters";
+"accessibilitySettings.speechFeedbackEnabledForWords" = "Speak inserted words";
+"accessibilitySettings.speechFeedbackEnabledForDictionaryOpening" = "Speak candidates when opening dictionary";
+
 "other.onboarding" = "Onboarding Screen";
 "other.about" = "About";
 
@@ -157,7 +168,7 @@ Welcome to TypeDuck: a Cantonese input keyboard with minority language prompts! 
 "onboarding.4.content" = "To give up candidate selection after input, swipe the backspace key to the left to clear the code your inputted.";
 "onboarding.5.heading" = "One More Step to Go…";
 "onboarding.5.content" = "Click “Keyboard” → “TypeDuck” and “Allow Full Access” → “Allow” in the app settings to start using TypeDuck.";
-"onboarding.5.footnote" = "“Allow Full Access” is an optional item, but due to system limitations, this item needs to be enabled in order for the app to provide haptic feedback (vibration on keypress).";
+"onboarding.5.footnote" = "“Allow Full Access” is an optional item, but due to system limitations, this item needs to be enabled in order for the app to provide haptic and spoken feedback (vibration and voice on keypress).";
 "onboarding.5.installed.heading" = "You’re done!";
 "onboarding.5.installed.content" = "TypeDuck is now available for use. If you encounter any problems, you may visit the “About” page for support.";
 

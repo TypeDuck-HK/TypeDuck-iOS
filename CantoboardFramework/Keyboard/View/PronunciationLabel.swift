@@ -85,6 +85,7 @@ class PronounceButton: UIButton {
     }
     
     @objc func pronounce() {
-        SpeechProvider.speak(pronunciation)
+        SpeechProvider.stop()
+        SpeechProvider.speak(pronunciation, rateMultiplier: 0.8)
     }
 }

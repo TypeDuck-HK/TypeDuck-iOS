@@ -344,6 +344,14 @@ extension Settings {
                     ]),
                 ]
             ),
+            Section(
+                LocalizedStrings.accessibilitySettings,
+                [
+                    Switch(LocalizedStrings.speechFeedbackEnabledForCharacters, \.accessibilitySettings.speechFeedbackEnabledForCharacters),
+                    Switch(LocalizedStrings.speechFeedbackEnabledForWords, \.accessibilitySettings.speechFeedbackEnabledForWords),
+                    Switch(LocalizedStrings.speechFeedbackEnabledForDictionaryOpening, \.accessibilitySettings.speechFeedbackEnabledForDictionaryOpening),
+                ]
+            ),
         ].compactMap({ $0 })
     }
 }
