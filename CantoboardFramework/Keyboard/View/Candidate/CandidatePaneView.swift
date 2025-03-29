@@ -778,7 +778,9 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
         if Settings.cached.isTapHapticFeedbackEnabled {
             FeedbackProvider.lightImpact.impactOccurred()
         }
-        delegate?.candidatePaneViewCandidateSelected(translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
+        SpeechProvider.queueAndSpeak {
+            delegate?.candidatePaneViewCandidateSelected(translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
+        }
     }
     
     func longPressItem(_ collectionView: UICollectionView, at indexPath: IndexPath) {
@@ -797,6 +799,11 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
         if candidateInfo.hasDictionaryEntry {
             FeedbackProvider.play(keyboardAction: .newLine)
             FeedbackProvider.lightImpact.impactOccurred()
+            
+            if Settings.cached.accessibilitySettings.speechFeedbackEnabledForDictionaryOpening {
+                SpeechProvider.stop()
+                SpeechProvider.speak(candidateInfo.romanization, rateMultiplier: 0.8)
+            }
             
             let dictionaryViewController = DictionaryViewController()
             dictionaryViewController.setup(info: candidateInfo)

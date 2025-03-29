@@ -246,6 +246,15 @@ class InputController: NSObject {
             _ = inputEngine.moveCaret(offset: 1)
         }
         if let commitedText = candidateOrganizer.selectCandidate(indexPath: choice) {
+            if Settings.cached.accessibilitySettings.speechFeedbackEnabledForWords {
+                if candidateOrganizer?.autoSuggestionType == nil {
+                    let comment = candidateOrganizer.getCandidateComment(indexPath: choice)
+                    let candidateInfo = CandidateInfo(commitedText, comment)
+                    SpeechProvider.enqueue(.candidate, candidateInfo.romanization.isEmpty ? commitedText : candidateInfo.romanization)
+                } else if let text = KeyCap(commitedText).spokenText {
+                    SpeechProvider.enqueue(.candidate, text)
+                }
+            }
             if candidateOrganizer?.autoSuggestionType?.replaceTextOnInsert ?? false {
                 textDocumentProxy?.deleteBackward(times: replaceTextLen)
                 replaceTextLen = 0
@@ -936,6 +945,9 @@ class InputController: NSObject {
             }
             EnglishInputEngine.userDictionary.learnWordIfNeeded(word: composingText)
             if let c = appendBy { composingText.append(c) }
+            if Settings.cached.accessibilitySettings.speechFeedbackEnabledForWords {
+                SpeechProvider.enqueue(.committedText, composingText)
+            }
             insertText(composingText, requestSmartSpace: !shouldDisableSmartSpace)
             return true
         }
@@ -966,9 +978,11 @@ class InputController: NSObject {
             if state.keyboardContextualType.halfWidthSymbol {
                 textDocumentProxy.insertText(". ")
                 hasInsertedAutoSpace = true
+                KeyCap(".").enqueueForSpeaking()
             } else {
                 textDocumentProxy.insertText("。")
                 hasInsertedAutoSpace = false
+                KeyCap("。").enqueueForSpeaking()
             }
             return true
         }

@@ -317,6 +317,29 @@ public struct JyutpingInitialFinalLayoutSettings: Codable, Equatable {
     }
 }
 
+public struct AccessibilitySettings: Codable, Equatable {
+    private static let defaultSpeechFeedbackEnabledForCharacters: Bool = false
+    private static let defaultSpeechFeedbackEnabledForWords: Bool = false
+    private static let defaultSpeechFeedbackEnabledForDictionaryOpening: Bool = false
+    
+    public var speechFeedbackEnabledForCharacters: Bool
+    public var speechFeedbackEnabledForWords: Bool
+    public var speechFeedbackEnabledForDictionaryOpening: Bool
+    
+    public init() {
+        speechFeedbackEnabledForCharacters = Self.defaultSpeechFeedbackEnabledForCharacters
+        speechFeedbackEnabledForWords = Self.defaultSpeechFeedbackEnabledForWords
+        speechFeedbackEnabledForDictionaryOpening = Self.defaultSpeechFeedbackEnabledForDictionaryOpening
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        speechFeedbackEnabledForCharacters = try container.decodeIfPresent(Bool.self, forKey: .speechFeedbackEnabledForCharacters) ?? Self.defaultSpeechFeedbackEnabledForCharacters
+        speechFeedbackEnabledForWords = try container.decodeIfPresent(Bool.self, forKey: .speechFeedbackEnabledForWords) ?? Self.defaultSpeechFeedbackEnabledForWords
+        speechFeedbackEnabledForDictionaryOpening = try container.decodeIfPresent(Bool.self, forKey: .speechFeedbackEnabledForDictionaryOpening) ?? Self.defaultSpeechFeedbackEnabledForDictionaryOpening
+    }
+}
+
 public struct Settings: Codable, Equatable {
     private static let prevSettingsKeyName = "prevSettings"
     private static let settingsKeyName = "Settings"
@@ -359,6 +382,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultCangjieKeyCapMode: CangjieKeyCapMode = .cangjieRoot
     private static let defaultLanguageState: LanguageState = LanguageState()
     private static let defaultJyutpingInitialFinalLayoutSettings: JyutpingInitialFinalLayoutSettings = JyutpingInitialFinalLayoutSettings()
+    private static let defaultAccessibilitySettings: AccessibilitySettings = AccessibilitySettings()
 
     public var interfaceLanguage: InterfaceLanguage
     public var isMixedModeEnabled: Bool
@@ -396,6 +420,7 @@ public struct Settings: Codable, Equatable {
     public var cangjieKeyCapMode: CangjieKeyCapMode
     public var languageState: LanguageState
     public var jyutpingInitialFinalLayoutSettings: JyutpingInitialFinalLayoutSettings
+    public var accessibilitySettings: AccessibilitySettings
     
     public init() {
         interfaceLanguage = Self.defaultInterfaceLanguage
@@ -434,6 +459,7 @@ public struct Settings: Codable, Equatable {
         cangjieKeyCapMode = Self.defaultCangjieKeyCapMode
         languageState = Self.defaultLanguageState
         jyutpingInitialFinalLayoutSettings = Self.defaultJyutpingInitialFinalLayoutSettings
+        accessibilitySettings = Self.defaultAccessibilitySettings
     }
     
     public init(from decoder: Decoder) throws {
@@ -474,6 +500,7 @@ public struct Settings: Codable, Equatable {
         self.cangjieKeyCapMode = try container.decodeIfPresent(CangjieKeyCapMode.self, forKey: .cangjieKeyCapMode) ?? Settings.defaultCangjieKeyCapMode
         self.languageState = try container.decodeIfPresent(LanguageState.self, forKey: .languageState) ?? Settings.defaultLanguageState
         self.jyutpingInitialFinalLayoutSettings = try container.decodeIfPresent(JyutpingInitialFinalLayoutSettings.self, forKey: .jyutpingInitialFinalLayoutSettings) ?? Settings.defaultJyutpingInitialFinalLayoutSettings
+        self.accessibilitySettings = try container.decodeIfPresent(AccessibilitySettings.self, forKey: .accessibilitySettings) ?? Settings.defaultAccessibilitySettings
     }
     
     private static var _cached: Settings?

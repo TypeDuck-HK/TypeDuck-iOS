@@ -268,7 +268,11 @@ class TouchHandler {
                 }
                 // We cannot use chosenAction as endTouchesUpTo() might have changed the keyboard type and hence selectedActions of KeyViews.
                 // We have use the latest selectedAction of the keyView.
-                callKeyHandler(chosenKey, currentTouchState.activeKeyView.selectedKeyCap.action)
+                SpeechProvider.queueAndSpeak {
+                    let chosenKeyCap = currentTouchState.activeKeyView.selectedKeyCap
+                    callKeyHandler(chosenKey, chosenKeyCap.action)
+                    chosenKeyCap.enqueueForSpeaking()
+                }
                 // If the user was dragging from the shift key (not locked) to a char key, change keyboard mode back to lowercase after typing.
                 let supportDrag: Bool
                 switch currentTouchState.initialAction {

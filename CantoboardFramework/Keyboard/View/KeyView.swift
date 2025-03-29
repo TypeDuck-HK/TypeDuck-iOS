@@ -428,6 +428,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             
             if let chosenItem = items[safe: comboCount] {
                 delegate.handleKey(.character(chosenItem))
+                KeyCap(chosenItem).enqueueForSpeaking()
                 lastComboText = chosenItem
             }
             

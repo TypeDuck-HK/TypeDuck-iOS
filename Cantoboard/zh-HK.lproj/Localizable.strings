@@ -11,7 +11,7 @@
 "installTypeDuck.description" =
 "於程式設定按「鍵盤」→「TypeDuck」及「允許全權取用」→「確定」，即可啟用 TypeDuck。
 
-「允許全權取用」為選擇性項目，但由於系統限制，需要開啟本項目方可使用震動功能。
+「允許全權取用」為選擇性項目，但由於系統限制，需要開啟本項目方可使用震動及語音功能。
 
 由於 iOS 限制，若安裝或更新後 TypeDuck 選項消失或未能使用，請重新啟動裝置。";
 
@@ -135,6 +135,17 @@ vxq: 按一下 v/x/q 輸入 1/2/3 聲；
 "englishInputSettings.englishLocale.gb" = "英國";
 "englishInputSettings.englishLocale.us" = "美國";
 
+"accessibilitySettings" =
+"輔助使用設定
+
+請注意：由於系統限制，必須開啟「允許全權取用」（見本頁頂部），以下項目方可運作。
+
+以下項目會與系統設定 →「輔助使用」→「語音內容」→「輸入回饋」中之設定有所衝突。
+請確認以上系統設定已關閉，並使用下列設定項目。";
+"accessibilitySettings.speechFeedbackEnabledForCharacters" = "朗讀字元";
+"accessibilitySettings.speechFeedbackEnabledForWords" = "朗讀輸入字詞";
+"accessibilitySettings.speechFeedbackEnabledForDictionaryOpening" = "開啟辭典時朗讀候選詞";
+
 "other.onboarding" = "開始畫面";
 "other.about" = "關於";
 
@@ -159,7 +170,7 @@ Welcome to TypeDuck: a Cantonese input keyboard with minority language prompts! 
 "onboarding.4.content" = "輸入後要放棄選字，向左掃刪除鍵一下即可清除輸入碼。";
 "onboarding.5.heading" = "尚餘一步⋯⋯";
 "onboarding.5.content" = "於程式設定按「鍵盤」→「TypeDuck」及「允許全權取用」→「確定」以開始使用 TypeDuck。";
-"onboarding.5.footnote" = "「允許全權取用」為選擇性項目，但由於系統限制，需要開啟本項目方可使用震動功能。";
+"onboarding.5.footnote" = "「允許全權取用」為選擇性項目，但由於系統限制，需要開啟本項目方可使用震動及語音功能。";
 "onboarding.5.installed.heading" = "大功告成！";
 "onboarding.5.installed.content" = "TypeDuck 現已可供使用。如果遇到任何問題，可以前往「關於」頁面尋求支援。";
 
