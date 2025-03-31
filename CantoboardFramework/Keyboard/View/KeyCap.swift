@@ -709,6 +709,20 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         return false
     }
     
+    var isJyutpingInitialOrFinalOrTone: Bool {
+        switch self {
+        case .jyutPingInitialFinal(let keyCapType, _): return keyCapType != .punctuation
+        default: return false
+        }
+    }
+    
+    var toJyutpingInitialFinalKeyCapType: InitialFinalKeyboardView.KeyCapType? {
+        switch self {
+        case .jyutPingInitialFinal(let keyCapType, _): return keyCapType
+        default: return nil
+        }
+    }
+    
     var unescaped: KeyCap {
         switch self {
         case .placeholder(let keyCap): return keyCap.unescaped

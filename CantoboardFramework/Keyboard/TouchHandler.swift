@@ -89,8 +89,8 @@ class TouchHandler {
         if Settings.cached.isTapHapticFeedbackEnabled {
             FeedbackProvider.lightImpact.impactOccurred()
         }
-                
-        // DDLogInfo("touchBegan \(key.keyCap) \(touch) \(currentTouch?.0)")
+        
+        // DDLogInfo("touchBegan \(key.keyCap) \(touch)")
         
         keyRepeatCounter = 0
         
@@ -139,7 +139,7 @@ class TouchHandler {
     func touchMoved(_ touch: UITouch, key: KeyView?, with event: UIEvent?) {
         if keyRepeatTimer == nil { setupKeyRepeatTimer() }
         
-        // DDLogInfo("touchMoved \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
+        // DDLogInfo("touchMoved \(String(describing: key?.keyCap)) \(touch)")
         
         guard let currentTouchState = touches[touch] else { return }
         let cursorMoveStartPosition = currentTouchState.cursorMoveStartPosition
@@ -226,13 +226,13 @@ class TouchHandler {
     
     func touchEnded(_ touch: UITouch, key: KeyView?, with event: UIEvent?) {
         guard let currentTouchState = touches[touch] else {
-            DDLogError("TouchHandler.touchEnded() BUG CHECK MISSING touch \(touch) touches \(touches)")
+            DDLogError("TouchHandler.touchEnded() BUG CHECK MISSING touch \(touch) key \(String(describing: key?.keyCap)) touches \(touches)")
             // Defensive programming. Switch back to typing mode if there's a bug.
             self.inputMode = .typing
             return
         }
-               
-        // DDLogInfo("touchEnded \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
+        
+        // DDLogInfo("touchEnded \(String(describing: key?.keyCap)) \(touch)")
         
         defer {
             endTouch(touch, commit: false)
@@ -262,6 +262,13 @@ class TouchHandler {
                 }
             case .shift(.capsLocked), .keyboardType(.alphabetic), .keyboardType(.numeric), .keyboardType(.symbolic), .keyboardType(.numSymbolic): ()
             default:
+                // In the initial-final layout, end all current initial, final or tone key touches and sort them in this order for combo input.
+                if chosenKey.selectedKeyCap.isJyutpingInitialOrFinalOrTone {
+                    endAllJyutpingInitialFinalTouches()
+                    inputMode = .typing
+                    return
+                }
+                
                 // On iPad, on key up, it commits all previous key presses to make sure text is inserted in order.
                 if case .pad = keyboardIdiom {
                     endTouchesUpTo(touch)
@@ -290,6 +297,27 @@ class TouchHandler {
         }
     }
     
+    private func endAllJyutpingInitialFinalTouches() {
+        SpeechProvider.queueAndSpeak {
+            touchQueue
+                .filter { touches[$0]?.activeKeyView.selectedKeyCap.isJyutpingInitialOrFinalOrTone ?? false }
+                .sorted(by: { a, b in
+                    switch (touches[a]!.activeKeyView.selectedKeyCap.toJyutpingInitialFinalKeyCapType,
+                            touches[b]!.activeKeyView.selectedKeyCap.toJyutpingInitialFinalKeyCapType) {
+                    case (.initial, .final), (.initial, .tone), (.final, .tone): return true
+                    default: return false
+                    }
+                })
+                .forEach { touch in
+                    let chosenKey = touches[touch]!.activeKeyView
+                    let chosenKeyCap = chosenKey.selectedKeyCap
+                    callKeyHandler(chosenKey, chosenKeyCap.action)
+                    chosenKeyCap.enqueueForSpeaking()
+                    endTouch(touch, commit: false)
+                }
+        }
+    }
+    
     private func endTouchesUpTo(_ touch: UITouch) {
         let touchIndex = touchQueue.firstIndex(of: touch) ?? 0
         touchQueue
@@ -301,7 +329,7 @@ class TouchHandler {
     }
     
     func touchCancelled(_ touch: UITouch, with event: UIEvent?) {
-        // DDLogInfo("touchCancelled \(currentTouch?.0) \(touch)")
+        // DDLogInfo("touchCancelled \(touch)")
         
         cancelKeyRepeatTimer()
         

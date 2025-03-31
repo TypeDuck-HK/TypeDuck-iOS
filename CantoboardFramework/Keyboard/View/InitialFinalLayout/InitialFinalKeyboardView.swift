@@ -390,32 +390,43 @@ extension InitialFinalKeyboardView: CandidatePaneViewDelegate {
 extension InitialFinalKeyboardView {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        guard let touch = touches.first,
-              let keypadButton = touch.view as? KeyView else { return }
         
-        touchHandler?.touchBegan(touch, key: keypadButton, with: event)
+        for touch in touches {
+            // This is not the same as (A ?? B) as? KeyView -- one may be InitialFinalKeyboardView and another may be KeypadButton
+            guard let key = findTouchingView(touch, with: event) as? KeyView ?? touch.view as? KeyView else { continue }
+            touchHandler?.touchBegan(touch, key: key, with: event)
+        }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
-        guard let touch = touches.first,
-              let keypadButton = touch.view as? KeyView else { return }
         
-        touchHandler?.touchMoved(touch, key: keypadButton, with: event)
+        for touch in touches {
+            let key = findTouchingView(touch, with: event) as? KeyView ?? touch.view as? KeyView
+            touchHandler?.touchMoved(touch, key: key, with: event)
+        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-        guard let touch = touches.first,
-              let keypadButton = touch.view as? KeyView else { return }
         
-        touchHandler?.touchEnded(touch, key: keypadButton, with: event)
+        for touch in touches {
+            let key = findTouchingView(touch, with: event) as? KeyView ?? touch.view as? KeyView
+            touchHandler?.touchEnded(touch, key: key, with: event)
+        }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
-        guard let touch = touches.first else { return }
         
-        touchHandler?.touchCancelled(touch, with: event)
+        for touch in touches {
+            touchHandler?.touchCancelled(touch, with: event)
+        }
+    }
+    
+    private func findTouchingView(_ touch: UITouch, with event: UIEvent?) -> UIView? {
+        let touchPoint = touch.location(in: self)
+        let touchingView = super.hitTest(touchPoint, with: event)
+        return touchingView
     }
 }
