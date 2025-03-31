@@ -169,6 +169,7 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
     private func refreshKeys() {
         var keyCaps = bottomButtonLayout
         configureLowerLeftSystemKeyCap(&keyCaps)
+        configureLowerRightSystemKeyCap(&keyCaps)
         bottomKeyRow?.setupRow(keyboardState: state, keyCaps, rowId: layoutConstants.ref.idiom.keyboardViewLayout.numOfRows - 1)
         refreshSpaceAndReturnKeys()
     }
@@ -189,6 +190,12 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
             case .keyboardType(.emojis) where layoutConstants.ref.idiom == .phone && state.needsInputModeSwitchKey: return nil
             default: return keyCap
             }
+        }
+    }
+    
+    private func configureLowerRightSystemKeyCap(_ keyCaps: inout [[KeyCap]]) {
+        if layoutConstants.ref.idiom == .phone {
+            keyCaps[2] = keyCaps[2].filter { $0 != .dismissKeyboard }
         }
     }
     
