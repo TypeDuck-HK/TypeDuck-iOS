@@ -92,7 +92,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     case
     none,
     backspace,
-    toggleInputMode(/* toMode */ InputMode, RimeSchema?),
+    toggleInputMode(_ toMode: InputMode, _ mainSchema: RimeSchema?, _ reverseLookupSchema: RimeSchema? = nil),
     character(String, KeyCapHints?, /* children key caps */ [KeyCap]?),
     cangjie(String, KeyCapHints?, /* children key caps */ [KeyCap]?, CangjieKeyCapMode),
     stroke(String),
@@ -136,7 +136,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .none: return .none
         case .backspace: return .backspace
-        case .toggleInputMode(let toInputMode, _): return .toggleInputMode(toInputMode)
+        case .toggleInputMode(let toInputMode, _, _): return .toggleInputMode(toInputMode)
         case .character(let c, _, _): return .character(c)
         case .cangjie(let c, _, _, _): return .character(c)
         case .stroke(let c), .jyutPing10Keys(let c), .jyutPingInitialFinal(.punctuation, let c): return .character(c)
@@ -296,8 +296,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .rime(.delimiter, _, _): return "分"
         case .rime(.sym, _, _): return "符"
         case .reverseLookup(let schema): return schema.signChar
-        case .toggleInputMode(.english, _): return "英文"
-        case .toggleInputMode(_, let rimeSchema): return rimeSchema?.shortName
+        case .toggleInputMode(.english, _, /* reverseLookupSchema */ nil): return "英文"
+        case .toggleInputMode(_, let mainSchema, _): return mainSchema?.shortName
         case .singleQuote: return "′"
         case .doubleQuote: return "″"
         case "（", "「", "『", "〈", "《", "｛", "【", "〔", "〚", "〖", "〘":

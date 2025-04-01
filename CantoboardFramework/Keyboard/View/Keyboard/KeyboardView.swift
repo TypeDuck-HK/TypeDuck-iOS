@@ -436,7 +436,7 @@ class KeyboardView: UIView, BaseKeyboardView {
                     let shouldShowEmojiKey = layoutConstants.ref.idiom.isPad || state.needsInputModeSwitchKey
                     return shouldShowEmojiKey ? KeyCap.keyboardType(.emojis) : nil
                 } else {
-                    return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema)
+                    return .toggleInputMode(state.inputMode.afterToggle, state.mainSchema, state.reverseLookupSchema)
                 }
             default: return keyCap
             }
