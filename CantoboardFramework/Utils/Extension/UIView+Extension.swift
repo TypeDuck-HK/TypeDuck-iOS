@@ -87,4 +87,12 @@ internal extension UIView {
         }
         return responder as? T
     }
+    
+    func findElement(_ predicate: (UIResponder) -> Bool) -> UIResponder? {
+        var responder = next
+        while let curr = responder, !predicate(curr) {
+            responder = curr.next
+        }
+        return responder
+    }
 }
