@@ -165,7 +165,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         contentEdgeInsets = layoutConstants.ref.keyViewInsets
         titleEdgeInsets = keyCap.buttonTitleInset
         layer.cornerRadius = layoutConstants.ref.cornerRadius
-        titleLabelFontSize = isPadTopRowButton ? Self.padTopRowButtonFontSize : layoutConstants.ref.getButtonFontSize(keyCap.unescaped)
+        titleLabelFontSize = layoutConstants.ref.getButtonFontSize(keyCap.unescaped) * (isPadTopRowButton ? 0.75 : 1)
         if keyboardIdiom.isPad && !keyboardState.isPortrait {
             titleLabelFontSize *= Self.padLandscapeFontRatio
         }
@@ -238,6 +238,9 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             // Shrink edge insets to avoid swipeDownHintLayer and titleLabel overlapping each other.
             contentEdgeInsets = isPadTopRowButton ? Self.padTopRowButtonEdgeInsets : Self.morphingKeyEdgeInsets
             
+            if isPadTopRowButton {
+                titleLabelFontSize = Self.padTopRowButtonFontSize * (keyboardState.isPortrait ? 1 : Self.padLandscapeFontRatio)
+            }
             // Scale swipeDownHintLayer by swipeDownPercentage.
             // For shift morphing keys (morphing keys appearing even in autocapped mode), they should appear as large as the main titleLabel.
             // Using morphingKeyFontRatio = 0.9 to shrink the swipe down labels. As keys ,.;' look smaller than their swipe down key counterparts.
