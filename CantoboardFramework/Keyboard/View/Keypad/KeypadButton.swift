@@ -14,15 +14,6 @@ class KeypadButton: KeyView {
     var colRowSize: CGSize = CGSize(width: 1, height: 1)
     var autoSuggestionOverride: AutoSuggestionType?
     
-    override init(layoutConstants: Reference<LayoutConstants>) {
-        super.init(layoutConstants: layoutConstants)
-        shouldDisablePreview = true
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     func getSize(layoutConstants: LayoutConstants) -> CGSize {
         let unitSize = layoutConstants.keypadButtonUnitSize
         let numOfColumns = colRowSize.width

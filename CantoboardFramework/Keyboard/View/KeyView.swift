@@ -582,12 +582,9 @@ extension KeyView {
         }
         
         let keyCaps = computeKeyCap(isLongPress: isLongPress)
-        // On iPad, shows popup only in long press mode and if there are multiple choices.
-        let isPadKeyWithoutChildren = keyboardIdiom.isPad && keyCaps.count == 1
-        let isPhoneWithPreviewDisabled = !Settings.cached.enableCharPreview && !isLongPress
-        // Disable preview in keypad view.
-        let isInKeypadView = !isLongPress && shouldDisablePreview
-        if isPadKeyWithoutChildren || isPhoneWithPreviewDisabled || isInKeypadView {
+        // Always show popup in long press mode if there are multiple choices.
+        // Otherwise, preview is disabled in keypad view and on iPad, or if the settings item is disabled on iPhone.
+        if keyCaps.count == 1 && (!Settings.cached.enableCharPreview || keyboardIdiom.isPad || shouldDisablePreview) {
             return
         }
         
