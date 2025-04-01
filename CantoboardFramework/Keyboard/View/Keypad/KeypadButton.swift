@@ -32,19 +32,6 @@ class KeypadButton: KeyView {
             height: unitSize.height * numOfRows + layoutConstants.buttonGapX * (numOfRows - 1))
     }
     
-    override internal func setupView() {
-        super.setupView()
-        if case .toggleInputMode = keyCap {
-            setTitle(isKeyEnabled ? "ABC" : "", for: .normal)
-        }
-        
-        switch keyCap {
-        case .character, .stroke:
-            titleLabel?.font = .systemFont(ofSize: 26)
-        default:()
-        }
-    }
-    
     override func dispatchKeyAction(_ action: KeyboardAction, _ delegate: KeyboardViewDelegate) {
         super.dispatchKeyAction(action, delegate)
         if let autoSuggestionOverride = autoSuggestionOverride {

@@ -919,6 +919,7 @@ extension LayoutConstants {
              .keypadRimeDelimiter,
              .selectRomanization: return 16
         case .returnKey, "\t", .shift, .nextKeyboard, .dismissKeyboard: return 18
+        case .combo: return 18
         case .cangjie(_, _, _, .cangjieRoot): return 20
         case .backspace: return 20
         case .currency where idiom.isPad: return 20

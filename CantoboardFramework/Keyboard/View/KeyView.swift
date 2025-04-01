@@ -12,13 +12,18 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     private static let swipeDownMinCutOffYRatio: CGFloat = 0.2
     private static let swipeDownMaxCutOffYRatio: CGFloat = 0.5
     private static let swipeDownFullYRatio: CGFloat = 0.8
-    private static let padLandscapeFontRatio = 1.3
     private static let morphingKeyFontRatio = 0.9
     private static let morphingSymbolKeyFontRatio = 0.85
     private static let morphingSwipeDownHintLayerMinScale = 0.6
     private static let padTopRowButtonFontSize: CGFloat = 15
+    private static let keypadButtonFontSize: CGFloat = 26
     private static let morphingKeyEdgeInsets = UIEdgeInsets(top: 4, left: 5, bottom: 8, right: 5)
     private static let padTopRowButtonEdgeInsets = UIEdgeInsets(top: 3, left: 4, bottom: 5, right: 4)
+    
+    private var orientationalFontRatio: CGFloat {
+        guard let keyboardState = keyboardState else { return 1 }
+        return keyboardState.keyboardIdiom.isPad && !keyboardState.isPortrait ? 4 / 3 : 1
+    }
     
     private var leftKeyHintLayer: KeyHintLayer?
     private var rightKeyHintLayer: KeyHintLayer?
@@ -165,10 +170,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         contentEdgeInsets = layoutConstants.ref.keyViewInsets
         titleEdgeInsets = keyCap.buttonTitleInset
         layer.cornerRadius = layoutConstants.ref.cornerRadius
-        titleLabelFontSize = layoutConstants.ref.getButtonFontSize(keyCap.unescaped) * (isPadTopRowButton ? 0.75 : 1)
-        if keyboardIdiom.isPad && !keyboardState.isPortrait {
-            titleLabelFontSize *= Self.padLandscapeFontRatio
-        }
+        titleLabelFontSize = layoutConstants.ref.getButtonFontSize(keyCap.unescaped) * (isPadTopRowButton ? 0.75 : 1) * orientationalFontRatio
         
         var maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]
         var shadowOpacity: Float = 1.0
@@ -206,6 +208,9 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             if keyboardState.inputMode != .english,
                case .keyboardType(.alphabetic) = keyCap {
                 titleText = keyboardState.activeSchema.shortName
+            } else if self is KeypadButton,
+                      case .toggleInputMode = keyCap {
+                titleText = KeyCap.keyboardType(.alphabetic(.lowercased)).buttonText
             }
             // titleLabel?.baselineAdjustment = .alignCenters
             // titleLabel?.lineBreakMode = .byClipping
@@ -239,7 +244,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             contentEdgeInsets = isPadTopRowButton ? Self.padTopRowButtonEdgeInsets : Self.morphingKeyEdgeInsets
             
             if isPadTopRowButton {
-                titleLabelFontSize = Self.padTopRowButtonFontSize * (keyboardState.isPortrait ? 1 : Self.padLandscapeFontRatio)
+                titleLabelFontSize = Self.padTopRowButtonFontSize * orientationalFontRatio
             }
             // Scale swipeDownHintLayer by swipeDownPercentage.
             // For shift morphing keys (morphing keys appearing even in autocapped mode), they should appear as large as the main titleLabel.
@@ -258,12 +263,19 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
                 !(keyCap.keyCapType == .input || keyCap.keyCapType == .space) ? .bottom : .center
         }
         
-        if case .jyutPingInitialFinal = keyCap {
-            contentEdgeInsets = .zero
-            titleEdgeInsets = .zero
-            layer.cornerRadius = layoutConstants.ref.initialFinalLayoutButtonGap
-            titleLabelFontSize = KeyHintLayer.fontSizePerHeight * layoutConstants.ref.initialFinalLayoutTextHeight
-            titleLabel?.font = .systemFont(ofSize: titleLabelFontSize)
+        if self is KeypadButton {
+            switch keyCap {
+            case .jyutPingInitialFinal:
+                contentEdgeInsets = .zero
+                titleEdgeInsets = .zero
+                layer.cornerRadius = layoutConstants.ref.initialFinalLayoutButtonGap
+                titleLabelFontSize = KeyHintLayer.fontSizePerHeight * layoutConstants.ref.initialFinalLayoutTextHeight
+                titleLabel?.font = .systemFont(ofSize: titleLabelFontSize)
+            case .character, .stroke:
+                titleLabelFontSize = Self.keypadButtonFontSize * orientationalFontRatio
+                titleLabel?.font = .systemFont(ofSize: titleLabelFontSize)
+            default: ()
+            }
         }
         
         titleLabel?.adjustsFontSizeToFitWidth = true
@@ -418,7 +430,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     
     private func adjustImageFontSize(_ image: UIImage?) -> UIImage? {
         let config = UIImage.SymbolConfiguration(
-            pointSize: keyboardState?.keyboardIdiom.isPad ?? false ? 18 * (keyboardState!.isPortrait ? 1 : Self.padLandscapeFontRatio) : 20,
+            pointSize: keyboardState?.keyboardIdiom.isPad ?? false ? 18 * orientationalFontRatio : 20,
             weight: .light)
         return image?.applyingSymbolConfiguration(config)
     }
