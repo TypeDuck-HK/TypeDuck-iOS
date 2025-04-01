@@ -66,6 +66,7 @@ class CandidateCollectionView: UICollectionView {
         
         if let indexPath = indexPathForItem(at: beginPoint!),
            indexPath.section > 0,
+           (superview as? CandidatePaneView)?.collectionView(self, shouldSelectItemAt: indexPath) ?? true,
            let cell = cellForItem(at: indexPath) as? CandidateCell {
             if cell.frame.contains(beginPoint!) {
                 cell.isSelected = true

@@ -648,4 +648,19 @@ class CandidateOrganizer {
     var cannotExpand: Bool {
         (candidateSource as? AutoSuggestionCandidateSource)?.cannotExpand ?? false
     }
+    
+    // If there are any initial wildcards not followed by a final, show wildcard hint.
+    var shouldDisplayWildcardHint: Bool {
+        guard inputController?.inputEngine.rimeSchema == .jyutpingInitialFinal,
+              let text = inputController?.inputEngine.rimeRawInput?.text else { return false }
+        for index in text.indices {
+            if text[index] == "X" { // wildcard
+                let nextIndex = text.index(after: index)
+                if nextIndex == text.endIndex || text[nextIndex] != "9" { // the start of a final
+                    return true
+                }
+            }
+        }
+        return false
+    }
 }

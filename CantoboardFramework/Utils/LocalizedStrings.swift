@@ -27,4 +27,6 @@ class LocalizedStrings {
     static var keyTitleJoin: String { localizedString("KeyJoin") }
     static var keyTitleRoute: String { localizedString("KeyRoute") }
     static var keyTitleReturn: String { localizedString("KeyReturn") }
+    
+    static var wildcardHint: String { localizedString("WildcardHint") }
 }

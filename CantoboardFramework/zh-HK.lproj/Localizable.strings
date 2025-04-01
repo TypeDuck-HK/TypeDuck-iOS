@@ -21,3 +21,5 @@
 "KeyJoin" = "加入";
 "KeyRoute" = "路線";
 "KeyReturn" = "換行";
+
+"WildcardHint" = "請於＊後輸入韻母";

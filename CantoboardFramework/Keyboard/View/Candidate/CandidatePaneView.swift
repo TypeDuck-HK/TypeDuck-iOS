@@ -609,8 +609,15 @@ extension CandidatePaneView: UICollectionViewDataSource {
         return 1 + (candidateOrganizer?.getNumberOfSections() ?? 0)
     }
     
+    private func shouldDisplayWildcardHint(in collectionViewSection: Int) -> Bool {
+        if collectionViewSection == 0 { return false }
+        let candidateCount = candidateOrganizer?.getCandidateCount(section: translateCollectionViewSectionToCandidateSection(collectionViewSection)) ?? 0
+        return candidateCount == 0 && candidateOrganizer?.shouldDisplayWildcardHint ?? false
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 { return groupByEnabled ? 1 : 0 }
+        if shouldDisplayWildcardHint(in: section) { return 1 }
         return candidateOrganizer?.getCandidateCount(section: translateCollectionViewSectionToCandidateSection(section)) ?? 0
     }
     
@@ -673,6 +680,10 @@ extension CandidatePaneView: UICollectionViewDataSource {
         
         return header
     }
+    
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        return !shouldDisplayWildcardHint(in: indexPath.section)
+    }
 }
 
 extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
@@ -687,7 +698,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
                 return .zero
             }
         } else {
-            return computeCellSize(candidateIndexPath: translateCollectionViewIndexPathToCandidateIndexPath(indexPath), withInfoIcon: true)
+            return computeCellSize(collectionViewIndexPath: indexPath, withInfoIcon: true)
         }
     }
     
@@ -724,9 +735,11 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         return Settings.cached.candidateGap.lineSpacing * Settings.cached.candidateFontSize.scale
     }
     
-    private func computeCellSize(candidateIndexPath: IndexPath, withInfoIcon: Bool) -> CGSize {
-        let layoutConstants = layoutConstants.ref
-        guard let text = candidateOrganizer?.getCandidate(indexPath: candidateIndexPath) else {
+    private func computeCellSize(collectionViewIndexPath: IndexPath, withInfoIcon: Bool) -> CGSize {
+        let candidateIndexPath = translateCollectionViewIndexPathToCandidateIndexPath(collectionViewIndexPath)
+        guard let text =
+                shouldDisplayWildcardHint(in: collectionViewIndexPath.section) ? LocalizedStrings.wildcardHint :
+                candidateOrganizer?.getCandidate(indexPath: candidateIndexPath) else {
             DDLogInfo("Invalid IndexPath \(candidateIndexPath.description). Candidate does not exist.")
             return .zero
         }
@@ -736,7 +749,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         let candidateViewWidth = bounds.width - expandButtonWidth - headerWidth
         
         var size = CandidateCell.computeCellSize(cellHeight: rowHeight, candidateInfo: info, keyboardState: keyboardState, mode: mode)
-        var minWidth = candidateViewWidth / layoutConstants.numOfSingleCharCandidateInRow * Settings.cached.candidateFontSize.scale
+        var minWidth = candidateViewWidth / layoutConstants.ref.numOfSingleCharCandidateInRow * Settings.cached.candidateFontSize.scale
         var maxWidth = candidateViewWidth
         if mode == .table && info.hasDictionaryEntry {
             let infoIconWidth = size.height * CandidateCell.infoIconWidthRatio - 8
@@ -805,9 +818,11 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
             cell.update(selectedGroupByMode: candidateOrganizer.groupByMode)
         } else if let cell = cell as? CandidateCell {
             let candidateIndexPath = translateCollectionViewIndexPathToCandidateIndexPath(indexPath)
-            guard let candidate = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else { return }
+            guard let candidate =
+                    shouldDisplayWildcardHint(in: indexPath.section) ? LocalizedStrings.wildcardHint :
+                    candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else { return }
             let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
-            cell.frame = CGRect(origin: cell.frame.origin, size: computeCellSize(candidateIndexPath: candidateIndexPath, withInfoIcon: false))
+            cell.frame = CGRect(origin: cell.frame.origin, size: computeCellSize(collectionViewIndexPath: indexPath, withInfoIcon: false))
             cell.setup(candidate, comment, keyboardState, mode)
         }
     }
