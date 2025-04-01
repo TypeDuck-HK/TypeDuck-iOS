@@ -418,7 +418,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     
     private func adjustImageFontSize(_ image: UIImage?) -> UIImage? {
         let config = UIImage.SymbolConfiguration(
-            pointSize: keyboardState?.keyboardIdiom.isPad ?? false ? 24 : 20,
+            pointSize: keyboardState?.keyboardIdiom.isPad ?? false ? 18 * (keyboardState!.isPortrait ? 1 : Self.padLandscapeFontRatio) : 20,
             weight: .light)
         return image?.applyingSymbolConfiguration(config)
     }
