@@ -34,7 +34,7 @@ class KeypadView: UIView, BaseKeyboardView {
         [ KeypadButtonProps(keyCap: .stroke("h")),
           KeypadButtonProps(keyCap: .stroke("s")),
           KeypadButtonProps(keyCap: .stroke("p")),
-          KeypadButtonProps(keyCap: .backspace) ],
+          KeypadButtonProps(keyCap: .backspace, colRowSize: CGSize(width: 1, height: 2)) ],
         [ KeypadButtonProps(keyCap: .stroke("n")),
           KeypadButtonProps(keyCap: .stroke("z")),
           KeypadButtonProps(keyCap: "?") ],
@@ -73,6 +73,9 @@ class KeypadView: UIView, BaseKeyboardView {
     private var touchHandler: TouchHandler?
     private var leftButtons: [[KeypadButton]] = []
     private var rightButtons: [[KeypadButton]] = []
+    
+    private weak var newLineKey: KeyView?
+    private weak var spaceKey: KeyView?
     
     public var candidateOrganizer: CandidateOrganizer? {
         didSet {
@@ -179,6 +182,21 @@ class KeypadView: UIView, BaseKeyboardView {
         var rightButtonProps = state.activeSchema == .stroke ? rightButtonStrokeProps : rightButtonJyutPingProps
         rightButtonProps.append(state.isComposing ? rightButtonJyutPingPropsLastRowComposing : rightButtonJyutPingPropsLastRowNotComposing)
         rightButtons = initButtons(buttonLayouts: rightButtonProps, existingButtons: rightButtons)
+        refreshSpaceAndReturnKeys()
+    }
+    
+    private func refreshSpaceAndReturnKeys() {
+        for key in rightButtons.flatMap({ $0 }) {
+            switch key.keyCap {
+            case .returnKey:
+                newLineKey = key
+                key.setKeyCap(.returnKey(state.returnKeyType), keyboardState: state)
+            case .space:
+                spaceKey = key
+                key.setKeyCap(.space(state.spaceKeyMode), keyboardState: state)
+            default: ()
+            }
+        }
     }
     
     override func layoutSubviews() {
@@ -212,19 +230,51 @@ class KeypadView: UIView, BaseKeyboardView {
             y += layoutConstants.keypadButtonUnitSize.height + layoutConstants.buttonGapX
         }
     }
-
+    
     private func changeState(prevState: KeyboardState, newState: KeyboardState) {
         let isViewDirty = prevState.keyboardContextualType != newState.keyboardContextualType ||
             prevState.isKeyboardAppearing != newState.isKeyboardAppearing ||
             prevState.keyboardType != newState.keyboardType ||
             prevState.activeSchema != newState.activeSchema ||
             prevState.enableState != newState.enableState ||
-            prevState.isComposing != newState.isComposing
+            prevState.isComposing != newState.isComposing ||
+            prevState.keyboardIdiom != newState.keyboardIdiom ||
+            prevState.isPortrait != newState.isPortrait ||
+            prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey
+        
+        if prevState.returnKeyType != newState.returnKeyType {
+            newLineKey?.setKeyCap(.returnKey(newState.returnKeyType), keyboardState: state)
+        }
+        
+        if prevState.spaceKeyMode != newState.spaceKeyMode {
+            spaceKey?.setKeyCap(.space(newState.spaceKeyMode), keyboardState: state)
+        }
+        
+        if prevState.enableState != newState.enableState {
+            let isButtonEnabled = newState.enableState == .enabled
+            setButtonsEnabled(buttons: leftButtons, isButtonEnabled: isButtonEnabled)
+            setButtonsEnabled(buttons: rightButtons, isButtonEnabled: isButtonEnabled)
+        }
+        
+        if prevState.keyboardIdiom != newState.keyboardIdiom {
+            touchHandler?.keyboardIdiom = newState.keyboardIdiom
+        }
+        
+        touchHandler?.isComposing = newState.isComposing
+        touchHandler?.hasForceTouchSupport = traitCollection.forceTouchCapability == .available
         
         _state = newState
         if isViewDirty { setupButtons() }
         
         candidatePaneView?.keyboardState = state
+    }
+    
+    private func setButtonsEnabled(buttons: [[KeypadButton]], isButtonEnabled: Bool) {
+        buttons.forEach({
+            $0.forEach({ b in
+                b.isEnabled = isButtonEnabled
+            })
+        })
     }
     
     private func layoutCandidateSubviews(_ layoutConstants: LayoutConstants) {
@@ -256,23 +306,24 @@ extension KeypadView: CandidatePaneViewDelegate {
     }
     
     func candidatePaneViewExpanded() {
-        setNeedsLayout()
-        refreshButtonsVisibility(buttons: leftButtons)
-        refreshButtonsVisibility(buttons: rightButtons)
+        candidatePaneViewToggled()
     }
     
     func candidatePaneViewCollapsed() {
-        setNeedsLayout()
-        refreshButtonsVisibility(buttons: leftButtons)
-        refreshButtonsVisibility(buttons: rightButtons)
+        candidatePaneViewToggled()
     }
     
-    private func refreshButtonsVisibility(buttons: [[KeypadButton]]) {
-        let isButtonVisible = candidatePaneView?.mode ?? .row == .row
-        
+    private func candidatePaneViewToggled() {
+        setNeedsLayout()
+        let isButtonHidden = state.keyboardType == .emojis || candidatePaneView?.mode ?? .row == .table
+        refreshButtonsVisibility(buttons: leftButtons, isButtonHidden: isButtonHidden)
+        refreshButtonsVisibility(buttons: rightButtons, isButtonHidden: isButtonHidden)
+    }
+    
+    private func refreshButtonsVisibility(buttons: [[KeypadButton]], isButtonHidden: Bool) {
         buttons.forEach({
             $0.forEach({ b in
-                b.isHidden = !isButtonVisible
+                b.isHidden = isButtonHidden
             })
         })
     }
