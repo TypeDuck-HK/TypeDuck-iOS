@@ -136,11 +136,11 @@ Long press: Press and hold one of the six keys in the middle of the keyboard to 
 "accessibilitySettings" =
 "Accessibility Settings
 
-Important: Due to system limitations, “Allow Full Access” (see the top of this page) must be enabled for the following items to function.
+Important: Due to system limitations, you must enable “Allow Full Access” (see the top of this page) and download a Cantonese voice in System Settings → “Accessibility” → “Spoken Content” → “Voices” → “Chinese” for the following items to function.
 
 The following items are known to conflict with the settings in System Settings → “Accessibility” → “Spoken Content” → “Typing Feedback”.
 Confirm that they are turned off and use the following settings.";
-"accessibilitySettings.speechFeedbackEnabledForCharacters" = "Speak characters";
+"accessibilitySettings.speechFeedbackEnabledForCharacters" = "Speak character keys";
 "accessibilitySettings.speechFeedbackEnabledForWords" = "Speak inserted words";
 "accessibilitySettings.speechFeedbackEnabledForDictionaryOpening" = "Speak candidates when opening dictionary";
 

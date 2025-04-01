@@ -138,11 +138,11 @@ vxq: 按一下 v/x/q 輸入 1/2/3 聲；
 "accessibilitySettings" =
 "輔助使用設定
 
-請注意：由於系統限制，必須開啟「允許全權取用」（見本頁頂部），以下項目方可運作。
+請注意：由於系統限制，必須開啟「允許全權取用」（見本頁頂部）並前往系統設定 →「輔助使用」→「語音內容」→「聲音」→「中文」下載廣東話聲音，以下項目方可運作。
 
 以下項目會與系統設定 →「輔助使用」→「語音內容」→「輸入回饋」中之設定有所衝突。
 請確認以上系統設定已關閉，並使用下列設定項目。";
-"accessibilitySettings.speechFeedbackEnabledForCharacters" = "朗讀字元";
+"accessibilitySettings.speechFeedbackEnabledForCharacters" = "朗讀字元鍵";
 "accessibilitySettings.speechFeedbackEnabledForWords" = "朗讀輸入字詞";
 "accessibilitySettings.speechFeedbackEnabledForDictionaryOpening" = "開啟辭典時朗讀候選詞";
 

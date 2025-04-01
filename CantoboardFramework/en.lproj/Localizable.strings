@@ -23,3 +23,10 @@
 "KeyReturn" = "Return";
 
 "WildcardHint" = "Enter a final after ＊";
+
+"Alert.VoiceFeaturesUnavailable.Title" = "Voice Features Unavailable";
+"Alert.VoiceFeaturesUnavailable.Message" = "Due to system limitations, “Allow Full Access” must be enabled in Settings for voice features to function.";
+"Alert.NoCantoneseVoice.Title" = "No Cantonese Voice";
+"Alert.NoCantoneseVoice.Message" = "To hear pronunciations, download a Cantonese voice in System Settings → “Accessibility” → “Spoken Content” → “Voices” → “Chinese”.";
+"Alert.OK" = "OK";
+"Alert.Settings" = "Settings";

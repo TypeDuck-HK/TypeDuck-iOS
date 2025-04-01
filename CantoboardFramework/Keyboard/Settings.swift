@@ -561,6 +561,8 @@ public struct Settings: Codable, Equatable {
         }
     }
     
+    public static var hasFullAccess = true
+    
     private static var userDefaults: UserDefaults = initUserDefaults()
     
     private static func initUserDefaults() -> UserDefaults {

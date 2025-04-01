@@ -20,6 +20,8 @@ class SpeechProvider {
                                             .max(by: { $0.quality.rawValue < $1.quality.rawValue })
                                             ?? AVSpeechSynthesisVoice(language: "zh-HK")
     
+    static let isCantoneseVoiceAvailable = cantoneseVoice != nil
+    
     fileprivate static var audioPlayer: AVAudioPlayer!
     
     private static let speechDelegate = SpeechDelegate()

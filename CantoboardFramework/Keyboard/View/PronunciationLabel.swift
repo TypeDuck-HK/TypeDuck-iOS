@@ -85,6 +85,30 @@ class PronounceButton: UIButton {
     }
     
     @objc func pronounce() {
+        guard Settings.hasFullAccess else {
+            let alert = AlertController(title: LocalizedStrings.alert_VoiceFeaturesUnavailable_Title, message: LocalizedStrings.alert_VoiceFeaturesUnavailable_Message, preferredStyle: .alert)
+            alert.addAction(AlertAction(title: LocalizedStrings.alert_OK, style: .default, handler: nil))
+            let settingsAction = AlertAction(title: LocalizedStrings.alert_Settings, style: .default, handler: { _ in
+                let selector = #selector(UIApplication.openURL_backport(_:))
+                self.findElement({ $0.responds(to: selector) })?.perform(selector, with: URL(string: UIApplication.openSettingsURLString)!)
+            })
+            alert.addAction(settingsAction)
+            alert.preferredAction = settingsAction
+            findElement(DictionaryViewController.self)?.present(alert, animated: true, completion: nil)
+            return
+        }
+        guard SpeechProvider.isCantoneseVoiceAvailable else {
+            let alert = AlertController(title: LocalizedStrings.alert_NoCantoneseVoice_Title, message: LocalizedStrings.alert_NoCantoneseVoice_Message, preferredStyle: .alert)
+            alert.addAction(AlertAction(title: LocalizedStrings.alert_OK, style: .default, handler: nil))
+            let settingsAction = AlertAction(title: LocalizedStrings.alert_Settings, style: .default, handler: { _ in
+                let selector = #selector(UIApplication.openURL_backport(_:))
+                self.findElement({ $0.responds(to: selector) })?.perform(selector, with: URL(string: "App-P" + "refs:")!)
+            })
+            alert.addAction(settingsAction)
+            alert.preferredAction = settingsAction
+            findElement(DictionaryViewController.self)?.present(alert, animated: true, completion: nil)
+            return
+        }
         SpeechProvider.stop()
         SpeechProvider.speak(pronunciation, rateMultiplier: 0.8)
     }
