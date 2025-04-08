@@ -21,3 +21,5 @@
 "KeyJoin" = "Join";
 "KeyRoute" = "Route";
 "KeyReturn" = "Return";
+
+"WildcardHint" = "Enter a final after ＊";

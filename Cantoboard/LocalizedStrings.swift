@@ -94,10 +94,20 @@ class LocalizedStrings {
     static var cantoneseKeyboardLayout: String { localizedString("chineseInputSettings.cantoneseKeyboardLayout") }
     static var cantoneseKeyboardLayout_qwerty: String { localizedString("chineseInputSettings.cantoneseKeyboardLayout.qwerty") }
     static var cantoneseKeyboardLayout_tenKeys: String { localizedString("chineseInputSettings.cantoneseKeyboardLayout.tenKeys") }
+    static var cantoneseKeyboardLayout_initialFinal: String { localizedString("chineseInputSettings.cantoneseKeyboardLayout.initialFinal") }
     static var toneInputMode: String { localizedString("chineseInputSettings.toneInputMode") }
     static var toneInputMode_vxq: String { localizedString("chineseInputSettings.toneInputMode.vxq") }
     static var toneInputMode_longPress: String { localizedString("chineseInputSettings.toneInputMode.longPress") }
     static var toneInputMode_description: String { localizedString("chineseInputSettings.toneInputMode.description") }
+    
+    static var jyutpingInitialFinalLayoutSettings: String { localizedString("jyutpingInitialFinalLayoutSettings") }
+    static var customizeKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.customizeKeyColor") }
+    static var initialKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.initialKeyColor") }
+    static var finalKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.finalKeyColor") }
+    static var toneKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.toneKeyColor") }
+    static var punctuationKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.punctuationKeyColor") }
+    static var spaceKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.spaceKeyColor") }
+    static var systemKeyColor: String { localizedString("jyutpingInitialFinalLayoutSettings.systemKeyColor") }
     
     static var reverseLookupSettings: String { localizedString("reverseLookupSettings") }
     static var showCodeInReverseLookup: String { localizedString("reverseLookupSettings.showCodeInReverseLookup") }

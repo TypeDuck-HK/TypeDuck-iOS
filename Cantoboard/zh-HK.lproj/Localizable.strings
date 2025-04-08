@@ -98,6 +98,7 @@ Click on an item to set as the main language.";
 "chineseInputSettings.cantoneseKeyboardLayout" = "鍵盤佈局";
 "chineseInputSettings.cantoneseKeyboardLayout.qwerty" = "QWERTY";
 "chineseInputSettings.cantoneseKeyboardLayout.tenKeys" = "九宮格";
+"chineseInputSettings.cantoneseKeyboardLayout.initialFinal" = "聲母韻母";
 "chineseInputSettings.toneInputMode" = "聲調輸入";
 "chineseInputSettings.toneInputMode.vxq" = "vxq";
 "chineseInputSettings.toneInputMode.longPress" = "長按";
@@ -107,6 +108,15 @@ Click on an item to set as the main language.";
 vxq: 按一下 v/x/q 輸入 1/2/3 聲；
 　　 按兩下 v/x/q 輸入 4/5/6 聲。
 長按：長按鍵盤中間六個按鍵以選擇聲調。";
+
+"jyutpingInitialFinalLayoutSettings" = "聲母韻母鍵盤佈局設定";
+"jyutpingInitialFinalLayoutSettings.customizeKeyColor" = "自訂鍵帽顏色";
+"jyutpingInitialFinalLayoutSettings.initialKeyColor" = "聲母鍵帽顏色";
+"jyutpingInitialFinalLayoutSettings.finalKeyColor" = "韻母鍵帽顏色";
+"jyutpingInitialFinalLayoutSettings.toneKeyColor" = "聲調鍵帽顏色";
+"jyutpingInitialFinalLayoutSettings.punctuationKeyColor" = "標點符號鍵帽顏色";
+"jyutpingInitialFinalLayoutSettings.spaceKeyColor" = "空格鍵帽顏色";
+"jyutpingInitialFinalLayoutSettings.systemKeyColor" = "控制鍵帽顏色";
 
 "reverseLookupSettings" = "反查設定";
 "reverseLookupSettings.showCodeInReverseLookup" = "顯示完整輸入碼";

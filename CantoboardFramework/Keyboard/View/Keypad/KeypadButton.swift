@@ -14,10 +14,7 @@ class KeypadButton: KeyView {
     var colRowSize: CGSize = CGSize(width: 1, height: 1)
     var autoSuggestionOverride: AutoSuggestionType?
     
-    // TODO HACK Remove
-    private let layoutConstants = Reference(LayoutConstants.forMainScreen)
-    
-    init() {
+    override init(layoutConstants: Reference<LayoutConstants>) {
         super.init(layoutConstants: layoutConstants)
         shouldDisablePreview = true
     }

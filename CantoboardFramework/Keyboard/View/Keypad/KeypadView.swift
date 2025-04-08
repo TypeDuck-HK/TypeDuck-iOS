@@ -140,7 +140,7 @@ class KeypadView: UIView, BaseKeyboardView {
                 if !existingButtons.isEmpty {
                     button = existingButtons.removeFirst()
                 } else {
-                    button = KeypadButton()
+                    button = KeypadButton(layoutConstants: layoutConstants)
                     button.titleLabel?.adjustsFontSizeToFitWidth = true
                     addSubview(button)
                 }
