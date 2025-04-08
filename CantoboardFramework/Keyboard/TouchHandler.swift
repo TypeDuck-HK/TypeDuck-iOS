@@ -102,19 +102,19 @@ class TouchHandler {
         
         key.keyTouchBegan(touch)
         
-        let action = key.selectedAction
+        let action = key.selectedKeyCap.action
         beginTouch(touch, activeKeyView: key, initialAction: action)
         defer {
             lastTouchTimestamp = touch.timestamp
             lastTouchAction = action
         }
         
-        FeedbackProvider.play(keyboardAction: key.selectedAction)
+        FeedbackProvider.play(keyboardAction: action)
         switch action {
         case .backspace:
             inputMode = .backspacing
         case .keyboardType where action != .keyboardType(.emojis):
-            callKeyHandler(key, key.selectedAction)
+            callKeyHandler(key, action)
         case .nextKeyboard:
             guard let event = event, let touchView = touch.view else { return }
             inputMode = .nextKeyboard
@@ -251,7 +251,7 @@ class TouchHandler {
             keyboardView?.delegate?.handleInputModeList(from: touchView, with: event)
         case .typing:
             let chosenKey = currentTouchState.activeKeyView
-            let chosenAction = chosenKey.selectedAction
+            let chosenAction = chosenKey.selectedKeyCap.action
             
             switch chosenAction {
             case .shift(.uppercased):
@@ -268,7 +268,11 @@ class TouchHandler {
                 }
                 // We cannot use chosenAction as endTouchesUpTo() might have changed the keyboard type and hence selectedActions of KeyViews.
                 // We have use the latest selectedAction of the keyView.
-                callKeyHandler(chosenKey, currentTouchState.activeKeyView.selectedAction)
+                SpeechProvider.queueAndSpeak {
+                    let chosenKeyCap = currentTouchState.activeKeyView.selectedKeyCap
+                    callKeyHandler(chosenKey, chosenKeyCap.action)
+                    chosenKeyCap.enqueueForSpeaking()
+                }
                 // If the user was dragging from the shift key (not locked) to a char key, change keyboard mode back to lowercase after typing.
                 let supportDrag: Bool
                 switch currentTouchState.initialAction {
@@ -290,7 +294,7 @@ class TouchHandler {
         let touchIndex = touchQueue.firstIndex(of: touch) ?? 0
         touchQueue
             .prefix(upTo: touchIndex)
-            .filter { !(touches[$0]?.activeKeyView.selectedAction.isShift ?? false) }
+            .filter { !(touches[$0]?.activeKeyView.selectedKeyCap.action.isShift ?? false) }
             .forEach {
                 endTouch($0, commit: true)
             }

@@ -91,6 +91,7 @@ class WrappableStackView: UIStackView {
                     lineContainers[weak: i]?.removeFromSuperview()
                     lineContainers[weak: i] = overlappedView.topView
                     addArrangedSubview(overlappedView.topView)
+                    overlappedView.topView.isUserInteractionEnabled = true // Make it interactable again since it may contain a pronounce button
                 }
             } else {
                 let lineStack = SidedStackView(spacing: gap, alignment: .firstBaseline, arrangedSubviews: lineViews)
@@ -107,10 +108,19 @@ class WrappableStackView: UIStackView {
             @discardableResult
             func addIndentLabel(_ lineStack: UIStackView) -> Bool {
                 if i == groupedViews.endIndex - 1, let label = lastIndentLabel {
-                    let paragraphStyle = NSMutableParagraphStyle()
-                    paragraphStyle.firstLineHeadIndent = currOffset
-                    label.attributedText = (label.text ?? label.attributedText?.string)?.toHKAttributedString(withParagraphStyle: paragraphStyle)
+                    if let attributedText = label.attributedText {
+                        if let paragraphStyle = attributedText.attribute(.paragraphStyle, at: 0, effectiveRange: nil) as? NSMutableParagraphStyle {
+                            paragraphStyle.firstLineHeadIndent = currOffset
+                        } else {
+                            let paragraphStyle = NSMutableParagraphStyle()
+                            paragraphStyle.firstLineHeadIndent = currOffset
+                            let mutableAttributedString = NSMutableAttributedString(attributedString: attributedText)
+                            mutableAttributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedText.length))
+                            label.attributedText = mutableAttributedString
+                        }
+                    }
                     lineStack.removeFromSuperview()
+                    lineStack.isUserInteractionEnabled = false // Ensure it doesn't block the clicks on the pronounce button inside a pronunciation label
                     let overlappedView = OverlappedView(topView: lineStack, bottomView: label)
                     addArrangedSubview(overlappedView)
                     lineContainers[weak: i] = overlappedView
@@ -127,8 +137,11 @@ class WrappableStackView: UIStackView {
             lineContainers.removeLast(lineContainers.endIndex - groupedViews.endIndex)
         }
         
-        if lastIndentLabel == nil, let label = allViews.last as? UILabel {
-            label.attributedText = (label.text ?? label.attributedText?.string)?.toHKAttributedString
+        if lastIndentLabel == nil,
+           let label = allViews.last as? UILabel,
+           let attributedText = label.attributedText,
+           let paragraphStyle = attributedText.attribute(.paragraphStyle, at: 0, effectiveRange: nil) as? NSMutableParagraphStyle {
+            paragraphStyle.firstLineHeadIndent = 0
         }
     }
 }

@@ -610,7 +610,10 @@ extension KeyboardView {
 extension KeyboardView: EmojiViewDelegate {
     func emojiViewDidSelectEmoji(_ emoji: String, emojiView: EmojiView) {
         FeedbackProvider.play(keyboardAction: .emoji(emoji))
-        delegate?.handleKey(.emoji(emoji))
+        SpeechProvider.queueAndSpeak {
+            delegate?.handleKey(.emoji(emoji))
+            KeyCap.emoji(emoji).enqueueForSpeaking()
+        }
     }
     
     func emojiViewDidPressChangeKeyboardButton(_ emojiView: EmojiView) {

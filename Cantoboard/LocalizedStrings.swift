@@ -126,6 +126,11 @@ class LocalizedStrings {
     static var englishLocale_gb: String { localizedString("englishInputSettings.englishLocale.gb") }
     static var englishLocale_us: String { localizedString("englishInputSettings.englishLocale.us") }
     
+    static var accessibilitySettings: String { localizedString("accessibilitySettings") }
+    static var speechFeedbackEnabledForCharacters: String { localizedString("accessibilitySettings.speechFeedbackEnabledForCharacters") }
+    static var speechFeedbackEnabledForWords: String { localizedString("accessibilitySettings.speechFeedbackEnabledForWords") }
+    static var speechFeedbackEnabledForDictionaryOpening: String { localizedString("accessibilitySettings.speechFeedbackEnabledForDictionaryOpening") }
+    
     static var other: String { localizedString("other") }
     static var other_onboarding: String { localizedString("other.onboarding") }
     static var other_faq: String { localizedString("other.faq") }

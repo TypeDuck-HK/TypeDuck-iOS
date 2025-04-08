@@ -778,7 +778,9 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
         if Settings.cached.isTapHapticFeedbackEnabled {
             FeedbackProvider.lightImpact.impactOccurred()
         }
-        delegate?.candidatePaneViewCandidateSelected(translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
+        SpeechProvider.queueAndSpeak {
+            delegate?.candidatePaneViewCandidateSelected(translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
+        }
     }
     
     func longPressItem(_ collectionView: UICollectionView, at indexPath: IndexPath) {
@@ -798,10 +800,16 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
             FeedbackProvider.play(keyboardAction: .newLine)
             FeedbackProvider.lightImpact.impactOccurred()
             
+            if Settings.cached.accessibilitySettings.speechFeedbackEnabledForDictionaryOpening {
+                SpeechProvider.stop()
+                SpeechProvider.speak(candidateInfo.romanization, rateMultiplier: 0.8)
+            }
+            
             let dictionaryViewController = DictionaryViewController()
             dictionaryViewController.setup(info: candidateInfo)
             
-            let navigationController = UINavigationController(rootViewController: dictionaryViewController)
+            let navigationController = UINavigationController(navigationBarClass: DictionaryNavigationBar.self, toolbarClass: nil)
+            navigationController.setViewControllers([dictionaryViewController], animated: false)
             navigationController.modalPresentationStyle = .formSheet
             navigationController.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
             navigationController.navigationBar.shadowImage = UIImage()

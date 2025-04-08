@@ -29,4 +29,11 @@ class LocalizedStrings {
     static var keyTitleReturn: String { localizedString("KeyReturn") }
     
     static var wildcardHint: String { localizedString("WildcardHint") }
+    
+    static var alert_VoiceFeaturesUnavailable_Title: String { localizedString("Alert.VoiceFeaturesUnavailable.Title") }
+    static var alert_VoiceFeaturesUnavailable_Message: String { localizedString("Alert.VoiceFeaturesUnavailable.Message") }
+    static var alert_NoCantoneseVoice_Title: String { localizedString("Alert.NoCantoneseVoice.Title") }
+    static var alert_NoCantoneseVoice_Message: String { localizedString("Alert.NoCantoneseVoice.Message") }
+    static var alert_OK: String { localizedString("Alert.OK") }
+    static var alert_Settings: String { localizedString("Alert.Settings") }
 }

@@ -8,6 +8,15 @@
 import Foundation
 import UIKit
 
+// Custom navigation bar class that ignores all the touches except on the close button. This makes clicks on the pronounce button possible.
+class DictionaryNavigationBar: UINavigationBar {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        guard let _UIButtonBarButton = NSClassFromString("_UIButtonBarButton") else { return nil }
+        let result = super.hitTest(point, with: event)
+        return result?.isMember(of: _UIButtonBarButton) ?? false ? result : nil
+    }
+}
+
 class DictionaryViewController: UIViewController {
     private var dictionaryView: DictionaryView!
     private var deferredInfo: CandidateInfo?
@@ -162,10 +171,7 @@ class DictionaryEntryView: UIStackView {
         entryLabel.attributedText = entry.honzi?.toHKAttributedString
         var titleStackElements: [UIView] = [entryLabel]
         if let jyutping = entry.jyutping {
-            let pronunciationLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .body))
-            pronunciationLabel.numberOfLines = 0
-            pronunciationLabel.attributedText = jyutping.toHKAttributedString
-            titleStackElements.append(pronunciationLabel)
+            titleStackElements.append(PronunciationLabel(pronunciation: jyutping))
         }
         var pronunciationType = [String]()
         if let sandhi = entry.sandhi, sandhi == "1" {

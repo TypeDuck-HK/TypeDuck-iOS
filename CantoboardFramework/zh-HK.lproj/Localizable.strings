@@ -23,3 +23,10 @@
 "KeyReturn" = "換行";
 
 "WildcardHint" = "請於＊後輸入韻母";
+
+"Alert.VoiceFeaturesUnavailable.Title" = "無法使用語音功能";
+"Alert.VoiceFeaturesUnavailable.Message" = "由於系統限制，必須於設定開啟「允許全權取用」，語音功能方可運作。";
+"Alert.NoCantoneseVoice.Title" = "無廣東話聲音";
+"Alert.NoCantoneseVoice.Message" = "要聆聽發音，請前往系統設定 →「輔助使用」→「語音內容」→「聲音」→「中文」下載廣東話聲音。";
+"Alert.OK" = "好";
+"Alert.Settings" = "設定";
