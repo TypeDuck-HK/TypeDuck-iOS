@@ -214,6 +214,8 @@ extension Settings {
             Switch(LocalizedStrings.audioFeedback, \.isAudioFeedbackEnabled),
             isPad ? nil : Switch(LocalizedStrings.tapHapticFeedback, \.isTapHapticFeedbackEnabled),
             isPad ? nil : Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
+            Switch(LocalizedStrings.showEmojiKey, \.showEmojiKey,
+                   isPad ? nil : LocalizedStrings.showEmojiKey_description),
             Switch(LocalizedStrings.enableSystemLexicon, \.enableSystemLexicon),
             Segment(LocalizedStrings.candidateFontSize, \.candidateFontSize, [
                     LocalizedStrings.candidateFontSize_small: .small,

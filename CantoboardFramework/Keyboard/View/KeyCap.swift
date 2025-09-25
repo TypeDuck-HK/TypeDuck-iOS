@@ -66,6 +66,7 @@ enum KeyCapType {
 
 enum ContextualKey: Equatable, ExpressibleByStringLiteral {
     case symbol
+    case extraSymbol
     case url
     case character(String)
     

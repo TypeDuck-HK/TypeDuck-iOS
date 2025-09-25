@@ -428,18 +428,27 @@ class KeyboardView: UIView, BaseKeyboardView {
             }
         }
         
+        let lastRowId = layoutConstants.ref.idiom.keyboardViewLayout.numOfRows - 1
         keyCaps[0] = keyCaps[0].compactMap { keyCap in
             switch keyCap {
             case .toggleInputMode:
                 let showBottomLeftSwitchLangButton = Settings.cached.showBottomLeftSwitchLangButton || state.activeSchema.is10Keys
-                if rowId == 3 && !showBottomLeftSwitchLangButton {
-                    let shouldShowEmojiKey = layoutConstants.ref.idiom.isPad || state.needsInputModeSwitchKey
+                if rowId == lastRowId && !showBottomLeftSwitchLangButton {
+                    let shouldShowEmojiKey = (layoutConstants.ref.idiom.isPad || state.needsInputModeSwitchKey) && Settings.cached.showEmojiKey
                     return shouldShowEmojiKey ? KeyCap.keyboardType(.emojis) : nil
                 } else {
                     return .toggleInputMode(state.inputMode.afterToggle, state.mainSchema, state.reverseLookupSchema)
                 }
+            case .nextKeyboard where !state.needsInputModeSwitchKey: return Settings.cached.showEmojiKey ? .keyboardType(.emojis) : nil
+            case .keyboardType(.emojis) where !Settings.cached.showEmojiKey: return nil
             default: return keyCap
             }
+        }
+        
+        if rowId == lastRowId && keyCaps[0].count == 1, let extraKey = CommonContextualKeys.getContextualKeys(key: .extraSymbol, keyboardState: state) {
+            // Add extra punctuation key when there is only keyboard type key
+            // This only happens when both showBottomLeftSwitchLangButton and showEmojiKey are switched off and needsInputModeSwitchKey is false
+            keyCaps[0].append(extraKey)
         }
     }
     

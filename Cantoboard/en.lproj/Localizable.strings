@@ -34,12 +34,14 @@ Due to iOS limitations, if the TypeDuck option disappears or becomes unavailable
 "inputMethodSettings" = "Input Method Settings";
 "inputMethodSettings.mixedMode" = "Bilingual hybrid input";
 "inputMethodSettings.longPressSymbolKeys" = "Numbers and symbols on letter keys";
-"inputMethodSettings.longPressSymbolKeys.description" = "Long press on letter keys insert numbers and symbols in mobile mode.";
+"inputMethodSettings.longPressSymbolKeys.description" = "When this option is enabled, symbols or numbers will appear in the upper-right corner of each letter key. Long press to type them.";
 "inputMethodSettings.smartFullStop" = "Double-space full stop";
 "inputMethodSettings.smartFullStop.description" = "Double tap on the spacebar inserts a full stop.";
 "inputMethodSettings.audioFeedback" = "Sound on keypress";
 "inputMethodSettings.tapHapticFeedback" = "Vibrate on keypress (requires full access)";
 "inputMethodSettings.enableCharPreview" = "Popup on keypress";
+"inputMethodSettings.showEmojiKey" = "Emoji key";
+"inputMethodSettings.showEmojiKey.description" = "On some iPhone models, this key can be hidden to make room for an extra punctuation key.";
 "inputMethodSettings.enableSystemLexicon" = "iOS text replacements";
 "inputMethodSettings.candidateFontSize" = "Font size of candidates";
 "inputMethodSettings.candidateFontSize.small" = "small";
