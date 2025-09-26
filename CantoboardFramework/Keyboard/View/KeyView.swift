@@ -127,6 +127,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(weight: .light), forImageIn: .normal)
         
         isUserInteractionEnabled = true
+        accessibilityTraits = .keyboardKey
         layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
         layer.shadowRadius = 0.0
         layer.masksToBounds = false
