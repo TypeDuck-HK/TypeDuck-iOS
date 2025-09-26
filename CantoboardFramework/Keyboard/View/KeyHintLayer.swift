@@ -26,8 +26,8 @@ class KeyHintLayer: CATextLayer {
         contentsScale = UIScreen.main.scale
     }
     
-    func setup(keyCap: KeyCap, hintText: String) {
-        string = hintText.toHKAttributedString(withForegroundColor: foregroundColor.map { UIColor(cgColor: $0) })
+    func setup(keyCap: KeyCap?, hintText: String) {
+        string = hintText.toHKAttributedString(withFont: font as? UIFont ?? .systemFont(ofSize: fontSize), withForegroundColor: foregroundColor.map { UIColor(cgColor: $0) })
     }
     
     override init(layer: Any) {
@@ -38,13 +38,36 @@ class KeyHintLayer: CATextLayer {
         fatalError("Not supported.")
     }
     
+    override var font: CFTypeRef? {
+        didSet {
+            guard let font = font as? UIFont else { return }
+            addAttributeToString(.font, font)
+        }
+    }
+    
+    override var fontSize: CGFloat {
+        didSet {
+            let newFont: UIFont
+            if let font = font as? UIFont {
+                newFont = font.withSize(fontSize)
+            } else {
+                newFont = .systemFont(ofSize: fontSize)
+            }
+            addAttributeToString(.font, newFont)
+        }
+    }
+    
     override var foregroundColor: CGColor? {
         didSet {
-            guard let foregroundColor = foregroundColor,
-                  let attributedString = string as? NSAttributedString else { return }
-            let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
-            mutableAttributedString.addAttribute(.foregroundColor, value: UIColor(cgColor: foregroundColor), range: NSMakeRange(0, attributedString.length))
-            string = mutableAttributedString
+            guard let foregroundColor = foregroundColor else { return }
+            addAttributeToString(.foregroundColor, UIColor(cgColor: foregroundColor))
         }
+    }
+    
+    private func addAttributeToString(_ attribute: NSAttributedString.Key, _ value: Any) {
+        guard let attributedString = string as? NSAttributedString else { return }
+        let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
+        mutableAttributedString.addAttribute(attribute, value: value, range: NSMakeRange(0, attributedString.length))
+        string = mutableAttributedString
     }
 }

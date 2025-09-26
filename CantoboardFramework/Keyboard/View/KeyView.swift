@@ -407,13 +407,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             if let swipeDownHintLayer = swipeDownHintLayer {
                 let isSwipeDownKeyShiftMorphing = keyboardState.keyboardIdiom.keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap)
                 let swipeDownKeyCapTextColor = (isSwipeDownKeyShiftMorphing ? UIColor.label : UIColor.systemGray).resolvedColor(with: traitCollection).cgColor
-                let foregroundColor = swipeDownKeyCapTextColor.interpolate(mainTextColor.cgColor, fraction: swipeDownPercentage * 3)
-                if let swipeDownHintAttributedString = swipeDownHintLayer.string as? NSAttributedString {
-                    let wholeRange = NSMakeRange(0,  swipeDownHintAttributedString.length)
-                    let textWithColor = NSMutableAttributedString(attributedString: swipeDownHintAttributedString)
-                    textWithColor.addAttribute(.foregroundColor, value: foregroundColor, range: wholeRange)
-                    swipeDownHintLayer.string = textWithColor
-                }
+                swipeDownHintLayer.foregroundColor = swipeDownKeyCapTextColor.interpolate(mainTextColor.cgColor, fraction: swipeDownPercentage * 3)
             }
         }
     }
