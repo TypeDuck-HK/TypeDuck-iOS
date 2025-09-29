@@ -218,7 +218,7 @@ class KeypadView: UIView, BaseKeyboardView {
     
     private func layoutButtons(_ buttons: [[KeypadButton]], initialX: CGFloat, layoutConstants: LayoutConstants) {
         guard let candidatePaneView = candidatePaneView else { return }
-        var x: CGFloat = initialX, y: CGFloat = LayoutConstants.keyboardViewTopInset + candidatePaneView.rowHeight
+        var x: CGFloat = initialX, y: CGFloat = layoutConstants.keyboardViewInsets.top + candidatePaneView.rowHeight
         
         for row in buttons {
             x = initialX

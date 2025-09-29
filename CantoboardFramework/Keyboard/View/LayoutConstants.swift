@@ -38,9 +38,6 @@ protocol Copyable {
 }
 
 class PhoneLayoutConstants: LayoutConstants {
-    private static let contentEdgeInsetsPhonePortrait = UIEdgeInsets(top: 2, left: 1.5, bottom: 2, right: 1.5)
-    private static let contentEdgeInsetsPhoneLandscape = UIEdgeInsets(top: 2, left: 2, bottom: 5, right: 2)
-    
     let systemKeyWidthRatio: CGFloat
     let shiftKeyWidthRatio: CGFloat
     
@@ -76,8 +73,9 @@ class PhoneLayoutConstants: LayoutConstants {
                    keyHeight: keyHeight,
                    autoCompleteBarHeight: autoCompleteBarHeight,
                    keyViewInsets: isPortrait ? Self.contentEdgeInsetsPhonePortrait : Self.contentEdgeInsetsPhoneLandscape,
+                   keyboardViewTopInset: isPortrait ? Self.keyboardViewTopInsetPhonePortrait : Self.keyboardViewTopInsetPhoneLandscape,
                    keyboardViewLeftRightInset: keyboardViewLeftRightInset,
-                   keyboardViewBottomInset: 4,
+                   keyboardViewBottomInset: isPortrait ? Self.keyboardViewBottomInsetPhonePortrait : Self.keyboardViewBottomInsetPhoneLandscape,
                    keyboardSuperviewWidth: keyboardSuperviewWidth)
     }
     
@@ -114,11 +112,12 @@ class PadShortLayoutConstants: LayoutConstants {
         
         super.init(idiom: .pad(.padShort),
                    isPortrait: isPortrait,
-                   keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + rowGapY * 3 + autoCompleteBarHeight + LayoutConstants.keyboardViewTopInset + keyboardViewBottomInset),
+                   keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + rowGapY * 3 + autoCompleteBarHeight + Self.keyboardViewTopInsetPad + keyboardViewBottomInset),
                    buttonGapX: buttonGapX,
                    keyHeight: keyHeight,
                    autoCompleteBarHeight: autoCompleteBarHeight,
-                   keyViewInsets: isPortrait ? LayoutConstants.contentEdgeInsetsPadShortAndFullPortrait : LayoutConstants.contentEdgeInsetsPadShortAndFullLandscape,
+                   keyViewInsets: isPortrait ? Self.contentEdgeInsetsPadShortAndFullPortrait : Self.contentEdgeInsetsPadShortAndFullLandscape,
+                   keyboardViewTopInset: Self.keyboardViewTopInsetPad,
                    keyboardViewLeftRightInset: keyboardViewLeftRightInset,
                    keyboardViewBottomInset: keyboardViewBottomInset,
                    keyboardSuperviewWidth: keyboardSuperviewWidth,
@@ -177,11 +176,12 @@ class PadFull4RowsLayoutConstants: LayoutConstants {
 
         super.init(idiom: .pad(.padFull4Rows),
                    isPortrait: isPortrait,
-                   keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + rowGapY * 3 + autoCompleteBarHeight + Self.keyboardViewTopInset + keyboardViewBottomInset),
+                   keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + rowGapY * 3 + autoCompleteBarHeight + Self.keyboardViewTopInsetPad + keyboardViewBottomInset),
                    buttonGapX: buttonGapX,
                    keyHeight: keyHeight,
                    autoCompleteBarHeight: autoCompleteBarHeight,
-                   keyViewInsets: isPortrait ? LayoutConstants.contentEdgeInsetsPadShortAndFullPortrait : LayoutConstants.contentEdgeInsetsPadShortAndFullLandscape,
+                   keyViewInsets: isPortrait ? Self.contentEdgeInsetsPadShortAndFullPortrait : Self.contentEdgeInsetsPadShortAndFullLandscape,
+                   keyboardViewTopInset: Self.keyboardViewTopInsetPad,
                    keyboardViewLeftRightInset: keyboardViewLeftRightInset,
                    keyboardViewBottomInset: keyboardViewBottomInset,
                    keyboardSuperviewWidth: keyboardSuperviewWidth,
@@ -253,11 +253,12 @@ class PadFull5RowsLayoutConstants: LayoutConstants {
         super.init(
             idiom: .pad(.padFull5Rows),
             isPortrait: isPortrait,
-            keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + topRowKeyHeight + rowGapY * 4 + autoCompleteBarHeight + Self.keyboardViewTopInset + keyboardViewBottomInset),
+            keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + topRowKeyHeight + rowGapY * 4 + autoCompleteBarHeight + Self.keyboardViewTopInsetPad + keyboardViewBottomInset),
             buttonGapX: buttonGapX,
             keyHeight: keyHeight,
             autoCompleteBarHeight: autoCompleteBarHeight,
             keyViewInsets: Self.contentEdgeInsetsPad5Rows,
+            keyboardViewTopInset: Self.keyboardViewTopInsetPad,
             keyboardViewLeftRightInset: keyboardViewLeftRightInset,
             keyboardViewBottomInset: keyboardViewBottomInset,
             keyboardSuperviewWidth: keyboardSuperviewWidth,
@@ -287,10 +288,19 @@ class PadFull5RowsLayoutConstants: LayoutConstants {
 
 class LayoutConstants: Copyable {
     // Fixed:
-    static let keyboardViewTopInset = CGFloat(8)
-    static let contentEdgeInsetsPadShortAndFullPortrait = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
-    static let contentEdgeInsetsPadShortAndFullLandscape = UIEdgeInsets(top: 9, left: 9, bottom: 9, right: 9)
-    static let contentEdgeInsetsPad5Rows = UIEdgeInsets(top: 10, left: 13, bottom: 10, right: 13)
+    // Keyboard view padding
+    fileprivate static let keyboardViewTopInsetPhonePortrait: CGFloat = 8
+    fileprivate static let keyboardViewTopInsetPhoneLandscape: CGFloat = 6
+    fileprivate static let keyboardViewTopInsetPad: CGFloat = 8
+    fileprivate static let keyboardViewBottomInsetPhonePortrait: CGFloat = 4
+    fileprivate static let keyboardViewBottomInsetPhoneLandscape: CGFloat = 2
+    
+    // Key view padding
+    fileprivate static let contentEdgeInsetsPhonePortrait = UIEdgeInsets(top: 2, left: 1.5, bottom: 2, right: 1.5)
+    fileprivate static let contentEdgeInsetsPhoneLandscape = UIEdgeInsets(top: 2, left: 2, bottom: 5, right: 2)
+    fileprivate static let contentEdgeInsetsPadShortAndFullPortrait = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
+    fileprivate static let contentEdgeInsetsPadShortAndFullLandscape = UIEdgeInsets(top: 9, left: 9, bottom: 9, right: 9)
+    fileprivate static let contentEdgeInsetsPad5Rows = UIEdgeInsets(top: 10, left: 13, bottom: 10, right: 13)
     
     // Provided:
     // Keyboard size
@@ -359,6 +369,7 @@ class LayoutConstants: Copyable {
                   keyHeight: CGFloat,
                   autoCompleteBarHeight: CGFloat,
                   keyViewInsets: UIEdgeInsets,
+                  keyboardViewTopInset: CGFloat,
                   keyboardViewLeftRightInset: CGFloat,
                   keyboardViewBottomInset: CGFloat,
                   keyboardSuperviewWidth: CGFloat,
@@ -373,19 +384,19 @@ class LayoutConstants: Copyable {
         self.keyboardWidth = keyboardSize.width
         self.keyboardHeight = keyboardSize.height
         self.buttonGapX = buttonGapX
-        self.keyboardViewInsets = UIEdgeInsets(top: Self.keyboardViewTopInset, left: keyboardViewLeftRightInset, bottom: keyboardViewBottomInset, right: keyboardViewLeftRightInset)
+        self.keyboardViewInsets = UIEdgeInsets(top: keyboardViewTopInset, left: keyboardViewLeftRightInset, bottom: keyboardViewBottomInset, right: keyboardViewLeftRightInset)
         self.keyHeight = keyHeight
         self.autoCompleteBarHeight = autoCompleteBarHeight
         self.keyViewInsets = keyViewInsets
-        let keyboardViewHeight = keyboardSize.height - autoCompleteBarHeight - Self.keyboardViewTopInset - keyboardViewBottomInset
+        let keyboardViewHeight = keyboardSize.height - autoCompleteBarHeight - keyboardViewTopInset - keyboardViewBottomInset
         self.keyboardViewHeight = keyboardViewHeight
         self.keyRowGapY = keyRowGapY ?? (keyboardViewHeight - 4 * keyHeight) / 3
         
         let width = (keyboardSize.width - 2 * keyboardViewLeftRightInset - 4 * buttonGapX) / 5
-        let height = ((keyboardSize.height - Self.keyboardViewTopInset - keyboardViewBottomInset - autoCompleteBarHeight) - 3 * buttonGapX) / 4
+        let height = ((keyboardSize.height - keyboardViewTopInset - keyboardViewBottomInset - autoCompleteBarHeight) - 3 * buttonGapX) / 4
         keypadButtonUnitSize = CGSize(width: width, height: height)
         
-        initialFinalLayoutTextHeight = (keyboardHeight - autoCompleteBarHeight - Self.keyboardViewTopInset - keyboardViewBottomInset - keyHeight) / 8
+        initialFinalLayoutTextHeight = (keyboardHeight - autoCompleteBarHeight - keyboardViewTopInset - keyboardViewBottomInset - keyHeight) / 8
         initialFinalLayoutButtonGap = keyboardWidth / 240
         initialFinalLayoutButtonGroupGap = keyboardWidth / 120
         
