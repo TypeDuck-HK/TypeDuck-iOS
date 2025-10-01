@@ -58,6 +58,14 @@ enum ReturnKeyType: Int {
     public init(_ returnKeyType: UIReturnKeyType) {
         self = ReturnKeyType(rawValue: returnKeyType.rawValue) ?? .default
     }
+    
+    /// Whether the return key should be accented, i.e. colored in `UIColor.systemBlue`.
+    fileprivate var isProminent: Bool {
+        switch self {
+        case .continue, .next, .default, .confirm: return false
+        default: return true
+        }
+    }
 }
 
 enum KeyCapType {
@@ -194,9 +202,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
             }
         }
         switch self {
+        case .returnKey(let type) where type.isProminent: return UIColor.systemBlue
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
-        case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
-        case .returnKey: return UIColor.systemBlue
         case _ where keyCapType == .input || keyCapType == .space: return ButtonColor.inputKeyBackgroundColor
         default: return ButtonColor.systemKeyBackgroundColor
         }
@@ -238,10 +245,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonFgColor: UIColor {
         switch self {
         case _ where shouldUseCustomizedKeyColors: return buttonBgColor.fgColor
-        case .returnKey(.go), .returnKey(.search): return .white
+        case .returnKey(let type) where type.isProminent: return .white
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedForegroundColor
-        case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.keyForegroundColor
-        case .returnKey: return .white
         default: return ButtonColor.keyForegroundColor
         }
     }
