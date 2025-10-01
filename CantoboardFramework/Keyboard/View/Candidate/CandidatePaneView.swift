@@ -538,9 +538,9 @@ extension CandidatePaneView {
             candidateOrganizer.groupByMode = .byFrequency
         }
         
-        collectionView.reloadData()
+        collectionView.reloadData() // Needed for recomputing offsetY of each candidate cell
         collectionView.collectionViewLayout.invalidateLayout()
-        collectionView.layoutIfNeeded()
+        // Do not call collectionView.layoutIfNeeded() here or the contentOffset will not be preserved.
         layoutSubviews()
         
         if newMode == .row {
