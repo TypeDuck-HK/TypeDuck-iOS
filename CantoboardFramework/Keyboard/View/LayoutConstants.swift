@@ -293,7 +293,7 @@ class LayoutConstants: Copyable {
     fileprivate static let keyboardViewTopInsetPhoneLandscape: CGFloat = 6
     fileprivate static let keyboardViewTopInsetPad: CGFloat = 8
     fileprivate static let keyboardViewBottomInsetPhonePortrait: CGFloat = 4
-    fileprivate static let keyboardViewBottomInsetPhoneLandscape: CGFloat = 2
+    fileprivate static let keyboardViewBottomInsetPhoneLandscape: CGFloat = 4 // FIXME: Below iOS 26, it is 2 for models without a physical home button
     
     // Key view padding
     fileprivate static let contentEdgeInsetsPhonePortrait = UIEdgeInsets(top: 2, left: 1.5, bottom: 2, right: 1.5)
@@ -444,6 +444,30 @@ class LayoutConstants: Copyable {
 }
 
 let layoutConstantsList: [IntDuplet: LayoutConstants] = [
+    // iPhone 17 Air
+    // Portrait:
+    IntDuplet(420, 912): PhoneLayoutConstants(
+        isPortrait: true,
+        keyboardSize: CGSize(width: 420, height: 226+45),
+        buttonGapX: 6,
+        systemKeyWidth: 46,
+        shiftKeyWidth: 48,
+        keyHeight: 45,
+        autoCompleteBarHeight: 45,
+        keyboardViewLeftRightInset: 4,
+        keyboardSuperviewWidth: 420),
+    // Landscape:
+    IntDuplet(912, 420): PhoneLayoutConstants(
+        isPortrait: false,
+        keyboardSize: CGSize(width: 678, height: 143+38),
+        buttonGapX: 6,
+        systemKeyWidth: 62,
+        shiftKeyWidth: 82,
+        keyHeight: 27,
+        autoCompleteBarHeight: 38,
+        keyboardViewLeftRightInset: 4,
+        keyboardSuperviewWidth: 912),
+    
     // iPhone 17 Pro Max, 16 Pro Max
     // Portrait:
     IntDuplet(440, 956): PhoneLayoutConstants(
