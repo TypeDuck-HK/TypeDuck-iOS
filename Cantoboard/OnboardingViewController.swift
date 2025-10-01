@@ -85,7 +85,12 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         let navStackView = UIStackView(arrangedSubviews: [logoImageView, navTitle])
         navStackView.translatesAutoresizingMaskIntoConstraints = false
         navStackView.spacing = 12
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: navStackView)
+        let navTitleButtonItem = UIBarButtonItem(customView: navStackView)
+        if #available(iOS 26, *) {
+            // Remove glass effect from the title
+            navTitleButtonItem.hidesSharedBackground = true
+        }
+        navigationItem.leftBarButtonItem = navTitleButtonItem
         
         let skipButtonItem = UIBarButtonItem(title: LocalizedStrings.onboarding_skip, style: .plain, target: self, action: #selector(endOnboarding))
         skipButtonItem.setTitleTextAttributes(String.HKAttribute, for: .normal)
