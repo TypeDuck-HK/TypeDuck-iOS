@@ -302,6 +302,9 @@ class LayoutConstants: Copyable {
     fileprivate static let contentEdgeInsetsPadShortAndFullLandscape = UIEdgeInsets(top: 9, left: 9, bottom: 9, right: 9)
     fileprivate static let contentEdgeInsetsPad5Rows = UIEdgeInsets(top: 10, left: 13, bottom: 10, right: 13)
     
+    // Border radius from status button, popup view, etc.
+    public static let commonViewCornerRadius: CGFloat = Settings.cached.shouldUseLiquidGlassTheme ? 8 : 5
+    
     // Provided:
     // Keyboard size
     let idiom: LayoutIdiom
@@ -358,10 +361,14 @@ class LayoutConstants: Copyable {
         }
     }
     
-    var cornerRadius: CGFloat {
-        idiom.isPad && !isPortrait ? 8 : 5
+    var keyShadowHeight: CGFloat {
+        Settings.cached.shouldUseLiquidGlassTheme ? 0 : 1
     }
-        
+    
+    var cornerRadius: CGFloat {
+        (idiom.isPad && !isPortrait ? 8 : 5) * (Settings.cached.shouldUseLiquidGlassTheme ? 1.5 : 1)
+    }
+    
     internal init(idiom: LayoutIdiom,
                   isPortrait: Bool,
                   keyboardSize: CGSize,

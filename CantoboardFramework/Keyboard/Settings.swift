@@ -424,6 +424,13 @@ public struct Settings: Codable, Equatable {
     public var jyutpingInitialFinalLayoutSettings: JyutpingInitialFinalLayoutSettings
     public var accessibilitySettings: AccessibilitySettings
     
+    public var shouldUseLiquidGlassTheme: Bool {
+        if #available(iOS 26, *) {
+            return true
+        }
+        return false
+    }
+
     public init() {
         interfaceLanguage = Self.defaultInterfaceLanguage
         isMixedModeEnabled = Self.defaultMixedModeEnabled

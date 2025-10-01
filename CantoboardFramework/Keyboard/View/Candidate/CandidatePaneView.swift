@@ -208,7 +208,7 @@ class CandidatePaneView: UIControl {
     private func createAndAddButton<T: UIButton>(_ button: T) -> T {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.contentsFormat = .gray8Uint
-        // button.layer.cornerRadius = 5
+        // button.layer.cornerRadius = LayoutConstants.commonViewCornerRadius
         button.setTitleColor(.label, for: .normal)
         button.tintColor = .label
         // button.highlightedBackgroundColor = self.HIGHLIGHTED_COLOR

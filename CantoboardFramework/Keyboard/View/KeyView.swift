@@ -128,7 +128,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         isUserInteractionEnabled = true
         accessibilityTraits = .keyboardKey
-        layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        layer.shadowOffset = CGSize(width: 0.0, height: layoutConstants.ref.keyShadowHeight)
         layer.shadowRadius = 0.0
         layer.masksToBounds = false
     }
