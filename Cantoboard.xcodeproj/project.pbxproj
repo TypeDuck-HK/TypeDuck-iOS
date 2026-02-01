@@ -16,6 +16,7 @@
 		142AA601274C065100D7EE39 /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA600274C065100D7EE39 /* Keyboard.swift */; };
 		142AA604274C06E400D7EE39 /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA603274C06E400D7EE39 /* UILabel+Extension.swift */; };
 		142AA606274C06F900D7EE39 /* UITableViewCell+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA605274C06F900D7EE39 /* UITableViewCell+Extension.swift */; };
+		142AA607274C06FA00D7EE39 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA606274C06FA00D7EE39 /* UIViewController+Extension.swift */; };
 		142AA608274C09AB00D7EE39 /* FaqViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA607274C09AB00D7EE39 /* FaqViewController.swift */; };
 		142AA60A274C0A8F00D7EE39 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA609274C0A8F00D7EE39 /* AboutViewController.swift */; };
 		142AA60C274C9B1C00D7EE39 /* DescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */; };
@@ -348,6 +349,7 @@
 		142AA600274C065100D7EE39 /* Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
 		142AA603274C06E400D7EE39 /* UILabel+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
 		142AA605274C06F900D7EE39 /* UITableViewCell+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+Extension.swift"; sourceTree = "<group>"; };
+		142AA606274C06FA00D7EE39 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		142AA607274C09AB00D7EE39 /* FaqViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaqViewController.swift; sourceTree = "<group>"; };
 		142AA609274C0A8F00D7EE39 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionViewController.swift; sourceTree = "<group>"; };
@@ -627,6 +629,7 @@
 				79C06B912761650E00DDAEFD /* UIImage+Extension.swift */,
 				142AA603274C06E400D7EE39 /* UILabel+Extension.swift */,
 				142AA605274C06F900D7EE39 /* UITableViewCell+Extension.swift */,
+				142AA606274C06FA00D7EE39 /* UIViewController+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1473,6 +1476,7 @@
 				142AA608274C09AB00D7EE39 /* FaqViewController.swift in Sources */,
 				142AA601274C065100D7EE39 /* Keyboard.swift in Sources */,
 				142AA606274C06F900D7EE39 /* UITableViewCell+Extension.swift in Sources */,
+				142AA607274C06FA00D7EE39 /* UIViewController+Extension.swift in Sources */,
 				7919A78125F3320F0075DD4D /* AppDelegate.swift in Sources */,
 				79C06B922761650E00DDAEFD /* UIImage+Extension.swift in Sources */,
 				1405FF40271A02330037F724 /* LocalizedStrings.swift in Sources */,
