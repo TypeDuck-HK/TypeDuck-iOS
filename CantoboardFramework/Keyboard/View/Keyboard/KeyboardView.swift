@@ -291,7 +291,6 @@ class KeyboardView: UIView, BaseKeyboardView {
     private func configureAlphabeticKeyCap(_ hardcodedKeyCap: KeyCap, rowId: Int, groupId: Int, shiftState: (KeyboardShiftState)) -> KeyCap? {
         let isInEnglishMode = state.inputMode == .english
         let isInCangjieMode = state.activeSchema.isCangjieFamily
-        let isInMixedMode = state.inputMode == .mixed
         let isInLongPressMode = state.activeSchema.supportCantoneseTonalInput && Settings.cached.toneInputMode == .longPress
         let keyboardViewLayout = state.keyboardIdiom.keyboardViewLayout
         

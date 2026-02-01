@@ -591,7 +591,6 @@ extension CandidatePaneView {
     }
     
     func scrollInTableMode(isScrollingUp: Bool) {
-        let candidateCellMarginHeight = CandidateCell.margin.top + CandidateCell.margin.bottom
         guard mode == .table,
               let collectionView = self.collectionView else { return }
         

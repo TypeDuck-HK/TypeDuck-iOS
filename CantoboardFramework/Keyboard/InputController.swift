@@ -968,7 +968,7 @@ class InputController: NSObject {
     }
     
     private func handleAutoSpace() -> Bool {
-        guard let textDocumentProxy = textDocumentProxy else { return false }
+        guard textDocumentProxy != nil else { return false }
         
         // DDLogInfo("handleAutoSpace() hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
         let last2CharsInDoc = documentContextBeforeInput.suffix(2)
