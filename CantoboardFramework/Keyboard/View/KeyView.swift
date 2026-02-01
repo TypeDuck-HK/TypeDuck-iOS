@@ -65,7 +65,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
 
     private var layoutConstants: Reference<LayoutConstants>
 
-    // TODO Remove this field and check keyboardState
+    /// Controls whether this key responds to touch input.
+    /// Set to false to disable the key (e.g., when keyboard is in a transitional state).
     var isKeyEnabled: Bool = true {
         didSet {
             setupView()
@@ -82,7 +83,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     
     private var firstFrame = false
     
-    // TODO Remove
+    /// When true, prevents the key preview popup from appearing on touch.
+    /// Used for keypad buttons where preview is not needed.
     var shouldDisablePreview: Bool = false
     
     var heightClearance: CGFloat?

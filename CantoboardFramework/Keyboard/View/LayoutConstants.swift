@@ -293,7 +293,16 @@ class LayoutConstants: Copyable {
     fileprivate static let keyboardViewTopInsetPhoneLandscape: CGFloat = 6
     fileprivate static let keyboardViewTopInsetPad: CGFloat = 8
     fileprivate static let keyboardViewBottomInsetPhonePortrait: CGFloat = 4
-    fileprivate static let keyboardViewBottomInsetPhoneLandscape: CGFloat = 4 // FIXME: Below iOS 26, it is 2 for models without a physical home button
+    // Below iOS 26, models without home button need smaller inset
+    fileprivate static var keyboardViewBottomInsetPhoneLandscape: CGFloat {
+        if #available(iOS 26, *) {
+            return 4
+        } else {
+            // Older iOS on devices without home button need smaller inset
+            let hasHomeButton = UIScreen.main.bounds.height < 812 // iPhone X and later are taller
+            return hasHomeButton ? 4 : 2
+        }
+    }
     
     // Key view padding
     fileprivate static let contentEdgeInsetsPhonePortrait = UIEdgeInsets(top: 2, left: 1.5, bottom: 2, right: 1.5)

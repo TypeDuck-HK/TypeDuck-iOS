@@ -53,19 +53,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
         
         title = "TypeDuck"
-        navigationController?.navigationBar.largeTitleTextAttributes = String.HKAttribute
-        navigationController?.navigationBar.titleTextAttributes = String.HKAttribute
+        configureNavigationBarWithHKAttributes()
+        tableView = createFullScreenTableView(delegate: self, dataSource: self)
         tableView = UITableView(frame: view.frame, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.delegate = self
-        tableView.dataSource = self
-        view.addSubview(tableView)
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-        ])
         
         NotificationCenter.default.addObserver(self, selector: #selector(rebuildCells), name: UIApplication.willEnterForegroundNotification, object: nil)
         

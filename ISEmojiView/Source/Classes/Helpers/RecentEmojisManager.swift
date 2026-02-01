@@ -16,7 +16,7 @@ final internal class RecentEmojisManager {
     
     static let sharedInstance = RecentEmojisManager()
     
-    internal var maxCountOfCenetEmojis: Int = 0
+    internal var maxCountOfRecentEmojis: Int = 0
     
     // MARK: - Private cache
     
@@ -26,7 +26,7 @@ final internal class RecentEmojisManager {
     // MARK: - Public functions
     
     internal func add(emoji: Emoji, selectedEmoji: String) -> Bool {
-        guard maxCountOfCenetEmojis > 0 else {
+        guard maxCountOfRecentEmojis > 0 else {
             return false
         }
         
@@ -50,15 +50,16 @@ final internal class RecentEmojisManager {
                 return true
         }
 
-        if emojis.count > maxCountOfCenetEmojis {
-            emojis.removeLast(emojis.count-maxCountOfCenetEmojis)
+        if emojis.count > maxCountOfRecentEmojis {
+            emojis.removeLast(emojis.count - maxCountOfRecentEmojis)
         }
         
-        if emojis.count > 0 && emojis.count == maxCountOfCenetEmojis {
+        if emojis.count > 0 && emojis.count == maxCountOfRecentEmojis {
             let toRemove = emojis.removeLast()
-            let newIndex = maxCountOfCenetEmojis/3
-            let oldOne = emojis[newIndex].selectedEmoji ?? ""
-            emojis.insert(emoji, at: newIndex)
+            // Ensure newIndex is valid (at least 0 and less than emojis.count)
+            let newIndex = min(maxCountOfRecentEmojis / 3, max(0, emojis.count - 1))
+            let oldOne = emojis.indices.contains(newIndex) ? (emojis[newIndex].selectedEmoji ?? "") : ""
+            emojis.insert(emoji, at: min(newIndex, emojis.count))
             freqData[selectedEmoji] = (freqData[oldOne] ?? 0) + 1
             freqData.removeValue(forKey: toRemove.selectedEmoji ?? "")
         } else {

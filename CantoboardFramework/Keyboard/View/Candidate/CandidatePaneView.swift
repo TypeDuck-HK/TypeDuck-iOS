@@ -327,8 +327,7 @@ class CandidatePaneView: UIControl {
     }
     
     override func didMoveToSuperview() {
-        self.needsUpdateConstraints()
-        self.updateConstraints() // TODO revisit
+        setNeedsUpdateConstraints()
     }
     
     private var lineHeight: CGFloat {

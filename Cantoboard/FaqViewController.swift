@@ -14,21 +14,9 @@ class FaqViewController: UIViewController, UITableViewDelegate, UITableViewDataS
         super.viewDidLoad()
         
         title = LocalizedStrings.other_faq
-        navigationController?.navigationBar.largeTitleTextAttributes = String.HKAttribute
-        navigationController?.navigationBar.titleTextAttributes = String.HKAttribute
+        configureNavigationBarWithHKAttributes()
         view.backgroundColor = .systemBackground
-        let tableView = UITableView(frame: view.frame, style: .grouped)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.delegate = self
-        tableView.dataSource = self
-        view.addSubview(tableView)
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-        ])
-        
+        _ = createFullScreenTableView(delegate: self, dataSource: self)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int { 1 }
