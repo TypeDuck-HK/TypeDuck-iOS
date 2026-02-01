@@ -11,6 +11,8 @@ for line in sys.stdin:
         continue
     line = line.strip()
     row = line.split(',')
+    if len(row) <= 5:
+        continue
     kIICore = row[2] + row[3]
     kSimplifiedVariant = row[4]
     kRSUnicode = row[5]

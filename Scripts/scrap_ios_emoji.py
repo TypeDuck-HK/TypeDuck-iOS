@@ -38,14 +38,19 @@ class EmojiSpider(scrapy.Spider):
 
     def parse(self, response):
         url = response.url
-        ios_version = re.search('ios-(\d+\.\d+)', url).groups()[0]
+        ios_version_match = re.search(r'ios-(\d+\.\d+)', url)
+        if not ios_version_match:
+            return
+        ios_version = ios_version_match.groups()[0]
 
         emoji_png_imgs = response.css('.emoji-grid > li > a > img')
 
         for emoji_png_img in emoji_png_imgs:
             # print(emoji_png_img)
 
-            emoji_name = emoji_png_img.attrib['title']
+            emoji_name = emoji_png_img.attrib.get('title')
+            if not emoji_name:
+                continue
             if emoji_name in self.emoji_cp:
                 emoji = self.emoji_cp[emoji_name]
                 codepoints = list(emoji)
@@ -53,9 +58,14 @@ class EmojiSpider(scrapy.Spider):
                 if 'data-src' in emoji_png_img.attrib:
                     emoji_png_url = emoji_png_img.attrib['data-src']
                 else:
-                    emoji_png_url = emoji_png_img.attrib['src']
+                    emoji_png_url = emoji_png_img.attrib.get('src')
+                if not emoji_png_url:
+                    continue
                 # print(emoji_png_url)
-                codepoints_in_hex = re.search('_([0-9a-f\-]+)(?:_.+)?\.png', emoji_png_url).groups()[0].split('-')
+                codepoints_match = re.search(r'_([0-9a-f\-]+)(?:_.+)?\.png', emoji_png_url)
+                if not codepoints_match:
+                    continue
+                codepoints_in_hex = codepoints_match.groups()[0].split('-')
                 codepoints = list(map(codepoint_in_hex_to_chr, codepoints_in_hex))
                 emoji = ''.join(codepoints)
 

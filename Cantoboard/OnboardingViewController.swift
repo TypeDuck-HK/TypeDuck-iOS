@@ -87,7 +87,8 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         navTitle.attributedText = "TypeDuck".toHKAttributedString
         navTitle.font = .systemFont(ofSize: 26, weight: .semibold)
         
-        let logoImageView = UIImageView(image: UIImage(named: "AppIcon60x60")!.addPadding(2))
+        let logoImage = UIImage(named: "AppIcon60x60") ?? UIImage()
+        let logoImageView = UIImageView(image: logoImage.addPadding(2))
         logoImageView.layer.cornerRadius = 8
         logoImageView.clipsToBounds = true
         logoImageView.widthAnchor.constraint(equalTo: logoImageView.heightAnchor).isActive = true
@@ -317,7 +318,9 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
     }
     
     @objc func jumpToSettings() {
-        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+        }
     }
     
     @objc func endOnboarding() {

@@ -81,7 +81,9 @@ class TenKeysController {
             if rimeIndex == rimeRawInput.caretIndex {
                 specializedCaretPos = specializedInput.count
             }
-            let rimeC = rimeRawInput.text.char(at: rimeIndex)!
+            guard let rimeC = rimeRawInput.text.char(at: rimeIndex) else {
+                break
+            }
             // DDLogInfo("TenKeysController DEBUG rawC \(rawC) i: \(i) letterSpaceIndex: \(letterSpaceIndex)")
             if rimeC.isEnglishLetterOrDigit,
                let tenKeysCandidate = state.specializations[rimeIndex] {
@@ -360,7 +362,7 @@ class TenKeysController {
         var index = index
         var i = 0
         while index > 0 && i < s.count {
-            if s.char(at: i)!.isEnglishLetterOrDigit {
+            if s.char(at: i)?.isEnglishLetterOrDigit ?? false {
                 index -= 1
             }
             i += 1
@@ -374,7 +376,9 @@ class TenKeysController {
             input.removeFirst()
         }
         
-        let prefixes = TenKeysHelper.listPossiblePrefixes(input) as! [String]
+        guard let prefixes = TenKeysHelper.listPossiblePrefixes(input) as? [String] else {
+            return []
+        }
         var validPrefixes = Set<String>()
         
         for p in prefixes {

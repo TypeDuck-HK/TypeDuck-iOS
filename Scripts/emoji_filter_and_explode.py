@@ -43,6 +43,8 @@ for ios_version in unique_ios_versions:
   for cat in ios_emoji_ordered:
     new_emojis = []
     for emoji in cat['emojis']:
+      if not emoji:
+        continue
       is_available = emoji in avail_emojis
       if len(emoji) > 1 and not is_available:
         if emoji[-1] == '\ufe0f':
