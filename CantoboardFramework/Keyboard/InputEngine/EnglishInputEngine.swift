@@ -87,6 +87,7 @@ class EnglishInputEngine: InputEngine {
     static var language = Settings.cached.englishLocale.rawValue {
         didSet {
             englishDictionary = DefaultDictionary(locale: language)
+            dictionaryLookupCache.removeAll()
         }
     }
     static var userDictionary = UserDictionary()
@@ -95,6 +96,10 @@ class EnglishInputEngine: InputEngine {
     private static let commonContractionPrefixes = ["i", "we", "you", "he", "she", "it", "they", "can", "would", "could"]
     private static let textChecker = UITextChecker()
     private(set) static var englishDictionary = DefaultDictionary(locale: language)
+    
+    // Cache for dictionary lookups to avoid repeated lookups for the same prefix
+    private static var dictionaryLookupCache: [String: Set<String>] = [:]
+    private static let maxCacheSize = 50
     
     private var inputTextBuffer = InputTextBuffer()
     var textBeforeInput, textAfterInput: String?
@@ -142,6 +147,11 @@ class EnglishInputEngine: InputEngine {
     }
     
     private func lookupInDictionary(wordLowercased: String) -> Set<String> {
+        // Check cache first
+        if let cached = Self.dictionaryLookupCache[wordLowercased] {
+            return cached
+        }
+        
         let englishDictionary = Self.englishDictionary
         let userDictionary = Self.userDictionary
         
@@ -149,6 +159,16 @@ class EnglishInputEngine: InputEngine {
         let userDictionaryWords = userDictionary.getWords(wordLowercased: wordLowercased)
         let englishDictionaryWords = defaultEnglishDictionaryWords + userDictionaryWords
         let englishDictionaryWordsSet = englishDictionaryWords.mapToSet({ $0 })
+        
+        // Cache the result (with size limit)
+        if Self.dictionaryLookupCache.count >= Self.maxCacheSize {
+            // Simple eviction: remove a random entry
+            if let firstKey = Self.dictionaryLookupCache.keys.first {
+                Self.dictionaryLookupCache.removeValue(forKey: firstKey)
+            }
+        }
+        Self.dictionaryLookupCache[wordLowercased] = englishDictionaryWordsSet
+        
         return englishDictionaryWordsSet
     }
     

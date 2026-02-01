@@ -20,6 +20,19 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     private static let morphingKeyEdgeInsets = UIEdgeInsets(top: 4, left: 5, bottom: 8, right: 5)
     private static let padTopRowButtonEdgeInsets = UIEdgeInsets(top: 3, left: 4, bottom: 5, right: 4)
     
+    // Font cache to avoid repeated font creation
+    private static var fontCache: [CGFloat: UIFont] = [:]
+    private static func cachedSystemFont(ofSize size: CGFloat) -> UIFont {
+        // Round to 1 decimal place to improve cache hit rate
+        let roundedSize = (size * 10).rounded() / 10
+        if let cachedFont = fontCache[roundedSize] {
+            return cachedFont
+        }
+        let font = UIFont.systemFont(ofSize: roundedSize)
+        fontCache[roundedSize] = font
+        return font
+    }
+    
     private var orientationalFontRatio: CGFloat {
         guard let keyboardState = keyboardState else { return 1 }
         return keyboardState.keyboardIdiom.isPad && !keyboardState.isPortrait ? 4 / 3 : 1
@@ -252,12 +265,12 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             // Using morphingKeyFontRatio = 0.9 to shrink the swipe down labels. As keys ,.;' look smaller than their swipe down key counterparts.
             let swipeDownHintLayerMinScale = keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap) ? Self.morphingKeyFontRatio : Self.morphingSwipeDownHintLayerMinScale
             let swipeDownHintLayerScale = isPadTopRowButton ? 1 : (1 - swipeDownPercentage) * swipeDownHintLayerMinScale + (swipeDownPercentage) * 1
-            let swipeDownHintLayerFont = UIFont.systemFont(ofSize: titleLabelFontSize * swipeDownHintLayerScale)
+            let swipeDownHintLayerFont = Self.cachedSystemFont(ofSize: titleLabelFontSize * swipeDownHintLayerScale)
             swipeDownHintLayer?.string = padSwipeDownKeyCap.buttonText?.toHKAttributedString(withFont: swipeDownHintLayerFont)
             updateColorsAccordingToSwipeDownPercentage()
             contentVerticalAlignment = .bottom
         } else {
-            titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage))
+            titleLabel?.font = Self.cachedSystemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage))
             swipeDownHintLayer?.removeFromSuperlayer()
             swipeDownHintLayer = nil
             contentVerticalAlignment = keyboardIdiom.isPadFull &&
@@ -274,7 +287,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
                 titleLabel?.font = .systemFont(ofSize: titleLabelFontSize)
             case .character, .stroke:
                 titleLabelFontSize = Self.keypadButtonFontSize * orientationalFontRatio
-                titleLabel?.font = .systemFont(ofSize: titleLabelFontSize)
+                titleLabel?.font = Self.cachedSystemFont(ofSize: titleLabelFontSize)
             default: ()
             }
         }
@@ -399,7 +412,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         // Fade out original key faster by squaring
         let fontPercentage = pow(reverseSwipeDownPercentage, 2)
         let alphaPercentage = fontPercentage
-        titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * fontPercentage)
+        titleLabel?.font = Self.cachedSystemFont(ofSize: titleLabelFontSize * fontPercentage)
         
         if let mainTextColor = titleColor(for: .normal)?.resolvedColor(with: traitCollection) {
             titleAlpha = alphaPercentage
