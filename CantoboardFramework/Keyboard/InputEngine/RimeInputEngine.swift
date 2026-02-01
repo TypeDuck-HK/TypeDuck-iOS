@@ -347,8 +347,33 @@ class RimeInputEngine: NSObject, InputEngine {
 class RimeApiListener: NSObject, RimeNotificationHandler {
     // Return true to unregister the block.
     typealias StateChangeBlock = (_ rimeApi: RimeApi, _ newState: RimeApiState) -> Bool
+    typealias CallbackToken = UUID
     
-    var stateChangeCallbacks: [StateChangeBlock] = []
+    private var stateChangeCallbacksById: [CallbackToken: StateChangeBlock] = [:]
+    
+    // Legacy array access for backward compatibility
+    var stateChangeCallbacks: [StateChangeBlock] {
+        get { Array(stateChangeCallbacksById.values) }
+        set {
+            // Clear and re-add (for legacy append usage)
+            stateChangeCallbacksById.removeAll()
+            for callback in newValue {
+                stateChangeCallbacksById[UUID()] = callback
+            }
+        }
+    }
+    
+    /// Add a callback and return a token that can be used to remove it later
+    func addStateChangeCallback(_ callback: @escaping StateChangeBlock) -> CallbackToken {
+        let token = UUID()
+        stateChangeCallbacksById[token] = callback
+        return token
+    }
+    
+    /// Remove a callback by its token
+    func removeStateChangeCallback(token: CallbackToken) {
+        stateChangeCallbacksById.removeValue(forKey: token)
+    }
     
     func onStateChange(_ rimeApi: RimeApi, newState: RimeApiState) {
         switch newState {
@@ -361,7 +386,13 @@ class RimeApiListener: NSObject, RimeNotificationHandler {
         @unknown default: DDLogInfo("Unknown rime state \(newState).")
         }
         
-        stateChangeCallbacks.removeAll(where: { $0(rimeApi, newState) })
+        // Remove callbacks that return true
+        let tokensToRemove = stateChangeCallbacksById.compactMap { (token, callback) in
+            callback(rimeApi, newState) ? token : nil
+        }
+        for token in tokensToRemove {
+            stateChangeCallbacksById.removeValue(forKey: token)
+        }
     }
     
     func onNotification(_ messageType: String!, messageValue: String!) {

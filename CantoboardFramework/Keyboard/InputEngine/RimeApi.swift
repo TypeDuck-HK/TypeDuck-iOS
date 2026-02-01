@@ -33,6 +33,16 @@ extension RimeApi {
         set { listener.stateChangeCallbacks = newValue }
     }
     
+    /// Add a state change callback and return a token for removal
+    static func addStateChangeCallback(_ callback: @escaping RimeApiListener.StateChangeBlock) -> RimeApiListener.CallbackToken {
+        return listener.addStateChangeCallback(callback)
+    }
+    
+    /// Remove a state change callback by its token
+    static func removeStateChangeCallback(token: RimeApiListener.CallbackToken) {
+        listener.removeStateChangeCallback(token: token)
+    }
+    
     static var shared: RimeApi {
         if _shared == nil {
             atexit {

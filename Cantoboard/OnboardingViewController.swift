@@ -58,6 +58,16 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
     var players: [AVQueuePlayer]!
     var playerLoopers: [AVPlayerLooper]!
     
+    deinit {
+        // Clean up NotificationCenter observer
+        NotificationCenter.default.removeObserver(self)
+        
+        // Stop and clean up video players
+        players?.forEach { $0.pause() }
+        playerLoopers?.removeAll()
+        players?.removeAll()
+    }
+
     private let pageContents: [Page] = [
         Page("1_welcome", LocalizedStrings.onboarding_0_heading, LocalizedStrings.onboarding_0_content),
         Page("2_dictionary", LocalizedStrings.onboarding_1_heading, LocalizedStrings.onboarding_1_content),

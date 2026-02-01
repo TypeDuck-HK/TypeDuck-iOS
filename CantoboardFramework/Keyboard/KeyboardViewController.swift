@@ -44,6 +44,7 @@ open class KeyboardViewController: UIInputViewController {
     private let instanceId: Int
     
     private let initStartTime: Date = Date()
+    private var rimeCallbackToken: RimeApiListener.CallbackToken?
     
     public override init(nibName: String?, bundle: Bundle?) {
         instanceId = Self.count
@@ -59,7 +60,7 @@ open class KeyboardViewController: UIInputViewController {
         
         super.init(nibName: nibName, bundle: bundle)
         
-        RimeApi.stateChangeCallbacks.append({ [weak self] rimeApi, newState in
+        rimeCallbackToken = RimeApi.addStateChangeCallback({ [weak self] rimeApi, newState in
             guard let self = self else { return true }
             
             DispatchQueue.main.async {
@@ -100,6 +101,14 @@ open class KeyboardViewController: UIInputViewController {
     
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        // Clean up RimeApi callback to prevent accumulation
+        if let token = rimeCallbackToken {
+            RimeApi.removeStateChangeCallback(token: token)
+        }
+        DDLogInfo("KeyboardViewController deinit - instance \(instanceId)")
     }
     
     // To make sure keyboard layout is updated in the test app. This isn't for the keyboard extension.

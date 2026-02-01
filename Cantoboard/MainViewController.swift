@@ -75,6 +75,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.setEditing(true, animated: true)
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         

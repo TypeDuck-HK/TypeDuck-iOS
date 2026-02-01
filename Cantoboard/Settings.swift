@@ -34,7 +34,7 @@ private class Switch: Option {
     var key: WritableKeyPath<Settings, Bool>
     var value: Bool
     
-    private var controller: MainViewController!
+    private weak var controller: MainViewController?
     private var control: UISwitch!
     
     init(_ title: String, _ key: WritableKeyPath<Settings, Bool>, _ description: String? = nil, _ videoUrl: String? = nil) {
@@ -58,6 +58,7 @@ private class Switch: Option {
     @objc func updateSettings() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         value = control.isOn
+        guard let controller = controller else { return }
         controller.settings[keyPath: key] = value
         controller.view.endEditing(true)
         Settings.save(controller.settings)
@@ -73,7 +74,7 @@ private class Segment<T: Equatable>: Option {
     var value: T
     var options: KeyValuePairs<String, T>
     
-    private var controller: MainViewController!
+    private weak var controller: MainViewController?
     private var control: UISegmentedControl!
     
     init(_ title: String, _ key: WritableKeyPath<Settings, T>, _ options: KeyValuePairs<String, T>, _ description: String? = nil, _ videoUrl: String? = nil) {
@@ -100,6 +101,7 @@ private class Segment<T: Equatable>: Option {
     @objc func updateSettings() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         value = options[control.selectedSegmentIndex].value
+        guard let controller = controller else { return }
         controller.settings[keyPath: key] = value
         controller.view.endEditing(true)
         Settings.save(controller.settings)
@@ -114,7 +116,7 @@ private class ColorPicker<T: UIColor>: Option {
     var key: WritableKeyPath<Settings, T>
     var value: T
     
-    var controller: MainViewController!
+    private weak var controller: MainViewController?
     var colorPreview: UIView!
     var colorPickerDelegate: ColorPickerDelegate<T>?
     
@@ -151,6 +153,7 @@ private class ColorPicker<T: UIColor>: Option {
             colorPicker.delegate = colorPickerDelegate
             colorPicker.modalPresentationStyle = .popover
             colorPicker.popoverPresentationController?.sourceView = colorPreview
+            guard let controller = controller else { return }
             controller.present(colorPicker, animated: true)
         } else {
             // Never mind
@@ -159,6 +162,7 @@ private class ColorPicker<T: UIColor>: Option {
     
     func updateSettings() {
         colorPreview.backgroundColor = value
+        guard let controller = controller else { return }
         controller.settings[keyPath: key] = value
         controller.view.endEditing(true)
         Settings.save(controller.settings)
