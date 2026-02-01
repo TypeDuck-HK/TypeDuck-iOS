@@ -39,8 +39,7 @@ class TenKeysController {
     }
     
     func removeLastSpecialization(_ state: inout TenKeysState) {
-        if !state.specializations.isEmpty {
-            let maxIndex = state.specializations.keys.max()!
+        if !state.specializations.isEmpty, let maxIndex = state.specializations.keys.max() {
             let removed = state.specializations.removeValue(forKey: maxIndex)
             DDLogInfo("TenKeysController Removing last specialization at \(maxIndex) \(removed ?? "")")
             resetTenKeysStateAfterRemovingSpecialization(&state)
@@ -178,8 +177,8 @@ class TenKeysController {
         // If we have specialized the whole strings, let the user to edit the last specialization.
         // Cap the caret pos to the beginning of the last specialization.
         // TODO replace this by another caret variable.
-        if maxSpecializedIndex >= rimeInput.count {
-            maxSpecializedIndex = state.specializations.keys.max()!
+        if maxSpecializedIndex >= rimeInput.count, let maxKey = state.specializations.keys.max() {
+            maxSpecializedIndex = maxKey
         }
         
         let rimeUserSelectedTextLength = inputEngine.rimeUserSelectedTextLength

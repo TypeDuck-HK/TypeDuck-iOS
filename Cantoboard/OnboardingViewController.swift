@@ -102,8 +102,10 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         
         players = []
         playerLoopers = []
-        pages = pageContents.map { page in
-            let videoUrl = Bundle.main.url(forResource: "Guide/" + page.video, withExtension: "mp4")!
+        pages = pageContents.compactMap { page in
+            guard let videoUrl = Bundle.main.url(forResource: "Guide/" + page.video, withExtension: "mp4") else {
+                return nil
+            }
             
             let playerController = AVPlayerViewController()
             let playerItem = AVPlayerItem(url: videoUrl)
@@ -114,7 +116,9 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
             addChild(playerController)
             players.append(player)
             playerLoopers.append(AVPlayerLooper(player: player, templateItem: playerItem)) // prevent garbage collection
-            let headingVideoPlayer = playerController.view!
+            guard let headingVideoPlayer = playerController.view else {
+                return nil
+            }
             
             let headingLabel = UILabel()
             headingLabel.attributedText = page.heading.toHKAttributedString

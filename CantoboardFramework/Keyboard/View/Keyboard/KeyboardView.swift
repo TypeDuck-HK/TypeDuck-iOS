@@ -407,7 +407,9 @@ class KeyboardView: UIView, BaseKeyboardView {
             case .url: return CommonContextualKeys.getContextualKeys(key: .url, keyboardState: state)
             default: return keyCap
             }
-        case .contextual: fatalError("Contextual isn't being translated properly. \(keyCap) \(state)")
+        case .contextual:
+            DDLogError("Contextual key wasn't translated properly: \(keyCap) \(state)")
+            return keyCap // Return the key as-is as a fallback
         default: return keyCap
         }
     }
