@@ -604,7 +604,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewLeftRightInset: 3,
         keyboardSuperviewWidth: 926),
     
-    // iPhone 16e, 14, 13, 13 Pro, 12, 12 Pro
+    // iPhone 17e, 16e, 14, 13, 13 Pro, 12, 12 Pro
     // Portrait:
     IntDuplet(390, 844): PhoneLayoutConstants(
         isPortrait: true,
@@ -773,7 +773,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewLeftRightInset: 3,
         keyboardSuperviewWidth: 543),
     
-    // iPad Pro (7th gen 13")
+    // iPad Pro (7-8th gen 13")
     // Portrait:
     IntDuplet(1032, 1376): PadFull5RowsLayoutConstants(
         isPortrait: true,
@@ -815,7 +815,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         rightShiftKeyWidth: 205.5,
         largeSystemKeyWidth: 193),
     
-    // iPad Pro (7th gen 11")
+    // iPad Pro (7-8th gen 11")
     // Portrait:
     IntDuplet(834, 1210): PadFull4RowsLayoutConstants(
         isPortrait: true,
@@ -853,7 +853,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         rightShiftKeyWidth: 124,
         largeSystemKeyWidth: 121.5),
     
-    // iPad Air (6th gen 13"), Pro (1st-6th gen 12.9")
+    // iPad Air (6-8th gen 13"), Pro (1st-6th gen 12.9")
     // Portrait:
     IntDuplet(1024, 1366): PadFull5RowsLayoutConstants(
         isPortrait: true,
@@ -933,7 +933,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         rightShiftKeyWidth: 121.5,
         largeSystemKeyWidth: 121.5),
     
-    // iPad Air (4-5th gen 10.9", 6-7th gen 11"), iPad (10th gen 10.9", 11th gen 11")
+    // iPad Air (4-5th gen 10.9", 6-8th gen 11"), iPad (10th gen 10.9", 11th gen 11")
     // Portrait:
     IntDuplet(820, 1180): PadFull4RowsLayoutConstants(
         isPortrait: true,
