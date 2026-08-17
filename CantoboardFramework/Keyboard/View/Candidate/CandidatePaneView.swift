@@ -534,8 +534,18 @@ extension CandidatePaneView {
             flowLayout.minimumLineSpacing = 0
         }
         
-        if let candidateOrganizer = candidateOrganizer, newMode == .row && candidateOrganizer.groupByMode != .byFrequency {
-            candidateOrganizer.groupByMode = .byFrequency
+        if let candidateOrganizer = candidateOrganizer {
+            UIView.performWithoutAnimation { [self] in
+                if newMode == .row && candidateOrganizer.groupByMode != .byFrequency {
+                    candidateOrganizer.groupByMode = .byFrequency
+                    collectionView.reloadData()
+                    collectionView.collectionViewLayout.invalidateLayout()
+                    collectionView.layoutIfNeeded()
+                } else {
+                    // We have to reload collection view to add/remove the segment control.
+                    collectionView.reloadSections([0])
+                }
+            }
         }
         
         collectionView.reloadData() // Needed for recomputing offsetY of each candidate cell
