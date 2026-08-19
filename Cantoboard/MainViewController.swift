@@ -55,8 +55,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         title = "TypeDuck"
         configureNavigationBarWithHKAttributes()
         tableView = createFullScreenTableView(delegate: self, dataSource: self)
-        tableView = UITableView(frame: view.frame, style: .grouped)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         
         NotificationCenter.default.addObserver(self, selector: #selector(rebuildCells), name: UIApplication.willEnterForegroundNotification, object: nil)
         
