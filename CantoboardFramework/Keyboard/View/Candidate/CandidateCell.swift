@@ -31,7 +31,7 @@ class CandidateCell: UICollectionViewCell {
                 if selectedRectLayer == nil {
                     let selectedRectLayer = CALayer()
                     selectedRectLayer.backgroundColor = ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
-                    selectedRectLayer.cornerRadius = 5
+                    selectedRectLayer.cornerRadius = LayoutConstants.commonViewCornerRadius
                     selectedRectLayer.zPosition = -1
                     layer.addSublayer(selectedRectLayer)
                     self.selectedRectLayer = selectedRectLayer

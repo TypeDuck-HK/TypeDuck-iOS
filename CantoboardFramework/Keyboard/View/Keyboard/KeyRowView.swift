@@ -98,13 +98,7 @@ class KeyRowView: UIView {
         
         let isPadTopRow = rowId == 0 && layoutConstants.ref.idiom == .pad(.padFull5Rows)
         for i in 0..<keyCaps.count {
-            var keyCap = keyCaps[i]
-            
-            switch keyCap {
-                case .nextKeyboard where !keyboardState.needsInputModeSwitchKey: keyCap = .keyboardType(.emojis)
-                default: ()
-            }
-            keys[i].setKeyCap(keyCap, keyboardState: keyboardState, isPadTopRowButton: isPadTopRow)
+            keys[i].setKeyCap(keyCaps[i], keyboardState: keyboardState, isPadTopRowButton: isPadTopRow)
         }
     }
 }

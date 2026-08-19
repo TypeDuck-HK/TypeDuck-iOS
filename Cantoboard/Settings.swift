@@ -34,7 +34,7 @@ private class Switch: Option {
     var key: WritableKeyPath<Settings, Bool>
     var value: Bool
     
-    private var controller: MainViewController!
+    private weak var controller: MainViewController?
     private var control: UISwitch!
     
     init(_ title: String, _ key: WritableKeyPath<Settings, Bool>, _ description: String? = nil, _ videoUrl: String? = nil) {
@@ -58,6 +58,7 @@ private class Switch: Option {
     @objc func updateSettings() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         value = control.isOn
+        guard let controller = controller else { return }
         controller.settings[keyPath: key] = value
         controller.view.endEditing(true)
         Settings.save(controller.settings)
@@ -73,7 +74,7 @@ private class Segment<T: Equatable>: Option {
     var value: T
     var options: KeyValuePairs<String, T>
     
-    private var controller: MainViewController!
+    private weak var controller: MainViewController?
     private var control: UISegmentedControl!
     
     init(_ title: String, _ key: WritableKeyPath<Settings, T>, _ options: KeyValuePairs<String, T>, _ description: String? = nil, _ videoUrl: String? = nil) {
@@ -89,7 +90,7 @@ private class Segment<T: Equatable>: Option {
         self.controller = controller
         control = UISegmentedControl(items: options.map { $0.key })
         control.setTitleTextAttributes(String.HKAttribute, for: .normal)
-        control.selectedSegmentIndex = options.firstIndex(where: { $1 == value })!
+        control.selectedSegmentIndex = options.firstIndex(where: { $1 == value }) ?? 0
         control.apportionsSegmentWidthsByContent = key != \.interfaceLanguage && Settings.cached.interfaceLanguage == .english
         control.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         return OptionTableViewCell(option: self, optionView: control)
@@ -100,6 +101,7 @@ private class Segment<T: Equatable>: Option {
     @objc func updateSettings() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         value = options[control.selectedSegmentIndex].value
+        guard let controller = controller else { return }
         controller.settings[keyPath: key] = value
         controller.view.endEditing(true)
         Settings.save(controller.settings)
@@ -114,7 +116,7 @@ private class ColorPicker<T: UIColor>: Option {
     var key: WritableKeyPath<Settings, T>
     var value: T
     
-    var controller: MainViewController!
+    private weak var controller: MainViewController?
     var colorPreview: UIView!
     var colorPickerDelegate: ColorPickerDelegate<T>?
     
@@ -151,6 +153,7 @@ private class ColorPicker<T: UIColor>: Option {
             colorPicker.delegate = colorPickerDelegate
             colorPicker.modalPresentationStyle = .popover
             colorPicker.popoverPresentationController?.sourceView = colorPreview
+            guard let controller = controller else { return }
             controller.present(colorPicker, animated: true)
         } else {
             // Never mind
@@ -159,6 +162,7 @@ private class ColorPicker<T: UIColor>: Option {
     
     func updateSettings() {
         colorPreview.backgroundColor = value
+        guard let controller = controller else { return }
         controller.settings[keyPath: key] = value
         controller.view.endEditing(true)
         Settings.save(controller.settings)
@@ -214,6 +218,8 @@ extension Settings {
             Switch(LocalizedStrings.audioFeedback, \.isAudioFeedbackEnabled),
             isPad ? nil : Switch(LocalizedStrings.tapHapticFeedback, \.isTapHapticFeedbackEnabled),
             isPad ? nil : Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
+            Switch(LocalizedStrings.showEmojiKey, \.showEmojiKey,
+                   isPad ? nil : LocalizedStrings.showEmojiKey_description),
             Switch(LocalizedStrings.enableSystemLexicon, \.enableSystemLexicon),
             Segment(LocalizedStrings.candidateFontSize, \.candidateFontSize, [
                     LocalizedStrings.candidateFontSize_small: .small,

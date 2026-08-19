@@ -503,9 +503,10 @@ enum AutoSuggestionType {
 }
 
 extension PredictiveTextEngine {
-    private static func initPredictiveTextEngine(charForm: CharForm) -> PredictiveTextEngine {
+    private static func initPredictiveTextEngine(charForm: CharForm) -> PredictiveTextEngine? {
         if !DataFileManager.hasInstalled {
-            fatalError("Data files not installed.")
+            DDLogError("Data files not installed - predictive text will be unavailable")
+            return nil
         }
         
         let dictsPath = DataFileManager.builtInNGramDictDirectory
@@ -516,7 +517,7 @@ extension PredictiveTextEngine {
     private static let hk = initPredictiveTextEngine(charForm: .traditional)
     private static let cn = initPredictiveTextEngine(charForm: .simplified)
     
-    public static func getPredictiveTextEngine(charForm: CharForm) -> PredictiveTextEngine {
+    public static func getPredictiveTextEngine(charForm: CharForm) -> PredictiveTextEngine? {
         return charForm == .traditional ? .hk : .cn
     }
 }
@@ -552,7 +553,7 @@ class CandidateOrganizer {
     var suggestionContextualText: String = ""
     
     private weak var inputController: InputController?
-    private var predictiveTextEngine: PredictiveTextEngine
+    private var predictiveTextEngine: PredictiveTextEngine?
     
     init(inputController: InputController) {
         self.inputController = inputController
@@ -581,9 +582,10 @@ class CandidateOrganizer {
             case .keypadSymbols: candidateSource = Self.keypadSymbolCandidateSource
             }
             
-            if Settings.cached.enablePredictiveText && !suggestionContextualText.isEmpty && inputController.state.inputMode != .english {
+            if Settings.cached.enablePredictiveText && !suggestionContextualText.isEmpty && inputController.state.inputMode != .english,
+               let engine = predictiveTextEngine {
                 let shouldFilterOffensiveWords = !Settings.cached.predictiveTextOffensiveWord
-                let predictiveCandidates = predictiveTextEngine.predict(suggestionContextualText, filterOffensiveWords: shouldFilterOffensiveWords) as NSArray as? [String]
+                let predictiveCandidates = engine.predict(suggestionContextualText, filterOffensiveWords: shouldFilterOffensiveWords) as NSArray as? [String]
                 if let predictiveCandidates = predictiveCandidates, !predictiveCandidates.isEmpty {
                     // DDLogInfo("Predictive text: \(suggestionContextualText) \(predictiveCandidates)")
                     candidateSource = AutoSuggestionCandidateSource(predictiveCandidates)

@@ -75,8 +75,8 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     space(SpaceKeyMode),
     quote(Bool),
     shift(_ state: KeyboardShiftState),
-    shiftDown, // TODO remove
-    shiftUp, // TODO remove
+    shiftDown, // Triggered when shift key is pressed down (for hold-to-capitalize)
+    shiftUp, // Triggered when shift key is released (for hold-to-capitalize)
     shiftRelax,
     rime(RimeChar),
     toggleInputMode(InputMode),

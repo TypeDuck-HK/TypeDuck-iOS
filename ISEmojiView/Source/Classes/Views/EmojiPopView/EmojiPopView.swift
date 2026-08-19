@@ -76,7 +76,7 @@ internal class EmojiPopView: UIView {
         UIView.animate(withDuration: animation ? 0.08 : 0, animations: {
             self.alpha = 1
             self.frame = CGRect(x: location.x, y: location.y, width: self.frame.width, height: self.frame.height)
-        }, completion: { complate in
+        }, completion: { complete in
             self.isHidden = false
         })
     }
@@ -84,7 +84,7 @@ internal class EmojiPopView: UIView {
     internal func dismiss() {
         UIView.animate(withDuration: 0.08, animations: {
             self.alpha = 0
-        }, completion: { complate in
+        }, completion: { complete in
             self.isHidden = true
         })
     }

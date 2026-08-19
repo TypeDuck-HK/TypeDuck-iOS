@@ -52,7 +52,7 @@ class StatusButton: UIButton {
         statusSquareBg.actions = CALayer.disableAnimationActions
         statusSquareBg.frame = frame.insetBy(dx: Self.statusInset, dy: Self.statusInset)
         statusSquareBg.backgroundColor = ButtonColor.systemKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
-        statusSquareBg.cornerRadius = 3
+        statusSquareBg.cornerRadius = LayoutConstants.commonViewCornerRadius * 0.8
         statusSquareBg.masksToBounds = true
         layer.addSublayer(statusSquareBg)
         

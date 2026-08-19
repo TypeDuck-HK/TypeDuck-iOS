@@ -347,8 +347,44 @@ class RimeInputEngine: NSObject, InputEngine {
 class RimeApiListener: NSObject, RimeNotificationHandler {
     // Return true to unregister the block.
     typealias StateChangeBlock = (_ rimeApi: RimeApi, _ newState: RimeApiState) -> Bool
+    typealias CallbackToken = UUID
     
-    var stateChangeCallbacks: [StateChangeBlock] = []
+    private var stateChangeCallbacksById: [CallbackToken: StateChangeBlock] = [:]
+    private let callbackLock = NSLock()
+    
+    // Legacy array access for backward compatibility
+    var stateChangeCallbacks: [StateChangeBlock] {
+        get {
+            callbackLock.lock()
+            defer { callbackLock.unlock() }
+            return Array(stateChangeCallbacksById.values)
+        }
+        set {
+            callbackLock.lock()
+            // Clear and re-add (for legacy append usage)
+            stateChangeCallbacksById.removeAll()
+            for callback in newValue {
+                stateChangeCallbacksById[UUID()] = callback
+            }
+            callbackLock.unlock()
+        }
+    }
+    
+    /// Add a callback and return a token that can be used to remove it later
+    func addStateChangeCallback(_ callback: @escaping StateChangeBlock) -> CallbackToken {
+        let token = UUID()
+        callbackLock.lock()
+        stateChangeCallbacksById[token] = callback
+        callbackLock.unlock()
+        return token
+    }
+    
+    /// Remove a callback by its token
+    func removeStateChangeCallback(token: CallbackToken) {
+        callbackLock.lock()
+        stateChangeCallbacksById.removeValue(forKey: token)
+        callbackLock.unlock()
+    }
     
     func onStateChange(_ rimeApi: RimeApi, newState: RimeApiState) {
         switch newState {
@@ -361,7 +397,22 @@ class RimeApiListener: NSObject, RimeNotificationHandler {
         @unknown default: DDLogInfo("Unknown rime state \(newState).")
         }
         
-        stateChangeCallbacks.removeAll(where: { $0(rimeApi, newState) })
+        // Snapshot callbacks to avoid holding the lock while executing them
+        callbackLock.lock()
+        let callbacks = stateChangeCallbacksById
+        callbackLock.unlock()
+        
+        // Remove callbacks that return true
+        let tokensToRemove = callbacks.compactMap { (token, callback) in
+            callback(rimeApi, newState) ? token : nil
+        }
+        if !tokensToRemove.isEmpty {
+            callbackLock.lock()
+            for token in tokensToRemove {
+                stateChangeCallbacksById.removeValue(forKey: token)
+            }
+            callbackLock.unlock()
+        }
     }
     
     func onNotification(_ messageType: String!, messageValue: String!) {

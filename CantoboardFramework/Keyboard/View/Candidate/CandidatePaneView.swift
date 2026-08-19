@@ -208,7 +208,7 @@ class CandidatePaneView: UIControl {
     private func createAndAddButton<T: UIButton>(_ button: T) -> T {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.contentsFormat = .gray8Uint
-        // button.layer.cornerRadius = 5
+        // button.layer.cornerRadius = LayoutConstants.commonViewCornerRadius
         button.setTitleColor(.label, for: .normal)
         button.tintColor = .label
         // button.highlightedBackgroundColor = self.HIGHLIGHTED_COLOR
@@ -327,8 +327,7 @@ class CandidatePaneView: UIControl {
     }
     
     override func didMoveToSuperview() {
-        self.needsUpdateConstraints()
-        self.updateConstraints() // TODO revisit
+        setNeedsUpdateConstraints()
     }
     
     private var lineHeight: CGFloat {
@@ -534,13 +533,23 @@ extension CandidatePaneView {
             flowLayout.minimumLineSpacing = 0
         }
         
-        if let candidateOrganizer = candidateOrganizer, newMode == .row && candidateOrganizer.groupByMode != .byFrequency {
-            candidateOrganizer.groupByMode = .byFrequency
+        if let candidateOrganizer = candidateOrganizer {
+            UIView.performWithoutAnimation { [self] in
+                if newMode == .row && candidateOrganizer.groupByMode != .byFrequency {
+                    candidateOrganizer.groupByMode = .byFrequency
+                    collectionView.reloadData()
+                    collectionView.collectionViewLayout.invalidateLayout()
+                    collectionView.layoutIfNeeded()
+                } else {
+                    // We have to reload collection view to add/remove the segment control.
+                    collectionView.reloadSections([0])
+                }
+            }
         }
         
-        collectionView.reloadData()
+        collectionView.reloadData() // Needed for recomputing offsetY of each candidate cell
         collectionView.collectionViewLayout.invalidateLayout()
-        collectionView.layoutIfNeeded()
+        // Do not call collectionView.layoutIfNeeded() here or the contentOffset will not be preserved.
         layoutSubviews()
         
         if newMode == .row {
@@ -582,7 +591,6 @@ extension CandidatePaneView {
     }
     
     func scrollInTableMode(isScrollingUp: Bool) {
-        let candidateCellMarginHeight = CandidateCell.margin.top + CandidateCell.margin.bottom
         guard mode == .table,
               let collectionView = self.collectionView else { return }
         

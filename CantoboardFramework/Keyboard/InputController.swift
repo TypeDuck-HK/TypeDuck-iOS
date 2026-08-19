@@ -655,7 +655,12 @@ class InputController: NSObject {
             candidateOrganizer.updateCandidates(reload: true)
             updateComposition()
             return
-        case .exit: exit(0)
+        case .exit:
+            #if DEBUG
+            exit(0)
+            #else
+            DDLogInfo("Exit action triggered but ignored in release build")
+            #endif
         default: ()
         }
         autoSuggestionTypeOverride = nil

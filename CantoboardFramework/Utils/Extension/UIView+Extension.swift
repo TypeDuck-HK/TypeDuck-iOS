@@ -52,9 +52,7 @@ internal extension UIView {
         let fullWidthMultipler = hasFullWidthChar ? 0.8 : 1
         
         let font = UIFont.systemFont(ofSize: KeyHintLayer.fontSizePerHeight * height * fullWidthMultipler)
-        let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
-        mutableAttributedString.addAttribute(.font, value: font, range: NSMakeRange(0, attributedString.length))
-        textLayer.string = mutableAttributedString
+        textLayer.font = font
         return attributedString.string.size(withFont: font).with(newWidth: superlayerBounds.width)
     }
     

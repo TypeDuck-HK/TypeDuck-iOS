@@ -58,6 +58,14 @@ enum ReturnKeyType: Int {
     public init(_ returnKeyType: UIReturnKeyType) {
         self = ReturnKeyType(rawValue: returnKeyType.rawValue) ?? .default
     }
+    
+    /// Whether the return key should be accented, i.e. colored in `UIColor.systemBlue`.
+    fileprivate var isProminent: Bool {
+        switch self {
+        case .continue, .next, .default, .confirm: return false
+        default: return true
+        }
+    }
 }
 
 enum KeyCapType {
@@ -66,6 +74,7 @@ enum KeyCapType {
 
 enum ContextualKey: Equatable, ExpressibleByStringLiteral {
     case symbol
+    case extraSymbol
     case url
     case character(String)
     
@@ -193,9 +202,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
             }
         }
         switch self {
+        case .returnKey(let type) where type.isProminent: return UIColor.systemBlue
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
-        case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
-        case .returnKey: return UIColor.systemBlue
         case _ where keyCapType == .input || keyCapType == .space: return ButtonColor.inputKeyBackgroundColor
         default: return ButtonColor.systemKeyBackgroundColor
         }
@@ -237,10 +245,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonFgColor: UIColor {
         switch self {
         case _ where shouldUseCustomizedKeyColors: return buttonBgColor.fgColor
-        case .returnKey(.go), .returnKey(.search): return .white
+        case .returnKey(let type) where type.isProminent: return .white
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedForegroundColor
-        case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.keyForegroundColor
-        case .returnKey: return .white
         default: return ButtonColor.keyForegroundColor
         }
     }
@@ -868,18 +874,34 @@ class ButtonColor {
         UIColor(named: key, in: FrameworkBundle, compatibleWith: nil)!
     }
     
-    static let systemKeyBackgroundColor = colorAssets("systemKeyBackgroundColor")
-    static let inputKeyBackgroundColor = colorAssets("inputKeyBackgroundColor")
-    static let keyForegroundColor = colorAssets("keyForegroundColor")
-    static let keyHintColor = colorAssets("keyHintColor")
-    static let popupBackgroundColor = colorAssets("popupBackgroundColor")
+    // Legacy theme (below iOS 26) background colors
+    private static let legacyInputKeyBackgroundColor = colorAssets("inputKeyBackgroundColor")
+    private static let legacySystemKeyBackgroundColor = colorAssets("systemKeyBackgroundColor")
+    private static let legacyPopupBackgroundColor = colorAssets("popupBackgroundColor")
+    
+    // Legacy key colours during key press / for enabled state
+    private static let legacyInputKeyHighlightedBackgroundColor = colorAssets("inputKeyHighlightedBackgroundColor")
+    /// The temporary key color after swiping down a key on iPad
+    private static let legacyKeyGrayedColor = colorAssets("keyGrayedColor")
+    private static let legacySystemKeyHighlightedBackgroundColor = colorAssets("systemKeyHighlightedBackgroundColor")
+    private static let legacyShiftKeyHighlightedBackgroundColor = colorAssets("shiftKeyHighlightedBackgroundColor")
+    
+    // Legacy key shadows. There are no key shadows in Liquid Glass theme, and the shadow height is set to 0,
+    // meaning that setting the shadow color will not produce any visual effect, so they are left untouched
+    // and there is no need for value redirections.
     static let keyShadowColor = colorAssets("keyShadowColor")
     static let keyHighlightedShadowColor = colorAssets("keyHighlightedShadowColor")
-    static let keyGrayedColor = colorAssets("keyGrayedColor")
-    static let shiftKeyHighlightedBackgroundColor = colorAssets("shiftKeyHighlightedBackgroundColor")
-    static let shiftKeyHighlightedForegroundColor = colorAssets("shiftKeyHighlightedForegroundColor")
-    static let inputKeyHighlightedBackgroundColor = colorAssets("inputKeyHighlightedBackgroundColor")
-    static let systemKeyHighlightedBackgroundColor = colorAssets("systemKeyHighlightedBackgroundColor")
+    
+    // Legacy key text/image colors
+    private static let legacyShiftKeyHighlightedForegroundColor = colorAssets("shiftKeyHighlightedForegroundColor")
+    
+    // Liquid Glass theme (iOS 26 or above) background colors
+    private static let liquidGlassKeyBackgroundColor = colorAssets("liquidGlassKeyBackgroundColor")
+    private static let liquidGlassKeyHighlightedBackgroundColor = colorAssets("liquidGlassKeyHighlightedBackgroundColor")
+    
+    // Key text colors applicable for both theme
+    static let keyForegroundColor = colorAssets("keyForegroundColor")
+    static let keyHintColor = colorAssets("keyHintColor")
     static let placeholderKeyForegroundColor = colorAssets("placeholderKeyForegroundColor")
     static let dictionaryViewBackgroundColor = colorAssets("dictionaryViewBackgroundColor")
     static let dictionaryViewForegroundColor = colorAssets("dictionaryViewForegroundColor")
@@ -890,4 +912,36 @@ class ButtonColor {
     static let jyutpingInitialFinalDefaultPunctuationKeyColor = colorAssets("jyutpingInitialFinalDefaultPunctuationKeyColor")
     static let jyutpingInitialFinalDefaultSpaceKeyColor = colorAssets("jyutpingInitialFinalDefaultSpaceKeyColor")
     static let jyutpingInitialFinalDefaultSystemKeyColor = colorAssets("jyutpingInitialFinalDefaultSystemKeyColor")
+    
+    // Background colors redirection
+    static var inputKeyBackgroundColor: UIColor {
+        Settings.cached.shouldUseLiquidGlassTheme ? liquidGlassKeyBackgroundColor : legacyInputKeyBackgroundColor
+    }
+    static var systemKeyBackgroundColor: UIColor {
+        Settings.cached.shouldUseLiquidGlassTheme ? liquidGlassKeyBackgroundColor : legacySystemKeyBackgroundColor
+    }
+    static var popupBackgroundColor: UIColor {
+        Settings.cached.shouldUseLiquidGlassTheme ? liquidGlassKeyBackgroundColor : legacyPopupBackgroundColor
+    }
+    
+    // Highlighted background colors redirection
+    static var inputKeyHighlightedBackgroundColor: UIColor {
+        Settings.cached.shouldUseLiquidGlassTheme ? liquidGlassKeyHighlightedBackgroundColor : legacyInputKeyHighlightedBackgroundColor
+    }
+    static var keyGrayedColor: UIColor {
+        Settings.cached.shouldUseLiquidGlassTheme ? liquidGlassKeyHighlightedBackgroundColor : legacyKeyGrayedColor
+    }
+    static var systemKeyHighlightedBackgroundColor: UIColor {
+        Settings.cached.shouldUseLiquidGlassTheme ? liquidGlassKeyHighlightedBackgroundColor : legacySystemKeyHighlightedBackgroundColor
+    }
+    static var shiftKeyHighlightedBackgroundColor: UIColor {
+        // Liquid Glass theme doesn't use background color to indicate enabled state. Keep the original color.
+        Settings.cached.shouldUseLiquidGlassTheme ? liquidGlassKeyBackgroundColor : legacyShiftKeyHighlightedBackgroundColor
+    }
+    
+    // Text/image colors redirection
+    static var shiftKeyHighlightedForegroundColor: UIColor {
+        // Same text/image color as ordinary keys in Liquid Glass theme
+        Settings.cached.shouldUseLiquidGlassTheme ? keyForegroundColor : legacyShiftKeyHighlightedForegroundColor
+    }
 }

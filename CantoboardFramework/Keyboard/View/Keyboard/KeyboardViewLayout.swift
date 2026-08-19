@@ -44,6 +44,11 @@ class CommonContextualKeys {
                 }
                 return .character(".", KeyCapHints(rightHint: "/"), children)
             }
+        case .extraSymbol:
+            switch keyboardState.keyboardType {
+            case .alphabetic: return keyboardState.keyboardContextualType.halfWidthSymbol ? "." : "。"
+            default: return "`"
+            }
         case ",": return keyboardState.keyboardContextualType.halfWidthSymbol ? "," : "，"
         case ".": return keyboardState.keyboardContextualType.halfWidthSymbol ? "." : "。"
         case .url: // For iPads

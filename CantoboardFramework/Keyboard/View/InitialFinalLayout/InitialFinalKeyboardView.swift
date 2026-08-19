@@ -239,7 +239,7 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
         let leftButtonsAvailableWidth = minButtonWidth * leftButtonsMaxRowCount + layoutConstants.initialFinalLayoutButtonGap * (leftButtonsMaxRowCount - 1)
         let rightButtonsAvailableWidth = minButtonWidth * rightButtonsMaxRowCount + layoutConstants.initialFinalLayoutButtonGap * (rightButtonsMaxRowCount - 1)
         
-        let initialY = LayoutConstants.keyboardViewTopInset + candidatePaneView.rowHeight
+        let initialY = layoutConstants.keyboardViewInsets.top + candidatePaneView.rowHeight
         let availableHeight = bounds.height - directionalLayoutMargins.top - directionalLayoutMargins.bottom - candidatePaneView.rowHeight - layoutConstants.keyHeight - layoutConstants.initialFinalLayoutButtonGroupGap
         
         layoutButtons(leftButtons,

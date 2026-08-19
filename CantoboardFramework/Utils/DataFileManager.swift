@@ -43,7 +43,12 @@ class DataFileManager {
             // Remove stale data cache.
             try? fileManager.removeItem(atPath: cacheDataDirectory)
             // Install new data cache.
-            try! fileManager.copyItem(atPath: installToCacheDirectory, toPath: cacheDataDirectory)
+            do {
+                try fileManager.copyItem(atPath: installToCacheDirectory, toPath: cacheDataDirectory)
+            } catch {
+                DDLogError("Failed to install data files: \(error)")
+                return false
+            }
             // Create user data directory if it doesn't exist.
             try? fileManager.createDirectory(atPath: userDataDirectory, withIntermediateDirectories: false, attributes: nil)
             // One off migration. Remove it later.
@@ -60,21 +65,27 @@ class DataFileManager {
 
     private static func getResourcePath() -> String {
         guard let path = Bundle.init(for: Self.self).resourcePath else {
-            fatalError("Bundle.main.resourcePath is nil.")
+            DDLogError("Bundle.resourcePath is nil - this indicates a corrupted app bundle")
+            assertionFailure("Bundle.resourcePath is nil")
+            return NSTemporaryDirectory()
         }
         return path
     }
 
     private static func getDocumentDirectoryPath() -> String {
         guard let path = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true) else {
-            fatalError("Unable to find documentDirectory of the app.")
+            DDLogError("Unable to find documentDirectory - this indicates a critical iOS error")
+            assertionFailure("Unable to find documentDirectory")
+            return NSTemporaryDirectory()
         }
         return path.path
     }
     
     private static func getCachePath() -> String {
         guard let path = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true) else {
-            fatalError("Unable to find cachesDirectory of the app.")
+            DDLogError("Unable to find cachesDirectory - this indicates a critical iOS error")
+            assertionFailure("Unable to find cachesDirectory")
+            return NSTemporaryDirectory()
         }
         return path.path
     }

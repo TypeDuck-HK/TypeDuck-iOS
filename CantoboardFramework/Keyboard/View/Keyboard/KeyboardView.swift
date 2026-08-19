@@ -176,7 +176,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         let keyRowsMargin: [NSDirectionalEdgeInsets] = (0..<keyRows.count).map {
             switch $0 {
             case 0: // First key row
-                return NSDirectionalEdgeInsets(top: LayoutConstants.keyboardViewTopInset, leading: 0, bottom: layoutConstants.keyRowGapY / 2, trailing: 0)
+                return NSDirectionalEdgeInsets(top: layoutConstants.keyboardViewInsets.top, leading: 0, bottom: layoutConstants.keyRowGapY / 2, trailing: 0)
             case keyRows.count - 1: // Last key row
                 return NSDirectionalEdgeInsets(top: layoutConstants.keyRowGapY / 2, leading: 0, bottom: layoutConstants.keyboardViewInsets.bottom, trailing: 0)
             default: // Middle rows
@@ -291,7 +291,6 @@ class KeyboardView: UIView, BaseKeyboardView {
     private func configureAlphabeticKeyCap(_ hardcodedKeyCap: KeyCap, rowId: Int, groupId: Int, shiftState: (KeyboardShiftState)) -> KeyCap? {
         let isInEnglishMode = state.inputMode == .english
         let isInCangjieMode = state.activeSchema.isCangjieFamily
-        let isInMixedMode = state.inputMode == .mixed
         let isInLongPressMode = state.activeSchema.supportCantoneseTonalInput && Settings.cached.toneInputMode == .longPress
         let keyboardViewLayout = state.keyboardIdiom.keyboardViewLayout
         
@@ -407,7 +406,9 @@ class KeyboardView: UIView, BaseKeyboardView {
             case .url: return CommonContextualKeys.getContextualKeys(key: .url, keyboardState: state)
             default: return keyCap
             }
-        case .contextual: fatalError("Contextual isn't being translated properly. \(keyCap) \(state)")
+        case .contextual:
+            DDLogError("Contextual key wasn't translated properly: \(keyCap) \(state)")
+            return keyCap // Return the key as-is as a fallback
         default: return keyCap
         }
     }
@@ -428,18 +429,27 @@ class KeyboardView: UIView, BaseKeyboardView {
             }
         }
         
+        let lastRowId = layoutConstants.ref.idiom.keyboardViewLayout.numOfRows - 1
         keyCaps[0] = keyCaps[0].compactMap { keyCap in
             switch keyCap {
             case .toggleInputMode:
                 let showBottomLeftSwitchLangButton = Settings.cached.showBottomLeftSwitchLangButton || state.activeSchema.is10Keys
-                if rowId == 3 && !showBottomLeftSwitchLangButton {
-                    let shouldShowEmojiKey = layoutConstants.ref.idiom.isPad || state.needsInputModeSwitchKey
+                if rowId == lastRowId && !showBottomLeftSwitchLangButton {
+                    let shouldShowEmojiKey = (layoutConstants.ref.idiom.isPad || state.needsInputModeSwitchKey) && Settings.cached.showEmojiKey
                     return shouldShowEmojiKey ? KeyCap.keyboardType(.emojis) : nil
                 } else {
                     return .toggleInputMode(state.inputMode.afterToggle, state.mainSchema, state.reverseLookupSchema)
                 }
+            case .nextKeyboard where !state.needsInputModeSwitchKey: return Settings.cached.showEmojiKey ? .keyboardType(.emojis) : nil
+            case .keyboardType(.emojis) where !Settings.cached.showEmojiKey: return nil
             default: return keyCap
             }
+        }
+        
+        if rowId == lastRowId && keyCaps[0].count == 1, let extraKey = CommonContextualKeys.getContextualKeys(key: .extraSymbol, keyboardState: state) {
+            // Add extra punctuation key when there is only keyboard type key
+            // This only happens when both showBottomLeftSwitchLangButton and showEmojiKey are switched off and needsInputModeSwitchKey is false
+            keyCaps[0].append(extraKey)
         }
     }
     

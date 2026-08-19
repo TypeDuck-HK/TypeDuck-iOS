@@ -53,19 +53,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
         
         title = "TypeDuck"
-        navigationController?.navigationBar.largeTitleTextAttributes = String.HKAttribute
-        navigationController?.navigationBar.titleTextAttributes = String.HKAttribute
-        tableView = UITableView(frame: view.frame, style: .grouped)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.delegate = self
-        tableView.dataSource = self
-        view.addSubview(tableView)
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-        ])
+        configureNavigationBarWithHKAttributes()
+        tableView = createFullScreenTableView(delegate: self, dataSource: self)
         
         NotificationCenter.default.addObserver(self, selector: #selector(rebuildCells), name: UIApplication.willEnterForegroundNotification, object: nil)
         
@@ -73,6 +62,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         tableView.allowsSelectionDuringEditing = true
         tableView.setEditing(true, animated: true)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -145,7 +138,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
-        case 0: UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+        case 0:
+            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+            }
         case 1: aboutCells[indexPath.row].action()
         case 2: break
         case 3: (tableView.cellForRow(at: indexPath) as? InputTableViewCell)?.showKeyboard()

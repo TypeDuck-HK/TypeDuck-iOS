@@ -58,6 +58,16 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
     var players: [AVQueuePlayer]!
     var playerLoopers: [AVPlayerLooper]!
     
+    deinit {
+        // Clean up NotificationCenter observer
+        NotificationCenter.default.removeObserver(self)
+        
+        // Stop and clean up video players
+        players?.forEach { $0.pause() }
+        playerLoopers?.removeAll()
+        players?.removeAll()
+    }
+
     private let pageContents: [Page] = [
         Page("1_welcome", LocalizedStrings.onboarding_0_heading, LocalizedStrings.onboarding_0_content),
         Page("2_dictionary", LocalizedStrings.onboarding_1_heading, LocalizedStrings.onboarding_1_content),
@@ -77,7 +87,8 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         navTitle.attributedText = "TypeDuck".toHKAttributedString
         navTitle.font = .systemFont(ofSize: 26, weight: .semibold)
         
-        let logoImageView = UIImageView(image: UIImage(named: "AppIcon60x60")!.addPadding(2))
+        let logoImage = UIImage(named: "AppIcon60x60") ?? UIImage()
+        let logoImageView = UIImageView(image: logoImage.addPadding(2))
         logoImageView.layer.cornerRadius = 8
         logoImageView.clipsToBounds = true
         logoImageView.widthAnchor.constraint(equalTo: logoImageView.heightAnchor).isActive = true
@@ -85,7 +96,12 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         let navStackView = UIStackView(arrangedSubviews: [logoImageView, navTitle])
         navStackView.translatesAutoresizingMaskIntoConstraints = false
         navStackView.spacing = 12
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: navStackView)
+        let navTitleButtonItem = UIBarButtonItem(customView: navStackView)
+        if #available(iOS 26, *) {
+            // Remove glass effect from the title
+            navTitleButtonItem.hidesSharedBackground = true
+        }
+        navigationItem.leftBarButtonItem = navTitleButtonItem
         
         let skipButtonItem = UIBarButtonItem(title: LocalizedStrings.onboarding_skip, style: .plain, target: self, action: #selector(endOnboarding))
         skipButtonItem.setTitleTextAttributes(String.HKAttribute, for: .normal)
@@ -97,8 +113,10 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         
         players = []
         playerLoopers = []
-        pages = pageContents.map { page in
-            let videoUrl = Bundle.main.url(forResource: "Guide/" + page.video, withExtension: "mp4")!
+        pages = pageContents.compactMap { page in
+            guard let videoUrl = Bundle.main.url(forResource: "Guide/" + page.video, withExtension: "mp4") else {
+                return nil
+            }
             
             let playerController = AVPlayerViewController()
             let playerItem = AVPlayerItem(url: videoUrl)
@@ -109,7 +127,9 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
             addChild(playerController)
             players.append(player)
             playerLoopers.append(AVPlayerLooper(player: player, templateItem: playerItem)) // prevent garbage collection
-            let headingVideoPlayer = playerController.view!
+            guard let headingVideoPlayer = playerController.view else {
+                return nil
+            }
             
             let headingLabel = UILabel()
             headingLabel.attributedText = page.heading.toHKAttributedString
@@ -298,7 +318,9 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
     }
     
     @objc func jumpToSettings() {
-        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+        }
     }
     
     @objc func endOnboarding() {

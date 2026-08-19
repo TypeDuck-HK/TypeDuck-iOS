@@ -43,6 +43,12 @@ class InputTableViewCell: UITableViewCell, UITextFieldDelegate {
         tableView.endEditing(true)
     }
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if let indexPath = tableView.indexPath(for: self) {
+            tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+        }
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         textField.text = ""

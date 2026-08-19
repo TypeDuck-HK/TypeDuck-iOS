@@ -20,6 +20,19 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     private static let morphingKeyEdgeInsets = UIEdgeInsets(top: 4, left: 5, bottom: 8, right: 5)
     private static let padTopRowButtonEdgeInsets = UIEdgeInsets(top: 3, left: 4, bottom: 5, right: 4)
     
+    // Font cache to avoid repeated font creation
+    private static var fontCache: [CGFloat: UIFont] = [:]
+    private static func cachedSystemFont(ofSize size: CGFloat) -> UIFont {
+        // Round to 1 decimal place to improve cache hit rate
+        let roundedSize = (size * 10).rounded() / 10
+        if let cachedFont = fontCache[roundedSize] {
+            return cachedFont
+        }
+        let font = UIFont.systemFont(ofSize: roundedSize)
+        fontCache[roundedSize] = font
+        return font
+    }
+    
     private var orientationalFontRatio: CGFloat {
         guard let keyboardState = keyboardState else { return 1 }
         return keyboardState.keyboardIdiom.isPad && !keyboardState.isPortrait ? 4 / 3 : 1
@@ -52,7 +65,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
 
     private var layoutConstants: Reference<LayoutConstants>
 
-    // TODO Remove this field and check keyboardState
+    /// Controls whether this key responds to touch input.
+    /// Set to false to disable the key (e.g., when keyboard is in a transitional state).
     var isKeyEnabled: Bool = true {
         didSet {
             setupView()
@@ -69,7 +83,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     
     private var firstFrame = false
     
-    // TODO Remove
+    /// When true, prevents the key preview popup from appearing on touch.
+    /// Used for keypad buttons where preview is not needed.
     var shouldDisablePreview: Bool = false
     
     var heightClearance: CGFloat?
@@ -127,7 +142,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(weight: .light), forImageIn: .normal)
         
         isUserInteractionEnabled = true
-        layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        accessibilityTraits = .keyboardKey
+        layer.shadowOffset = CGSize(width: 0.0, height: layoutConstants.ref.keyShadowHeight)
         layer.shadowRadius = 0.0
         layer.masksToBounds = false
     }
@@ -251,12 +267,12 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             // Using morphingKeyFontRatio = 0.9 to shrink the swipe down labels. As keys ,.;' look smaller than their swipe down key counterparts.
             let swipeDownHintLayerMinScale = keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap) ? Self.morphingKeyFontRatio : Self.morphingSwipeDownHintLayerMinScale
             let swipeDownHintLayerScale = isPadTopRowButton ? 1 : (1 - swipeDownPercentage) * swipeDownHintLayerMinScale + (swipeDownPercentage) * 1
-            let swipeDownHintLayerFont = UIFont.systemFont(ofSize: titleLabelFontSize * swipeDownHintLayerScale)
+            let swipeDownHintLayerFont = Self.cachedSystemFont(ofSize: titleLabelFontSize * swipeDownHintLayerScale)
             swipeDownHintLayer?.string = padSwipeDownKeyCap.buttonText?.toHKAttributedString(withFont: swipeDownHintLayerFont)
             updateColorsAccordingToSwipeDownPercentage()
             contentVerticalAlignment = .bottom
         } else {
-            titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage))
+            titleLabel?.font = Self.cachedSystemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage))
             swipeDownHintLayer?.removeFromSuperlayer()
             swipeDownHintLayer = nil
             contentVerticalAlignment = keyboardIdiom.isPadFull &&
@@ -273,7 +289,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
                 titleLabel?.font = .systemFont(ofSize: titleLabelFontSize)
             case .character, .stroke:
                 titleLabelFontSize = Self.keypadButtonFontSize * orientationalFontRatio
-                titleLabel?.font = .systemFont(ofSize: titleLabelFontSize)
+                titleLabel?.font = Self.cachedSystemFont(ofSize: titleLabelFontSize)
             default: ()
             }
         }
@@ -398,7 +414,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         // Fade out original key faster by squaring
         let fontPercentage = pow(reverseSwipeDownPercentage, 2)
         let alphaPercentage = fontPercentage
-        titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * fontPercentage)
+        titleLabel?.font = Self.cachedSystemFont(ofSize: titleLabelFontSize * fontPercentage)
         
         if let mainTextColor = titleColor(for: .normal)?.resolvedColor(with: traitCollection) {
             titleAlpha = alphaPercentage
@@ -406,13 +422,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             if let swipeDownHintLayer = swipeDownHintLayer {
                 let isSwipeDownKeyShiftMorphing = keyboardState.keyboardIdiom.keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap)
                 let swipeDownKeyCapTextColor = (isSwipeDownKeyShiftMorphing ? UIColor.label : UIColor.systemGray).resolvedColor(with: traitCollection).cgColor
-                let foregroundColor = swipeDownKeyCapTextColor.interpolate(mainTextColor.cgColor, fraction: swipeDownPercentage * 3)
-                if let swipeDownHintAttributedString = swipeDownHintLayer.string as? NSAttributedString {
-                    let wholeRange = NSMakeRange(0,  swipeDownHintAttributedString.length)
-                    let textWithColor = NSMutableAttributedString(attributedString: swipeDownHintAttributedString)
-                    textWithColor.addAttribute(.foregroundColor, value: foregroundColor, range: wholeRange)
-                    swipeDownHintLayer.string = textWithColor
-                }
+                swipeDownHintLayer.foregroundColor = swipeDownKeyCapTextColor.interpolate(mainTextColor.cgColor, fraction: swipeDownPercentage * 3)
             }
         }
     }

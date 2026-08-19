@@ -9,6 +9,9 @@ import Foundation
 
 final public class EmojiLoader {
     
+    // Cache for emoji categories - parsed once per app session
+    private static var cachedEmojiCategories: [EmojiCategory]?
+    
     static func recentEmojiCategory() -> EmojiCategory {
         return EmojiCategory(
             category: .recents,
@@ -17,6 +20,11 @@ final public class EmojiLoader {
     }
     
     static func emojiCategories() -> [EmojiCategory] {
+        // Return cached categories if available
+        if let cached = cachedEmojiCategories {
+            return cached
+        }
+        
         var emojiPListFileName = "ISEmojiList_iOS10";
         if #available(iOS 11.0, *) { emojiPListFileName = "ISEmojiList_iOS11" }
         if #available(iOS 12.1, *) { emojiPListFileName = "ISEmojiList_iOS12.1" }
@@ -67,6 +75,9 @@ final public class EmojiLoader {
             let emojiCategory = EmojiCategory(category: category, emojis: emojis)
             emojiCategories.append(emojiCategory)
         }
+        
+        // Cache the result
+        cachedEmojiCategories = emojiCategories
         
         return emojiCategories
     }

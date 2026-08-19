@@ -35,7 +35,7 @@ func initLogger() -> Bool {
     fileLogger.logFormatter = LogFormatter()
     DDLog.add(fileLogger)
 
-    DDASLLogCapture.start()
+    DDLog.add(DDOSLogger.sharedInstance)
 
     return true
 }

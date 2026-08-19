@@ -57,7 +57,7 @@ class KeyPopupView: UIView {
     private func createLabel() -> UILabel {
         let label = UILabel()
         label.layer.contentsFormat = .gray8Uint
-        label.layer.cornerRadius = 5
+        label.layer.cornerRadius = LayoutConstants.commonViewCornerRadius
         label.layer.masksToBounds = true
         label.textColor = ButtonColor.keyForegroundColor
         label.textAlignment = .center

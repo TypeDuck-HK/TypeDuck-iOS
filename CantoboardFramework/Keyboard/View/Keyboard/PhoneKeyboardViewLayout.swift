@@ -83,11 +83,16 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
             x = bounds.maxX - directionalLayoutMargins.trailing - rightKeysWidth
         }
         
-        let frames: [CGRect] = keys.map { key in
+        let frames: [CGRect] = keys.enumerated().map { i, key in
             let keyWidth: CGFloat
             if keyRowView.rowId == 3 && direction == .left && keys.count > 2 {
+                // keyboard type key + emoji or next keyboard key + toggle input mode key
                 keyWidth = (layoutConstants.asPhoneLayoutConstants!.letterKeyWidth + layoutConstants.asPhoneLayoutConstants!.systemKeyWidth) / 2
+            } else if keyRowView.rowId == 3 && direction == .left && keys.count == 2 && i == 0 && keys[1].keyCap.keyCapType == .input {
+                // keyboard type key + extra punctuation key
+                keyWidth = 1.5 * layoutConstants.asPhoneLayoutConstants!.systemKeyWidth // same as return key width
             } else {
+                // keyboard type key + emoji or next keyboard or toggle input mode key
                 keyWidth = getKeyWidth(key, layoutConstants)
             }
             let rect = CGRect(x: x, y: directionalLayoutMargins.top, width: keyWidth, height: layoutConstants.keyHeight)

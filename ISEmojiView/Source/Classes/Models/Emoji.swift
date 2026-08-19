@@ -14,7 +14,7 @@ public class Emoji: Codable {
     var selectedEmoji: String?
     var emojis: [String]!
     var emoji: String {
-        return emojis[0]
+        return emojis.first ?? ""
     }
     
     // MARK: - Initial functions
