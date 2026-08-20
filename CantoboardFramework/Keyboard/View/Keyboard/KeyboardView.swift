@@ -347,7 +347,11 @@ class KeyboardView: UIView, BaseKeyboardView {
                     rightHint = "反"
                     let cjSchema = Settings.cached.cangjieVersion.toRimeCJSchema
                     let quickSchema = Settings.cached.cangjieVersion.toRimeQuickSchema
-                    childrenKeyCaps = [.reverseLookup(cjSchema), .reverseLookup(quickSchema)] + orgChildren + [.reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
+                    // Special handling to make sure children keys don't go out of screen.
+                    var newChildren = orgChildren
+                    let selfKeyCap = newChildren.removeFirst()
+                    newChildren.insert(selfKeyCap, at: state.showCommonSwipeDownKeysInLongPress ? 2 : 1)
+                    childrenKeyCaps = [.reverseLookup(cjSchema), .reverseLookup(quickSchema)] + newChildren + [.reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
                 } else if state.isComposing {
                     if isInLongPressMode {
                         var toneKeyCap: KeyCap? = nil
