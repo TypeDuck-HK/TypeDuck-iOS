@@ -12,6 +12,11 @@ extension Collection {
     subscript (safe index: Index) -> Element? {
         return indices.contains(index) ? self[index] : nil
     }
+    
+    /// Returns itself if non-empty, otherwise nil.
+    var nonEmptyOrNil: Self? {
+        return isEmpty ? nil : self
+    }
 }
 
 extension NSArray {

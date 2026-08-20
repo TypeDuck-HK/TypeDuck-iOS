@@ -208,17 +208,18 @@ class CandidateCell: UICollectionViewCell {
             let targetStack = mode == .row ? mainStack : textStack
             targetStack!.addArrangedSubview(label)
             
-            if let entry = entry, let mainLanguage = info.allEngTranslations ?? (entry.isDictionaryEntry || mode == .table ? entry.mainLanguageOrEng : entry.joinedLabels) {
+            if let entry = entry, let mainLanguage = entry.canonicalReference ?? info.allEngTranslations ?? (entry.isDictionaryEntry || mode == .table ? entry.mainOrFallbackLanguage : entry.joinedLabels) {
                 let translationLabel = self.translationLabel ?? UILabel()
                 translationLabel.textAlignment = mode == .row ? .center : .left
                 if Settings.cached.languageState.shouldDisplayEngTag,
+                   entry.canonicalReference == nil,
                    info.allEngTranslations != nil || entry.isDictionaryEntry && entry.mainLanguage == nil {
                     let attributedString = NSMutableAttributedString(string: "en: ", attributes: String.HKAttributed(withForegroundColor: ButtonColor.keyHintColor))
                     attributedString.append(mainLanguage.toHKAttributedString(withForegroundColor: ButtonColor.keyForegroundColor))
                     translationLabel.attributedText = attributedString
                 } else {
                     translationLabel.attributedText = mainLanguage.toHKAttributedString
-                    translationLabel.textColor = info.allEngTranslations != nil || entry.isDictionaryEntry ? ButtonColor.keyForegroundColor : ButtonColor.keyHintColor
+                    translationLabel.textColor = entry.canonicalReference == nil && (info.allEngTranslations != nil || entry.isDictionaryEntry) ? ButtonColor.keyForegroundColor : ButtonColor.keyHintColor
                 }
                 targetStack!.addArrangedSubview(translationLabel)
                 self.translationLabel = translationLabel
@@ -229,7 +230,7 @@ class CandidateCell: UICollectionViewCell {
             }
             
             if mode == .table, let entry = entry {
-                let otherLanguages = entry.otherLanguagesOrLabels
+                let otherLanguages = entry.otherLanguagesOrLabels ?? []
                 for (i, language) in otherLanguages.enumerated() {
                     let commentLabel = self.commentLabels[weak: i] ?? UILabel()
                     commentLabel.textAlignment = .left
@@ -450,8 +451,9 @@ class CandidateCell: UICollectionViewCell {
         }
         
         let entry = info.entry
-        if let entry = entry, var mainLanguage = info.allEngTranslations ?? (entry.isDictionaryEntry || mode == .table ? entry.mainLanguageOrEng : entry.joinedLabels) {
+        if let entry = entry, var mainLanguage = entry.canonicalReference ?? info.allEngTranslations ?? (entry.isDictionaryEntry || mode == .table ? entry.mainOrFallbackLanguage : entry.joinedLabels) {
             if Settings.cached.languageState.shouldDisplayEngTag,
+               entry.canonicalReference == nil,
                info.allEngTranslations != nil || entry.isDictionaryEntry && entry.mainLanguage == nil {
                 mainLanguage = "en: " + mainLanguage
             }
@@ -459,14 +461,11 @@ class CandidateCell: UICollectionViewCell {
             cellWidth = mode == .row ? max(cellWidth, min(cellWidth + 70, commentWidth)) : cellWidth + Self.paddingText + commentWidth
         }
         
-        if mode == .table, let entry = entry {
-            let otherLanguages = entry.otherLanguagesOrLabels
-            if !otherLanguages.isEmpty {
-                let commentWidth = otherLanguages.reduce(-Self.paddingComment) { sum, language in
-                    sum + Self.paddingComment + language.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
-                }
-                cellWidth = max(cellWidth, commentWidth)
+        if mode == .table, let otherLanguages = entry?.otherLanguagesOrLabels {
+            let commentWidth = otherLanguages.reduce(-Self.paddingComment) { sum, language in
+                sum + Self.paddingComment + language.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
             }
+            cellWidth = max(cellWidth, commentWidth)
         }
         
         return Self.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))

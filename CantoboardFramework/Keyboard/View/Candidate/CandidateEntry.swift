@@ -11,42 +11,45 @@ struct CandidateEntry {
     var matchInputBuffer: String?
     var honzi: String?
     var jyutping: String?
-    var pronOrder: String?
-    var sandhi: String?
+    fileprivate var canonicalHonzi: String?
+    fileprivate var canonicalJyutping: String?
+    fileprivate var componentsHonzi: String? // unused in UI
+    fileprivate var componentsJyutping: String? // unused in UI
+    var pronLabel: String?
     var litColReading: String?
     var properties = Properties()
 
     struct Properties {
-        var partOfSpeech: String?
-        var register: String?
-        var label: String?
-        var normalized: String?
+        fileprivate var partOfSpeech: String?
+        fileprivate var register: String?
+        fileprivate var label: String?
         var written: String?
         var vernacular: String?
         var collocation: String?
-        var definition = Definition()
+        fileprivate var definition = Definition()
     }
     
     struct Definition {
-        var eng: String?
-        var urd: String?
-        var nep: String?
-        var hin: String?
-        var ind: String?
+        fileprivate var eng: String?
+        fileprivate var urd: String?
+        fileprivate var nep: String?
+        fileprivate var hin: String?
+        fileprivate var ind: String?
     }
     
-    static let columns: [WritableKeyPath<Self, String?>] = [
-        \.matchInputBuffer, \.honzi, \.jyutping, \.pronOrder, \.sandhi, \.litColReading,
-        \.properties.partOfSpeech, \.properties.register, \.properties.label, \.properties.normalized, \.properties.written, \.properties.vernacular, \.properties.collocation,
-        \.properties.definition.eng, \.properties.definition.urd, \.properties.definition.nep, \.properties.definition.hin, \.properties.definition.ind,
+    private static let columns: [WritableKeyPath<Self, String?>] = [
+        \.matchInputBuffer, \.honzi, \.jyutping, \.canonicalHonzi, \.canonicalJyutping,
+        \.componentsHonzi, \.componentsJyutping, \.pronLabel, \.litColReading,
+        \.properties.partOfSpeech, \.properties.register, \.properties.label, \.properties.written, \.properties.vernacular, \.properties.collocation,
+        \.properties.definition.eng, \.properties.definition.hin, \.properties.definition.urd, \.properties.definition.nep, \.properties.definition.ind,
     ]
     
-    static let earlyExitColumns: [WritableKeyPath<Self, String?>] = [\.matchInputBuffer, \.honzi, \.jyutping]
+    private static let earlyExitColumns: [WritableKeyPath<Self, String?>] = [\.matchInputBuffer, \.honzi, \.jyutping]
     
     private let isJyutpingOnly: Bool
     
-    static let checkColumns: [WritableKeyPath<Self, String?>] = [
-        \.properties.partOfSpeech, \.properties.register, \.properties.normalized, \.properties.written, \.properties.vernacular, \.properties.collocation,
+    private static let checkColumns: [WritableKeyPath<Self, String?>] = [
+        \.properties.partOfSpeech, \.properties.register, \.properties.written, \.properties.vernacular, \.properties.collocation,
     ]
     
     init(honzi: String? = nil, jyutping: String? = nil) {
@@ -68,12 +71,12 @@ struct CandidateEntry {
                 if char == "\"" {
                     if charIterator.peek() == "\"" {
                         _ = charIterator.next()
-                        value += "\""
+                        value.append("\"")
                     } else {
                         isQuoted = false
                     }
                 } else {
-                    value += String(char)
+                    value.append(char)
                 }
             } else if value == "" && char == "\"" {
                 isQuoted = true
@@ -85,42 +88,18 @@ struct CandidateEntry {
                     self[keyPath: column] = value
                 }
                 column = newColumn
-                value = ""
+                value.removeAll()
             } else {
-                value += String(char)
+                value.append(char)
             }
         }
         if value != "" {
             self[keyPath: column] = value
         }
-        if let jyutpingWithoutSpace = jyutping {
-            var prevChar: Character?
-            value = ""
-            for char in jyutpingWithoutSpace {
-                if let prevChar = prevChar, prevChar.isDigit {
-                    value += " "
-                }
-                value += String(char)
-                prevChar = char
-            }
-            jyutping = value
-        }
-        if let label = properties.label {
-            let labels = label
-                .split(separator: " ")
-                .compactMap({
-                    $0.lazy
-                      .split(separator: "_")
-                      .compactMap({ DictionaryEntryView.labels[String($0)] })
-                      .first
-                })
-                .map({ "(\($0))" })
-            if labels.isEmpty {
-                properties.label = nil
-            } else {
-                formattedLabels = labels
-            }
-        }
+        
+        // Transformations
+        jyutping = jyutping.map(Self.formatJyutping)
+        canonicalJyutping = canonicalJyutping.map(Self.formatJyutping)
     }
     
     private func getDefinition(of language: Language) -> String? {
@@ -133,38 +112,117 @@ struct CandidateEntry {
         }
     }
     
+    var pronunciationType: String? {
+        var types = pronLabel?
+            .split(separator: "|")
+            .map({ Constants.pronunciationLabels[String($0)] ?? String($0) })
+            .unique()
+            ?? []
+        if let litColReading = litColReading,
+           let dirRange = litColReading.rangeOfCharacter(from: CharacterSet(charactersIn: "<>")),
+           let litOrCol = Constants.litColReadings[String(litColReading[..<dirRange.lowerBound])] {
+            let dir = litColReading[dirRange]
+            let relatedReadings = litColReading[dirRange.upperBound...]
+            types.append("""
+            \(litOrCol) \(dir) \(
+                relatedReadings
+                    .split(separator: "|")
+                    .map({ String($0) })
+                    .map(Self.formatGlyphonString)
+                    .joined(separator: "/")
+            )
+            """)
+        }
+        return types.isEmpty ? nil : "(\(types.joined(separator: ", ")))"
+    }
+    
+    var canonicalReference: String? {
+        canonicalHonzi
+            .flatMap({ canonicalHonzi in
+                canonicalJyutping.flatMap({ canonicalJyutping in "→\(canonicalHonzi)(\(canonicalJyutping))" })
+                    ?? "→\(canonicalHonzi)"
+            })
+            ?? canonicalJyutping.flatMap({ canonicalJyutping in "→\(canonicalJyutping)" })
+    }
+    
+    var formattedPartsOfSpeech: [String]? {
+        properties.partOfSpeech?
+            .split(separator: "|")
+            .map({ Constants.partsOfSpeech[String($0)] ?? String($0) })
+            .unique()
+            .nonEmptyOrNil
+    }
+    
+    var formattedRegisters: [String]? {
+        properties.register?
+            .split(separator: "|")
+            .map({ Constants.registers[String($0)] ?? String($0) })
+            .unique()
+            .nonEmptyOrNil
+    }
+    
+    var formattedLabels: [String]? {
+        properties.label?
+            .split(separator: "|")
+            .compactMap({
+                $0.lazy
+                    .split(separator: "_")
+                    .compactMap({ Constants.labels[String($0)] })
+                    .first
+            })
+            .map({ "(\($0))" })
+            .unique()
+            .nonEmptyOrNil
+    }
+    
     var mainLanguage: String? {
         getDefinition(of: Settings.cached.languageState.main)
     }
     
-    var mainLanguageOrEng: String? {
-        mainLanguage ?? (Settings.cached.languageState.has(.eng) ? getDefinition(of: .eng) : nil)
+    var fallbackLanguage: String? {
+        getDefinition(of: .eng)
     }
     
-    var otherLanguages: [String] {
+    var mainOrFallbackLanguage: String? {
+        mainLanguage ?? (Settings.cached.languageState.has(.eng) ? fallbackLanguage : nil)
+    }
+    
+    var otherData: [(name: String, value: String)]? {
+        Constants.otherData
+            .compactMap({ data in
+                guard let value = self[keyPath: data.value] else { return nil }
+                return (data.key, value.replacingOccurrences(of: "|", with: "\n"))
+            })
+            .nonEmptyOrNil
+    }
+    
+    var otherLanguages: [String]? {
+        if canonicalReference != nil { return nil }
         let main = Settings.cached.languageState.main
         let shouldExcludeEnglish = mainLanguage == nil
-        return Settings.cached.languageState.selected.compactMap {
-            $0 == main || shouldExcludeEnglish && $0 == .eng ? nil : getDefinition(of: $0)
-        }
+        return Settings.cached.languageState.selected
+            .compactMap({
+                $0 == main || shouldExcludeEnglish && $0 == .eng ? nil : getDefinition(of: $0)
+            })
+            .nonEmptyOrNil
     }
     
-    var otherLanguagesWithNames: [(name: String, value: String)] {
+    var otherLanguagesWithNames: [(name: String, value: String)]? {
         let main = Settings.cached.languageState.main
-        return Settings.cached.languageState.selected.compactMap {
-            guard $0 != main, let definition = getDefinition(of: $0) else { return nil }
-            return ($0.name, definition)
-        }
+        return Settings.cached.languageState.selected
+            .compactMap({
+                guard $0 != main, let definition = getDefinition(of: $0) else { return nil }
+                return ($0.name, definition)
+            })
+            .nonEmptyOrNil
     }
-    
-    var formattedLabels: [String]?
     
     var joinedLabels: String? {
         formattedLabels?.joined(separator: " ")
     }
     
-    var otherLanguagesOrLabels: [String] {
-        isDictionaryEntry ? otherLanguages : formattedLabels ?? []
+    var otherLanguagesOrLabels: [String]? {
+        isDictionaryEntry ? otherLanguages : formattedLabels
     }
     
     var isDictionaryEntry: Bool {
@@ -176,12 +234,117 @@ struct CandidateEntry {
                 return true
             }
         }
+        if canonicalReference != nil {
+            return true
+        }
         for language in Settings.cached.languageState.selected {
             if getDefinition(of: language) != nil {
                 return true
             }
         }
         return false
+    }
+    
+    var isCompound: Bool {
+        properties.label?
+            .split(separator: "|")
+            .contains(where: {
+                $0.split(separator: "_").contains("composition")
+            })
+            ?? false
+    }
+}
+
+extension CandidateEntry {
+    private struct Constants {
+        static let otherData: KeyValuePairs<String, WritableKeyPath<CandidateEntry, String?>> = [
+            "Written Form 書面語": \.properties.written,
+            "Vernacular Form 口語": \.properties.vernacular,
+            "Collocation 配搭": \.properties.collocation,
+        ]
+        
+        static let pronunciationLabels: [String: String] = [
+            "sandhi": "changed tone 變音",
+            "semantic_reading": "semantic reading 訓讀",
+            "creative_reading": "creative reading 生造音",
+        ]
+        
+        static let litColReadings: [String: String] = [
+            "lit": "literary reading 文讀",
+            "col": "colloquial reading 白讀",
+        ]
+        
+        static let registers: [String: String] = [
+            "cmn": "written 書面語",
+            "yue": "vernacular 口語",
+            "lzh": "formal 公文體",
+            "och": "classical Chinese 文言",
+            "sit": "chars. for proper noun 專有名詞用字",
+        ]
+        
+        static let partsOfSpeech: [String: String] = [
+            "n": "noun 名詞",
+            "v": "verb 動詞",
+            "adj": "adjective 形容詞",
+            "adv": "adverb 副詞",
+            "morph": "morpheme 語素",
+            "mw": "measure word 量詞",
+            "part": "particle 助詞",
+            "oth": "other 其他",
+            "x": "non-morpheme 非語素",
+        ]
+        
+        static let labels: [String: String] = [
+            "abbrev": "abbreviation 簡稱",
+            "astro": "astronomy 天文",
+            "ChinMeta": "sexagenary cycle 干支",
+            "horo": "horoscope 星座",
+            "org": "organisation 機構",
+            "person": "person 人名",
+            "place": "place 地名",
+            "pop": "popular culture 流行文化",
+            "reli": "religion 宗教",
+            "rare": "rare 罕見",
+            "composition": "compound 詞組",
+        ]
+    }
+}
+
+extension CandidateEntry {
+    private static func formatJyutping(_ jyutpingWithoutSpace: String) -> String {
+        var prevChar: Character?
+        var value = ""
+        for char in jyutpingWithoutSpace {
+            if let prevChar = prevChar, prevChar.isDigit {
+                value.append(" ")
+            }
+            value.append(char)
+            prevChar = char
+        }
+        return value
+    }
+    
+    private static func formatGlyphonString(_ string: String) -> String {
+        if string.first?.isASCII ?? true { return formatJyutping(string) }
+        var honzi = ""
+        var jyutping = ""
+        var isParsingJyutping = false
+        for char in string {
+            if char.asciiValue == nil {
+                if jyutping != "" { jyutping.append(" ") }
+                isParsingJyutping = false
+            }
+            if char == "." {
+                isParsingJyutping = true
+                continue
+            }
+            if isParsingJyutping {
+                jyutping.append(char)
+            } else {
+                honzi.append(char)
+            }
+        }
+        return "\(honzi)(\(jyutping))"
     }
 }
 

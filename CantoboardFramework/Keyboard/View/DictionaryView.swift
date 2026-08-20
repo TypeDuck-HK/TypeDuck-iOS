@@ -106,50 +106,6 @@ class DictionaryView: UIScrollView {
 }
 
 class DictionaryEntryView: UIStackView {
-    private static let otherData: KeyValuePairs<String, WritableKeyPath<CandidateEntry, String?>> = [
-        "Standard Form 標準字形": \.properties.normalized,
-        "Written Form 書面語": \.properties.written,
-        "Vernacular Form 口語": \.properties.vernacular,
-        "Collocation 配搭": \.properties.collocation,
-    ]
-    
-    private static let litColReading: [String: String] = [
-        "lit": "literary reading 文讀",
-        "col": "colloquial reading 白讀",
-    ]
-    
-    private static let register: [String: String] = [
-        "wri": "written 書面語",
-        "ver": "vernacular 口語",
-        "for": "formal 公文體",
-        "lzh": "classical Chinese 文言",
-    ]
-    
-    private static let partOfSpeech: [String: String] = [
-        "n": "noun 名詞",
-        "v": "verb 動詞",
-        "adj": "adjective 形容詞",
-        "adv": "adverb 副詞",
-        "morph": "morpheme 語素",
-        "mw": "measure word 量詞",
-        "part": "particle 助詞",
-        "oth": "other 其他",
-        "x": "non-morpheme 非語素",
-    ]
-    
-    public static let labels: [String: String] = [
-        "abbrev": "abbreviation 簡稱",
-        "astro": "astronomy 天文",
-        "ChinMeta": "sexagenary cycle 干支",
-        "horo": "horoscope 星座",
-        "org": "organisation 機構",
-        "person": "person 人名",
-        "place": "place 地名",
-        "reli": "religion 宗教",
-        "rare": "rare 罕見",
-        "composition": "compound 詞組",
-    ]
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
@@ -174,31 +130,23 @@ class DictionaryEntryView: UIStackView {
         if let jyutping = entry.jyutping {
             titleStackElements.append(PronunciationLabel(pronunciation: jyutping))
         }
-        var pronunciationType = [String]()
-        if let sandhi = entry.sandhi, sandhi == "1" {
-            pronunciationType.append("changed tone 變音")
-        }
-        if let litColReading = entry.litColReading, let type = Self.litColReading[litColReading] {
-            pronunciationType.append(type)
-        }
-        if !pronunciationType.isEmpty {
+        if let pronunciationType = entry.pronunciationType {
             let pronunciationTypeLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .footnote))
             pronunciationTypeLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
-            pronunciationTypeLabel.attributedText = "(\(pronunciationType.joined(separator: ", ")))".toHKAttributedString
+            pronunciationTypeLabel.attributedText = pronunciationType.toHKAttributedString
             titleStackElements.append(pronunciationTypeLabel)
         }
         addArrangedSubview(WrappableStackView(spacingX: 16 * Settings.cached.candidateFontSize.scale, spacingY: 10 * Settings.cached.candidateFontSize.scale, arrangedSubviews: titleStackElements))
         
         var definitionStackElements = [UIView]()
         var smallSpacingViews = Set<UIView>()
-        if let partOfSpeech = entry.properties.partOfSpeech {
-            let partsOfSpeech = partOfSpeech.split(separator: " ")
+        if let partsOfSpeech = entry.formattedPartsOfSpeech {
             for (i, pos) in partsOfSpeech.enumerated() {
                 let partOfSpeechLabel = UILabelWithPadding(color: ButtonColor.dictionaryViewGrayedColor, font: .systemFont(ofSize: UIFont.preferredFont(forTextStyle: .footnote).pointSize, weight: .light))
                 partOfSpeechLabel.layer.borderColor = ButtonColor.dictionaryViewGrayedColor.resolvedColor(with: traitCollection).cgColor
                 partOfSpeechLabel.layer.borderWidth = 1
                 partOfSpeechLabel.layer.cornerRadius = 2
-                partOfSpeechLabel.attributedText = (Self.partOfSpeech[String(pos)] ?? String(pos)).toHKAttributedString
+                partOfSpeechLabel.attributedText = pos.toHKAttributedString
                 partOfSpeechLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
                 definitionStackElements.append(partOfSpeechLabel)
                 if i != partsOfSpeech.endIndex - 1 {
@@ -206,11 +154,16 @@ class DictionaryEntryView: UIStackView {
                 }
             }
         }
-        if let register = entry.properties.register, let reg = Self.register[register] {
-            let registerLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .italicSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
-            registerLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
-            registerLabel.attributedText = reg.toHKAttributedString
-            definitionStackElements.append(registerLabel)
+        if let registers = entry.formattedRegisters {
+            for (i, reg) in registers.enumerated() {
+                let registerLabel = UILabel(color: ButtonColor.dictionaryViewGrayedColor, font: .italicSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
+                registerLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+                registerLabel.attributedText = reg.toHKAttributedString
+                definitionStackElements.append(registerLabel)
+                if i != registers.endIndex - 1 {
+                    smallSpacingViews.insert(registerLabel)
+                }
+            }
         }
         if let labels = entry.formattedLabels {
             for (i, lbl) in labels.enumerated() {
@@ -223,8 +176,8 @@ class DictionaryEntryView: UIStackView {
                 }
             }
         }
-        if let definition = entry.mainLanguage {
-            let definitionLabel = UILabel(font: .preferredFont(forTextStyle: .body))
+        if let definition = entry.canonicalReference ?? entry.mainLanguage {
+            let definitionLabel = UILabel(color: entry.canonicalReference == nil ? ButtonColor.dictionaryViewForegroundColor : ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .body))
             definitionLabel.numberOfLines = 0
             definitionLabel.attributedText = definition.toHKAttributedString
             definitionStackElements.append(definitionLabel)
@@ -233,16 +186,11 @@ class DictionaryEntryView: UIStackView {
             addArrangedSubview(WrappableStackView(spacingX: 12 * Settings.cached.candidateFontSize.scale, spacingY: 8 * Settings.cached.candidateFontSize.scale, arrangedSubviews: definitionStackElements, smallSpacingX: 4 * Settings.cached.candidateFontSize.scale, smallSpacingAfter: smallSpacingViews))
         }
         
-        let otherData = Self.otherData.compactMap { data -> (String, String)? in
-            guard let value = entry[keyPath: data.value] else { return nil }
-            return (data.key, value.replacingOccurrences(of: "，", with: "\n"))
-        }
-        if !otherData.isEmpty {
+        if let otherData = entry.otherData {
             addArrangedSubview(Self.createKeyValueStackView(otherData))
         }
         
-        let otherLanguages = entry.otherLanguagesWithNames
-        if !otherLanguages.isEmpty {
+        if let otherLanguages = entry.otherLanguagesWithNames {
             let otherLanguageStack = UIStackView(arrangedSubviews: [
                 UILabel(text: "More Languages", font: .systemFont(ofSize: UIFont.preferredFont(forTextStyle: .headline).pointSize, weight: .medium)),
                 Self.createKeyValueStackView(otherLanguages),
