@@ -29,7 +29,11 @@ public class DefaultDictionary {
     }
     
     public static func createDb(locale: String) {
-        let dictionaryDirName = "\(Bundle.main.resourcePath!)/EnglishDictSource"
+        guard let resourcePath = Bundle.main.resourcePath else {
+            DDLogError("Cannot create English dictionary because the bundle resource path is unavailable")
+            return
+        }
+        let dictionaryDirName = "\(resourcePath)/EnglishDictSource"
         let dictTextPath = "\(dictionaryDirName)/\(locale).txt"
         let commonDictPath = "\(dictionaryDirName)/common.txt"
         

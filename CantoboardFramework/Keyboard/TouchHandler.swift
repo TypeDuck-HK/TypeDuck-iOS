@@ -300,16 +300,16 @@ class TouchHandler {
     private func endAllJyutpingInitialFinalTouches() {
         SpeechProvider.queueAndSpeak {
             touchQueue
-                .filter { touches[$0]?.activeKeyView.selectedKeyCap.isJyutpingInitialOrFinalOrTone ?? false }
+                .compactMap { touch in touches[touch].map { (touch, $0.activeKeyView) } }
+                .filter { $0.1.selectedKeyCap.isJyutpingInitialOrFinalOrTone }
                 .sorted(by: { a, b in
-                    switch (touches[a]!.activeKeyView.selectedKeyCap.toJyutpingInitialFinalKeyCapType,
-                            touches[b]!.activeKeyView.selectedKeyCap.toJyutpingInitialFinalKeyCapType) {
+                    switch (a.1.selectedKeyCap.toJyutpingInitialFinalKeyCapType,
+                            b.1.selectedKeyCap.toJyutpingInitialFinalKeyCapType) {
                     case (.initial, .final), (.initial, .tone), (.final, .tone): return true
                     default: return false
                     }
                 })
-                .forEach { touch in
-                    let chosenKey = touches[touch]!.activeKeyView
+                .forEach { touch, chosenKey in
                     let chosenKeyCap = chosenKey.selectedKeyCap
                     callKeyHandler(chosenKey, chosenKeyCap.action)
                     chosenKeyCap.enqueueForSpeaking()

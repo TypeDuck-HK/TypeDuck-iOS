@@ -491,12 +491,13 @@ class CandidateCell: UICollectionViewCell {
             unitWidth = (halfWidths: halfWidths, fullWidth: fullWidth)
             unitFontWidthCache[fontSize] = unitWidth
         }
+        guard let unitWidth else { return 0 }
         
         let estimate = s.reduce(CGFloat.zero, { r, c in
-            if c.isASCII {
-                return r + unitWidth!.halfWidths[Int(c.asciiValue!)]
+            if let asciiValue = c.asciiValue {
+                return r + unitWidth.halfWidths[Int(asciiValue)]
             } else {
-                return r + unitWidth!.fullWidth
+                return r + unitWidth.fullWidth
             }
         })
 

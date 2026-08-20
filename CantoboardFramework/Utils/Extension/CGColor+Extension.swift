@@ -10,7 +10,7 @@ import UIKit
 
 extension CGColor {
     var toRgb: CGColor {
-        return converted(to: CGColorSpaceCreateDeviceRGB(), intent: .defaultIntent, options: nil)!
+        return converted(to: CGColorSpaceCreateDeviceRGB(), intent: .defaultIntent, options: nil) ?? self
     }
     
     func interpolate(_ end: CGColor, fraction: CGFloat) -> CGColor {

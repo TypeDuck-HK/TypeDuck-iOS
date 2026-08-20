@@ -44,13 +44,15 @@ extension RimeApi {
     }
     
     static var shared: RimeApi {
-        if _shared == nil {
-            atexit {
-                RimeApi._shared = nil
-            }
-            _shared = RimeApi(bundle: Bundle(for: RimeApi.self))
+        if let shared = _shared {
+            return shared
         }
-        return _shared!
+        atexit {
+            RimeApi._shared = nil
+        }
+        let shared = RimeApi(bundle: Bundle(for: RimeApi.self))
+        _shared = shared
+        return shared
     }
     
     static func closeShared() {
@@ -90,7 +92,11 @@ extension RimeApi {
     
     static func removeQuickStartFlagFile() {
         let userDataPath = DataFileManager.rimeUserDirectory
-        try? FileManager.default.removeItem(atPath: "\(userDataPath)/\(RimeApi.quickStartFlagFileName()!)")
+        guard let quickStartFlagFileName = RimeApi.quickStartFlagFileName() else {
+            DDLogError("Cannot remove quick start flag because its file name is unavailable")
+            return
+        }
+        try? FileManager.default.removeItem(atPath: "\(userDataPath)/\(quickStartFlagFileName)")
         DDLogInfo("Removed quick start flag file due to config change.")
     }
     

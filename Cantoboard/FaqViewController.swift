@@ -30,7 +30,7 @@ class FaqViewController: UIViewController, UITableViewDelegate, UITableViewDataS
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
-        let cell = tableView.cellForRow(at: indexPath) as! FaqTableViewCell
+        guard let cell = tableView.cellForRow(at: indexPath) as? FaqTableViewCell else { return }
         cell.answerLabel.isHidden = !cell.answerLabel.isHidden
         cell.backgroundColor = .systemGray2
         UIView.animate(withDuration: 0.35) {

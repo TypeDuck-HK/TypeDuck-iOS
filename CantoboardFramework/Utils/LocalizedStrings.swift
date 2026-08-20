@@ -9,7 +9,10 @@ import Foundation
 
 class LocalizedStrings {
     private static func localizedString(_ stringKeyName: String) -> String  {
-        return NSLocalizedString(stringKeyName, bundle: Bundle(path: Bundle(for: LocalizedStrings.self).path(forResource: Settings.cached.interfaceLanguage == .chinese ? "zh-HK" : "en", ofType: "lproj")!)!, comment: "Key Title of " + stringKeyName)
+        let frameworkBundle = Bundle(for: LocalizedStrings.self)
+        let language = Settings.cached.interfaceLanguage == .chinese ? "zh-HK" : "en"
+        let localizedBundle = frameworkBundle.path(forResource: language, ofType: "lproj").flatMap(Bundle.init(path:)) ?? frameworkBundle
+        return NSLocalizedString(stringKeyName, bundle: localizedBundle, comment: "Key Title of " + stringKeyName)
     }
     
     static var keyTitleNextPage: String { localizedString("KeyNextPage") }

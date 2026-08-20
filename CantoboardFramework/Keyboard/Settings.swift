@@ -518,10 +518,7 @@ public struct Settings: Codable, Equatable {
     
     public static var cached: Settings {
         get {
-            if _cached == nil {
-                return reload()
-            }
-            return _cached!
+            return _cached ?? reload()
         }
     }
     
@@ -537,8 +534,9 @@ public struct Settings: Codable, Equatable {
             }
         }
         
-        _cached = Settings()
-        return _cached!
+        let settings = Settings()
+        _cached = settings
+        return settings
     }
     
     public static func save(_ settings: Settings) {

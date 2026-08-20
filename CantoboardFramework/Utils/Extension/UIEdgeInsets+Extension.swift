@@ -11,10 +11,10 @@ import UIKit
 extension UIEdgeInsets {
     func override(top: CGFloat? = nil, left: CGFloat? = nil, bottom: CGFloat? = nil, right: CGFloat? = nil) -> UIEdgeInsets {
         return UIEdgeInsets(
-            top: top == nil ? self.top : top!,
-            left: left == nil ? self.left : left!,
-            bottom: bottom == nil ? self.bottom : bottom!,
-            right: right == nil ? self.right : right!)
+            top: top ?? self.top,
+            left: left ?? self.left,
+            bottom: bottom ?? self.bottom,
+            right: right ?? self.right)
     }
     
     func wrap(size: CGSize) -> CGSize {

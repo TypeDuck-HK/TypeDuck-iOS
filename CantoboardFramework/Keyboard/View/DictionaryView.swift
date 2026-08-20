@@ -30,8 +30,9 @@ class DictionaryViewController: UIViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(dismissDictionary))
         
+        let navigationBarHeight = navigationController?.navigationBar.frame.height ?? 0
         NSLayoutConstraint.activate([
-            dictionaryView.topAnchor.constraint(equalTo: view.topAnchor, constant: -navigationController!.navigationBar.frame.height - 10),
+            dictionaryView.topAnchor.constraint(equalTo: view.topAnchor, constant: -navigationBarHeight - 10),
             view.bottomAnchor.constraint(equalTo: dictionaryView.bottomAnchor),
             dictionaryView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             view.trailingAnchor.constraint(equalTo: dictionaryView.trailingAnchor),

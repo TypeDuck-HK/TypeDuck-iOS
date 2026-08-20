@@ -67,12 +67,12 @@ class OptionTableViewCell: UITableViewCell {
     private func layout() {
         let accessorySize = {
             if let stackView = accessory as? UIStackView {
-                CGSize(width: stackView.arrangedSubviews.reduce(-stackView.spacing, { $0 + $1.intrinsicContentSize.width + stackView.spacing }), height: stackView.arrangedSubviews.map(\.intrinsicContentSize.height).max()!)
+                CGSize(width: stackView.arrangedSubviews.reduce(-stackView.spacing, { $0 + $1.intrinsicContentSize.width + stackView.spacing }), height: stackView.arrangedSubviews.map(\.intrinsicContentSize.height).max() ?? 0)
             } else {
                 accessory.intrinsicContentSize
             }
         }()
-        let font = titleLabel.font!
+        let font = titleLabel.font ?? UIFont.preferredFont(forTextStyle: .body)
         let rawOffset = (accessorySize.height + 12 - font.lineHeight) / 2
         let offset = max(rawOffset, 0)
         let paragraphStyle = NSMutableParagraphStyle()

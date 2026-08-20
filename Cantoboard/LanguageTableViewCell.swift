@@ -33,8 +33,9 @@ class LanguageTableViewCell: UITableViewCell {
     }
     
     func setEnabled() {
+        guard let editControlClass = NSClassFromString("UITableViewCellEditControl") else { return }
         for cellSubview in subviews {
-            if cellSubview.isKind(of: NSClassFromString("UITableViewCellEditControl")!) {
+            if cellSubview.isKind(of: editControlClass) {
                 for subview in cellSubview.subviews {
                     if let imageView = subview as? UIImageView {
                         imageView.layer.opacity = isEnabled ? 1 : 0.5

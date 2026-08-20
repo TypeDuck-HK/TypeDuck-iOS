@@ -533,7 +533,7 @@ extension KeyView {
         } else {
             isGrayed = true
             firstFrame = true
-            let layer = layer as! SwipeDownLayer
+            guard let layer = layer as? SwipeDownLayer else { return }
             let animation = CABasicAnimation(keyPath: #keyPath(SwipeDownLayer.swipeDownPercentage))
             animation.fromValue = swipeDownPercentage
             animation.toValue = 0

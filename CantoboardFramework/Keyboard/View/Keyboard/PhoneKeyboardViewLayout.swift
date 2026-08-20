@@ -55,7 +55,7 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
         var allFrames = leftKeyFrames + middleKeyFrames + rightKeyFrames
         
         // Special case, widen the space key to fill the empty space.
-        if keyRowView.rowId == 3 && middleKeys.count == 1, case .space = middleKeys.first!.keyCap {
+        if keyRowView.rowId == 3, let middleKey = middleKeys.first, middleKeys.count == 1, case .space = middleKey.keyCap {
             let thisKeyFrame = allFrames[leftKeyFrames.count]
             let spaceStartX = allFrames[leftKeyFrames.count - 1].maxX + layoutConstants.buttonGapX
             let spaceEndX = allFrames[leftKeyFrames.count + middleKeyFrames.count].minX - layoutConstants.buttonGapX

@@ -90,7 +90,8 @@ class PronounceButton: UIButton {
             alert.addAction(AlertAction(title: LocalizedStrings.alert_OK, style: .default, handler: nil))
             let settingsAction = AlertAction(title: LocalizedStrings.alert_Settings, style: .default, handler: { _ in
                 let selector = #selector(UIApplication.openURL_backport(_:))
-                self.findElement({ $0.responds(to: selector) })?.perform(selector, with: URL(string: UIApplication.openSettingsURLString)!)
+                guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+                self.findElement({ $0.responds(to: selector) })?.perform(selector, with: settingsURL)
             })
             alert.addAction(settingsAction)
             alert.preferredAction = settingsAction
@@ -102,7 +103,8 @@ class PronounceButton: UIButton {
             alert.addAction(AlertAction(title: LocalizedStrings.alert_OK, style: .default, handler: nil))
             let settingsAction = AlertAction(title: LocalizedStrings.alert_Settings, style: .default, handler: { _ in
                 let selector = #selector(UIApplication.openURL_backport(_:))
-                self.findElement({ $0.responds(to: selector) })?.perform(selector, with: URL(string: "App-P" + "refs:")!)
+                guard let settingsURL = URL(string: "App-P" + "refs:") else { return }
+                self.findElement({ $0.responds(to: selector) })?.perform(selector, with: settingsURL)
             })
             alert.addAction(settingsAction)
             alert.preferredAction = settingsAction

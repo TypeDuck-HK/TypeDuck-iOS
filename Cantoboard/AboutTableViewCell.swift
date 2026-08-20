@@ -52,7 +52,7 @@ class AboutTableViewCell: UITableViewCell, UITextViewDelegate {
         textView.delegate = self
         addSubview(textView)
         
-        let image = UIImage(named: "CreditLogos")!
+        let image = UIImage(named: "CreditLogos") ?? UIImage()
         let imageView = UIImageView(image: image)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
@@ -71,7 +71,7 @@ class AboutTableViewCell: UITableViewCell, UITextViewDelegate {
             contentView.bottomAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 12),
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             contentView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: 20),
-            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: image.size.width / image.size.height),
+            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: image.size.height > 0 ? image.size.width / image.size.height : 1),
             imageView.heightAnchor.constraint(lessThanOrEqualToConstant: 400), // image.size.height * image.scale
         ])
         

@@ -130,10 +130,11 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
                 }
                 
                 let keyCapType: KeyCapType
+                let firstCharacter = c.first
                 switch side {
-                case .left where c.first!.isEnglishLetter: keyCapType = .initial
+                case .left where firstCharacter?.isEnglishLetter == true: keyCapType = .initial
                 case .left: keyCapType = .punctuation
-                case .right where c.first!.isDigit: keyCapType = .tone
+                case .right where firstCharacter?.isDigit == true: keyCapType = .tone
                 case .right: keyCapType = .final
                 }
                 
@@ -229,8 +230,10 @@ class InitialFinalKeyboardView: UIView, BaseKeyboardView {
         
         guard viewDidSetup, let candidatePaneView = candidatePaneView else { return }
         
-        let leftButtonsMaxRowCount = CGFloat((leftButtons.max { a, b in a.count < b.count })!.count)
-        let rightButtonsMaxRowCount = CGFloat((rightButtons.max { a, b in a.count < b.count })!.count)
+        guard let leftMaxRowCount = leftButtons.map(\.count).max(),
+              let rightMaxRowCount = rightButtons.map(\.count).max() else { return }
+        let leftButtonsMaxRowCount = CGFloat(leftMaxRowCount)
+        let rightButtonsMaxRowCount = CGFloat(rightMaxRowCount)
         let totalMaxRowCount = leftButtonsMaxRowCount + rightButtonsMaxRowCount
         let availableWidth = bounds.width - directionalLayoutMargins.leading - directionalLayoutMargins.trailing
         let totalAvailableButtonWidth = availableWidth - layoutConstants.initialFinalLayoutButtonGroupGap - layoutConstants.initialFinalLayoutButtonGap * (totalMaxRowCount - 2)

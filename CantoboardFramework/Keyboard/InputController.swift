@@ -445,7 +445,7 @@ class InputController: NSObject {
             }
             var i = 0
             while i < chars.count {
-                if !inputEngine.processChar(chars.char(at: i)!) {
+                guard let char = chars.char(at: i), inputEngine.processChar(char) else {
                     break
                 }
                 i += 1
@@ -925,7 +925,8 @@ class InputController: NSObject {
                 let bestCandidate = inputEngine.getRimeCandidate(0) ?? ""
                 composingText = selectedInput + bestCandidate
             } else if inputEngine.rimeSchema == .jyutpingInitialFinal && state.inputMode != .english {
-                composingText = inputEngine.composition!.transformForInitialFinalSchema().text.filter({ $0 != " " })
+                guard let composition = inputEngine.composition else { return false }
+                composingText = composition.transformForInitialFinalSchema().text.filter({ $0 != " " })
             } else if inputEngine.rimeSchema == .stroke && state.inputMode != .english {
                 let hasCandidate = inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
                 
@@ -1007,10 +1008,12 @@ class InputController: NSObject {
             return false
         }
         
-        if hasInsertedAutoSpace && last2CharsInDoc.last?.isWhitespace ?? false {
+        if hasInsertedAutoSpace,
+           last2CharsInDoc.last?.isWhitespace ?? false,
+           let firstInsertedCharacter = textBeingInserted.first {
             // Remove leading smart space if:
             // English" "(中/.)
-            if (last2CharsInDoc.first?.isEnglishLetterOrDigit ?? false) && !textBeingInserted.first!.isEnglishLetterOrDigit ||
+            if (last2CharsInDoc.first?.isEnglishLetterOrDigit ?? false) && !firstInsertedCharacter.isEnglishLetterOrDigit ||
                 textBeingInserted == "\n" {
                 // For some reason deleteBackward() does nothing unless it's wrapped in an main async block.
                 // TODO Remove this.
@@ -1033,11 +1036,13 @@ class InputController: NSObject {
         let lastSpaceIndex = documentContextBeforeInput.lastIndex(where: { $0.isWhitespace })
         let lastDotIndex = documentContextBeforeInput.lastIndex(of: ".")
         
-        guard lastDotIndex == nil ||
-              // Scan the text before input from the end, if we hit a dot before hitting a space, do not insert smart space.
-              lastSpaceIndex != nil && documentContextBeforeInput.distance(from: lastDotIndex!, to: lastSpaceIndex!) >= 0 else {
-            // DDLogInfo("Guessing user is typing url \(textDocumentProxy.documentContextBeforeInput)")
-            return false
+        if let lastDotIndex {
+            // Scan the text before input from the end, if we hit a dot before hitting a space, do not insert smart space.
+            guard let lastSpaceIndex,
+                  documentContextBeforeInput.distance(from: lastDotIndex, to: lastSpaceIndex) >= 0 else {
+                // DDLogInfo("Guessing user is typing url \(textDocumentProxy.documentContextBeforeInput)")
+                return false
+            }
         }
         
         

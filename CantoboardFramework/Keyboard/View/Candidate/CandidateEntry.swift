@@ -61,7 +61,7 @@ struct CandidateEntry {
         var charIterator = PeekableIterator(csv.makeIterator())
         var columnIterator = (earlyExit ? Self.earlyExitColumns : Self.columns).makeIterator()
         var isQuoted = false
-        var column = columnIterator.next()!
+        guard var column = columnIterator.next() else { return }
         var value = ""
         while let char = charIterator.next() {
             if isQuoted {

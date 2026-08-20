@@ -79,7 +79,7 @@ class InputTextBuffer {
     var textOverride: String?
     
     var text: String {
-        textOverride == nil ? _text : textOverride!
+        textOverride ?? _text
     }
 }
 
@@ -250,9 +250,10 @@ class EnglishInputEngine: InputEngine {
             autoCompleteCandidates = []
         }
         
+        let textStartsUppercase = text.first?.isUppercase ?? false
         englishDictionaryWordsSet.forEach({ word in
             var word = word
-            if text.first!.isUppercase && word.first!.isLowercase && word.allSatisfy({ $0.isLowercase }) {
+            if textStartsUppercase && word.first?.isLowercase == true && word.allSatisfy({ $0.isLowercase }) {
                 word = word.capitalized
             }
             if candidateSets.contains(word) { return }
@@ -286,7 +287,7 @@ class EnglishInputEngine: InputEngine {
                 worstCandidates.append(word)
                 candidateSets.insert(word)
             } else {
-                let caseCorrectedCandidate = text.first!.isUppercase && word.first!.isLowercase ? word.capitalized : word
+                let caseCorrectedCandidate = textStartsUppercase && word.first?.isLowercase == true ? word.capitalized : word
                 if candidateSets.contains(caseCorrectedCandidate) { continue }
                 if !lookupInDictionary(wordLowercased: word.lowercased()).isEmpty {
                     candidates.append(caseCorrectedCandidate)

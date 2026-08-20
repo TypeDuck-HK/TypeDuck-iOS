@@ -10,7 +10,9 @@ import CantoboardFramework
 
 class LocalizedStrings {
     private static func localizedString(_ stringKeyName: String) -> String {
-        NSLocalizedString(stringKeyName, bundle: Bundle(path: Bundle.main.path(forResource: Settings.cached.interfaceLanguage == .chinese ? "zh-HK" : "en", ofType: "lproj")!)!, comment: stringKeyName)
+        let language = Settings.cached.interfaceLanguage == .chinese ? "zh-HK" : "en"
+        let localizedBundle = Bundle.main.path(forResource: language, ofType: "lproj").flatMap(Bundle.init(path:)) ?? .main
+        return NSLocalizedString(stringKeyName, bundle: localizedBundle, comment: stringKeyName)
     }
     
     static var installTypeDuck: String { localizedString("installTypeDuck") }

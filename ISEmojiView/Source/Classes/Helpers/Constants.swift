@@ -25,7 +25,7 @@ internal class PhoneConstants: Constants {
     
     init() {
         emojiSize = CGSize(width: 45, height: 35)
-        emojiFont = UIFont(name: "Apple color emoji", size: 30)!
+        emojiFont = UIFont(name: "Apple color emoji", size: 30) ?? .systemFont(ofSize: 30)
         topPartSize = CGSize(width: emojiSize.width * 1.3, height: emojiSize.height * 1.6)
         bottomPartSize = CGSize(width: emojiSize.width * 0.8, height: emojiSize.height + 10)
         emojiPopViewSize = CGSize(width: topPartSize.width, height: topPartSize.height + bottomPartSize.height)
@@ -41,7 +41,7 @@ internal class PadConstants: Constants {
     
     init() {
         emojiSize = CGSize(width: 45 * 1.5, height: 35 * 1.5)
-        emojiFont = UIFont(name: "Apple color emoji", size: 30 * 1.5)!
+        emojiFont = UIFont(name: "Apple color emoji", size: 30 * 1.5) ?? .systemFont(ofSize: 30 * 1.5)
         topPartSize = CGSize(width: emojiSize.width * 1.3, height: emojiSize.height * 1.6)
         bottomPartSize = CGSize(width: emojiSize.width * 0.8, height: emojiSize.height + 10)
         emojiPopViewSize = CGSize(width: topPartSize.width, height: topPartSize.height + bottomPartSize.height)

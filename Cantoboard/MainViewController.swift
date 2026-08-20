@@ -184,6 +184,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         switch editingStyle {
         case .delete:
+            guard settings.languageState.selected.count > 1 else { return }
             let element = settings.languageState.selected[indexPath.row]
             let index = settings.languageState.delete(at: indexPath.row)
             tableView.cellForRow(at: indexPath)?.selectionStyle = .none
@@ -192,8 +193,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             tableView.moveRow(at: indexPath, to: newIndexPath)
             tableView.endUpdates()
             let firstSelectedCell = tableView.cellForRow(at: IndexPath(row: 0, section: 4))
-            if settings.languageState.main == element {
-                settings.languageState.main = settings.languageState.selected.first!
+            if settings.languageState.main == element,
+               let firstSelectedLanguage = settings.languageState.selected.first {
+                settings.languageState.main = firstSelectedLanguage
                 tableView.cellForRow(at: newIndexPath)?.editingAccessoryType = .none
                 firstSelectedCell?.editingAccessoryType = .checkmark
             }
@@ -233,7 +235,9 @@ class CellImage {
     private static let configuration = UIImage.SymbolConfiguration(pointSize: 20)
     private static let bundle = Bundle(for: CellImage.self)
     private static func imageAssets(_ key: String) -> UIImage {
-        UIImage(systemName: key, withConfiguration: configuration) ?? UIImage(named: key, in: bundle, with: configuration)!
+        UIImage(systemName: key, withConfiguration: configuration) ??
+            UIImage(named: key, in: bundle, with: configuration) ??
+            UIImage()
     }
     
     static let settings = imageAssets("gearshape")

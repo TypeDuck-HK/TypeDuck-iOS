@@ -385,9 +385,10 @@ open class KeyboardViewController: UIInputViewController {
             self.keyboardViewTopConstraint = keyboardViewTopConstraint
         }
         
+        guard let keyboardViewWidthConstraint, let keyboardViewTopConstraint else { return }
         NSLayoutConstraint.activate([
-            keyboardViewWidthConstraint!,
-            keyboardViewTopConstraint!,
+            keyboardViewWidthConstraint,
+            keyboardViewTopConstraint,
             keyboardViewPlaceholder.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             keyboardViewPlaceholder.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])

@@ -416,6 +416,6 @@ class RimeApiListener: NSObject, RimeNotificationHandler {
     }
     
     func onNotification(_ messageType: String!, messageValue: String!) {
-        DDLogInfo("Rime notification \(messageType!) \(messageValue!).")
+        DDLogInfo("Rime notification \(messageType ?? "unknown") \(messageValue ?? "").")
     }
 }

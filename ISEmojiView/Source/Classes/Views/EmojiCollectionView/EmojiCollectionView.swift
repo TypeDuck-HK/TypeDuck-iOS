@@ -122,7 +122,8 @@ internal class EmojiCollectionView: UIView {
         }
         
         if category == .recents && emojis[section].emojis.isEmpty {
-            section = emojis.firstIndex(where: { $0.category == Category.smileysAndPeople })!
+            guard let smileysSection = emojis.firstIndex(where: { $0.category == Category.smileysAndPeople }) else { return }
+            section = smileysSection
         }
         
         let itemsCountInSection = collectionView(collectionView, numberOfItemsInSection: section)

@@ -1116,14 +1116,15 @@ extension LayoutConstants {
                 }
             }
             
-            guard currentBestMatchResolution != nil else {
+            guard let currentBestMatchResolution,
+                  let bestMatch = layoutConstantsList[currentBestMatchResolution] else {
                 let errorMessage = "Unsupported screen size: \(screenSize)."
                 DDLogError(errorMessage)
                 fatalError(errorMessage)
             }
             
-            DDLogInfo("Best matching screen size for \(screenSize) is \(currentBestMatchResolution!).")
-            return layoutConstantsList[currentBestMatchResolution!]!.copy()
+            DDLogInfo("Best matching screen size for \(screenSize) is \(currentBestMatchResolution).")
+            return bestMatch.copy()
         }
         
         return ret.copy()
@@ -1151,7 +1152,7 @@ extension LayoutConstants {
         case .backspace: return 20
         case .currency where idiom.isPad: return 20
         case .character(let c, _, _), .contextual(.character(let c)):
-            if c.first?.isEnglishLetter ?? false { return c.first!.isUppercase ? 22 : 23 }
+            if let firstCharacter = c.first, firstCharacter.isEnglishLetter { return firstCharacter.isUppercase ? 22 : 23 }
             
             if idiom == .pad(.padFull5Rows) && "[]/\\".contains(c) {
                 return 19

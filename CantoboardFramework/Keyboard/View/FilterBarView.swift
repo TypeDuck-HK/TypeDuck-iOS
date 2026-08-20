@@ -74,7 +74,7 @@ class FilterBarView: UIView {
             self.filterCollectionView = filterCollectionView
         }
         
-        let filterCollectionView = filterCollectionView!
+        guard let filterCollectionView else { return }
         filterCollectionView.reloadData()
         filterCollectionView.isHidden = keyboardState.enableState != .enabled
 

@@ -62,13 +62,14 @@ class CandidateCollectionView: UICollectionView {
         longPressTimer?.invalidate()
         
         guard let touch = touches.first else { return }
-        beginPoint = touch.location(in: self)
+        let beginPoint = touch.location(in: self)
+        self.beginPoint = beginPoint
         
-        if let indexPath = indexPathForItem(at: beginPoint!),
+        if let indexPath = indexPathForItem(at: beginPoint),
            indexPath.section > 0,
            (superview as? CandidatePaneView)?.collectionView(self, shouldSelectItemAt: indexPath) ?? true,
            let cell = cellForItem(at: indexPath) as? CandidateCell {
-            if cell.frame.contains(beginPoint!) {
+            if cell.frame.contains(beginPoint) {
                 cell.isSelected = true
                 longPressTimer = Timer.scheduledTimer(withTimeInterval: Self.longPressDelay, repeats: false) { [weak self] timer in
                     guard let self = self, self.longPressTimer == timer else { return }
@@ -79,7 +80,7 @@ class CandidateCollectionView: UICollectionView {
             } else if let delegate = delegate as? CandidateCollectionViewDelegate,
                       delegate.mode == .table,
                       cell.info?.hasDictionaryEntry ?? false,
-                      cell.infoImageFrame.contains(beginPoint!) {
+                      cell.infoImageFrame.contains(beginPoint) {
                 cell.infoIsHighlighted = true
             }
         }

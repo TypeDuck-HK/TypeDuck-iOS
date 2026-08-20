@@ -55,7 +55,7 @@ extension Character {
     }
     
     var lowercasedChar: Character {
-        lowercased().first!
+        lowercased().first ?? self
     }
     
     var isRimeSpecialChar: Bool {

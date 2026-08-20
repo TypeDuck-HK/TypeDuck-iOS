@@ -9,7 +9,7 @@ import UIKit
 
 class DescriptionPresentationController: UIPresentationController {
     lazy var backdropView: UIView = {
-        let backdropView = UIView(frame: containerView!.frame)
+        let backdropView = UIView(frame: containerView?.frame ?? .zero)
         backdropView.backgroundColor = .systemFill.withAlphaComponent(0.2)
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissPresentedViewController))
         tapGestureRecognizer.cancelsTouchesInView = false
@@ -18,9 +18,12 @@ class DescriptionPresentationController: UIPresentationController {
     }()
     
     override var frameOfPresentedViewInContainerView: CGRect {
-        let bounds = containerView!.bounds
-        let presentedController = (presentedViewController as! UINavigationController)
-        let descriptionViewController = presentedViewController.children.first as! DescriptionViewController
+        guard let containerView,
+              let presentedController = presentedViewController as? UINavigationController,
+              let descriptionViewController = presentedController.children.first as? DescriptionViewController else {
+            return .zero
+        }
+        let bounds = containerView.bounds
         
         presentedController.view.layoutIfNeeded()
         
@@ -30,7 +33,7 @@ class DescriptionPresentationController: UIPresentationController {
             DescriptionViewController.stackViewInset.bottom +
             presentedController.view.safeAreaInsets.bottom
         
-        height = min(height, containerView!.bounds.height)
+        height = min(height, containerView.bounds.height)
         return CGRect(x: 0, y: bounds.height - height, width: bounds.width, height: height)
     }
     
@@ -38,7 +41,7 @@ class DescriptionPresentationController: UIPresentationController {
         super.presentationTransitionWillBegin()
         
         backdropView.alpha = 0
-        containerView!.addSubview(backdropView)
+        containerView?.addSubview(backdropView)
         presentedViewController.transitionCoordinator?.animate(alongsideTransition: { _ in self.backdropView.alpha = 1 })
     }
     
@@ -53,7 +56,7 @@ class DescriptionPresentationController: UIPresentationController {
     
     override func containerViewWillLayoutSubviews() {
         presentedView?.frame = frameOfPresentedViewInContainerView
-        backdropView.frame = containerView!.frame
+        backdropView.frame = containerView?.frame ?? .zero
     }
     
     @objc func dismissPresentedViewController() {

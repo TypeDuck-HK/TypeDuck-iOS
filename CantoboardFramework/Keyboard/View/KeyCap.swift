@@ -307,17 +307,19 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .singleQuote: return "′"
         case .doubleQuote: return "″"
         case "（", "「", "『", "〈", "《", "｛", "【", "〔", "〚", "〖", "〘":
+            guard let character else { return nil }
             if #available(iOS 17, *) {
                 // In iOS 17 or above, most characters are automatically kerned.
-                return String(character!)
+                return String(character)
             } else {
-                return String(character!) + "⠀"
+                return String(character) + "⠀"
             }
         case "）", "」", "』", "〉", "》", "｝", "】", "〕", "〛", "〗", "〙":
+            guard let character else { return nil }
             if #available(iOS 17, *) {
-                return String(character!)
+                return String(character)
             } else {
-                return "⠀" + String(character!)
+                return "⠀" + String(character)
             }
         case "［": return "［⠀"
         case "］": return "⠀］"
@@ -511,9 +513,9 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         // For debugging
         case .keyboardType(.emojis): return [self, .exportFile("logs", Self.logsPath), .exportFile("user", Self.userDataPath), .exportFile("rime", Self.tmpPath), .exit]
-        case .character(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
-        case .cangjie(_, _, let keyCaps, _) where keyCaps != nil: return keyCaps!
-        case .rime(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
+        case .character(_, _, let keyCaps?): return keyCaps
+        case .cangjie(_, _, let keyCaps?, _): return keyCaps
+        case .rime(_, _, let keyCaps?): return keyCaps
         // 123 1st row
         case "1": return ["1", "一", "壹", "１", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
         case "2": return ["貳", "2", "二", "２", "②", "⑵", "⒉", "❷", "㊁", "㈡"]
@@ -836,8 +838,8 @@ let FrameworkBundle = Bundle(for: KeyView.self)
 class ButtonImage {
     private static func imageAssets(_ key: String) -> UIImage {
         let config = UIImage.SymbolConfiguration(weight: .light)
-        let image = UIImage(systemName: key) ?? UIImage(named: key, in: Bundle(for: ButtonImage.self), with: nil)!
-        return image.applyingSymbolConfiguration(config)!
+        let image = UIImage(systemName: key) ?? UIImage(named: key, in: Bundle(for: ButtonImage.self), with: nil) ?? UIImage()
+        return image.applyingSymbolConfiguration(config) ?? image
     }
     
     static let globe = imageAssets("globe")
@@ -871,7 +873,7 @@ class ButtonImage {
 
 class ButtonColor {
     private static func colorAssets(_ key: String) -> UIColor {
-        UIColor(named: key, in: FrameworkBundle, compatibleWith: nil)!
+        UIColor(named: key, in: FrameworkBundle, compatibleWith: nil) ?? .clear
     }
     
     // Legacy theme (below iOS 26) background colors

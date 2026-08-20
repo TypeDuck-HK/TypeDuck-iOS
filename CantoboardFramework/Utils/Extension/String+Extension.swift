@@ -69,8 +69,8 @@ extension String {
     }
     
     var withoutTailingDigit: String {
-        if self.isEmpty { return "" }
-        if self.last!.isNumber && self.last!.isASCII {
+        guard let last else { return "" }
+        if last.isNumber && last.isASCII {
             return String(self.prefix(count - 1))
         } else {
             return self
