@@ -109,6 +109,59 @@ private class Segment<T: Equatable>: Option {
     }
 }
 
+private class IntStepper<T: BinaryInteger>: Option {
+    var title: String
+    var description: String?
+    var videoUrl: String?
+    var key: WritableKeyPath<Settings, T>
+    var minimumValue, value, maximumValue, stepValue: T
+    
+    private weak var controller: MainViewController?
+    private var control: UIStepper!
+    private var valueLabel: UILabel!
+    
+    init(_ title: String, _ key: WritableKeyPath<Settings, T>, minimumValue: T, maximumValue: T, stepValue: T, _ description: String? = nil, _ videoUrl: String? = nil) {
+        self.title = title
+        self.key = key
+        self.minimumValue = minimumValue
+        self.value = Settings.cached[keyPath: key]
+        self.maximumValue = maximumValue
+        self.stepValue = stepValue
+        self.description = description
+        self.videoUrl = videoUrl
+    }
+    
+    func dequeueCell(with controller: MainViewController) -> UITableViewCell {
+        self.controller = controller
+        control = UIStepper()
+        control.minimumValue = Double(minimumValue)
+        control.value = Double(value)
+        control.maximumValue = Double(maximumValue)
+        control.stepValue = Double(stepValue)
+        control.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        
+        valueLabel = UILabel()
+        valueLabel.attributedText = String(value).toHKAttributedString
+        
+        let stackView = UIStackView(arrangedSubviews: [valueLabel, control])
+        stackView.spacing = 5
+        
+        return OptionTableViewCell(option: self, optionView: stackView)
+    }
+    
+    func cellDidSelect() {}
+    
+    @objc func updateSettings() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        valueLabel.attributedText = String(T(control.value)).toHKAttributedString
+        value = T(control.value)
+        guard let controller = controller else { return }
+        controller.settings[keyPath: key] = value
+        controller.view.endEditing(true)
+        Settings.save(controller.settings)
+    }
+}
+
 private class ColorPicker<T: UIColor>: Option {
     var title: String
     var description: String?
@@ -282,6 +335,15 @@ extension Settings {
                         LocalizedStrings.cangjieKeyCapMode_cangjieRoot: .cangjieRoot,
                     ]
                 ),
+                Segment(LocalizedStrings.quick3CandidateMode, \.quick3CandidateMode, [
+                        LocalizedStrings.quick3CandidateMode_sortByFreq: .sortByFreq,
+                        LocalizedStrings.quick3CandidateMode_fixedOrder: .fixedOrder,
+                    ],
+                    LocalizedStrings.quick3CandidateMode_description
+                ),
+                IntStepper(LocalizedStrings.quick3FixedOrderNumPopularCandidates, \.quick3FixedOrderNumPopularCandidates,
+                           minimumValue: 0, maximumValue: 9, stepValue: 1,
+                           LocalizedStrings.quick3FixedOrderNumPopularCandidates_description),
             ]
         )
         

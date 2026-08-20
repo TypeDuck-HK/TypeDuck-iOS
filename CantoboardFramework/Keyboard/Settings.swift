@@ -126,10 +126,17 @@ public enum CangjieVersion: String, Codable {
     case cangjie3 = "cangjie3"
     case cangjie5 = "cangjie5"
     
-    var toRimeSchema: RimeSchema {
+    var toRimeCJSchema: RimeSchema {
         switch self {
         case .cangjie3: return .cangjie3
         case .cangjie5: return .cangjie5
+        }
+    }
+    
+    var toRimeQuickSchema: RimeSchema {
+        switch self {
+        case .cangjie3: return .quick3
+        case .cangjie5: return .quick5
         }
     }
 }
@@ -137,6 +144,11 @@ public enum CangjieVersion: String, Codable {
 public enum CangjieKeyCapMode: String, Codable {
     case letter = "letter"
     case cangjieRoot = "cangjieRoot"
+}
+
+public enum Quick3CandidateMode: String, Codable {
+    case sortByFreq = "sortByFreq"
+    case fixedOrder = "fixedOrder"
 }
 
 public enum ShowRomanizationMode: String, Codable {
@@ -391,6 +403,8 @@ public struct Settings: Codable, Equatable {
     private static let defaultShowEmojiKey: Bool = true
     private static let defaultCangjieVersion: CangjieVersion = .cangjie3
     private static let defaultCangjieKeyCapMode: CangjieKeyCapMode = .cangjieRoot
+    private static let defaultQuick3CandidateMode: Quick3CandidateMode = .fixedOrder
+    private static let defaultQuick3FixedOrderNumPopularCandidates: UInt8 = 3
     private static let defaultLanguageState: LanguageState = LanguageState()
     private static let defaultJyutpingInitialFinalLayoutSettings: JyutpingInitialFinalLayoutSettings = JyutpingInitialFinalLayoutSettings()
     private static let defaultAccessibilitySettings: AccessibilitySettings = AccessibilitySettings()
@@ -430,6 +444,8 @@ public struct Settings: Codable, Equatable {
     public var showEmojiKey: Bool
     public var cangjieVersion: CangjieVersion
     public var cangjieKeyCapMode: CangjieKeyCapMode
+    public var quick3CandidateMode: Quick3CandidateMode
+    public var quick3FixedOrderNumPopularCandidates: UInt8
     public var languageState: LanguageState
     public var jyutpingInitialFinalLayoutSettings: JyutpingInitialFinalLayoutSettings
     public var accessibilitySettings: AccessibilitySettings
@@ -477,6 +493,8 @@ public struct Settings: Codable, Equatable {
         showEmojiKey = Self.defaultShowEmojiKey
         cangjieVersion = Self.defaultCangjieVersion
         cangjieKeyCapMode = Self.defaultCangjieKeyCapMode
+        quick3CandidateMode = Self.defaultQuick3CandidateMode
+        quick3FixedOrderNumPopularCandidates = Self.defaultQuick3FixedOrderNumPopularCandidates
         languageState = Self.defaultLanguageState
         jyutpingInitialFinalLayoutSettings = Self.defaultJyutpingInitialFinalLayoutSettings
         accessibilitySettings = Self.defaultAccessibilitySettings
@@ -519,6 +537,8 @@ public struct Settings: Codable, Equatable {
         self.showEmojiKey = try container.decodeIfPresent(Bool.self, forKey: .showEmojiKey) ?? Settings.defaultShowEmojiKey
         self.cangjieVersion = try container.decodeIfPresent(CangjieVersion.self, forKey: .cangjieVersion) ?? Settings.defaultCangjieVersion
         self.cangjieKeyCapMode = try container.decodeIfPresent(CangjieKeyCapMode.self, forKey: .cangjieKeyCapMode) ?? Settings.defaultCangjieKeyCapMode
+        self.quick3CandidateMode = try container.decodeIfPresent(Quick3CandidateMode.self, forKey: .quick3CandidateMode) ?? Settings.defaultQuick3CandidateMode
+        self.quick3FixedOrderNumPopularCandidates = try container.decodeIfPresent(UInt8.self, forKey: .quick3FixedOrderNumPopularCandidates) ?? Settings.defaultQuick3FixedOrderNumPopularCandidates
         self.languageState = try container.decodeIfPresent(LanguageState.self, forKey: .languageState) ?? Settings.defaultLanguageState
         self.jyutpingInitialFinalLayoutSettings = try container.decodeIfPresent(JyutpingInitialFinalLayoutSettings.self, forKey: .jyutpingInitialFinalLayoutSettings) ?? Settings.defaultJyutpingInitialFinalLayoutSettings
         self.accessibilitySettings = try container.decodeIfPresent(AccessibilitySettings.self, forKey: .accessibilitySettings) ?? Settings.defaultAccessibilitySettings
