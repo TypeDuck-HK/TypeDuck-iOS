@@ -102,7 +102,7 @@ struct CandidateEntry {
         canonicalJyutping = canonicalJyutping.map(Self.formatJyutping)
     }
     
-    private func getDefinition(of language: Language) -> String? {
+    private func getDefinitionContent(of language: Language) -> String? {
         switch language {
         case .eng: return self.properties.definition.eng
         case .hin: return self.properties.definition.hin
@@ -110,6 +110,10 @@ struct CandidateEntry {
         case .nep: return self.properties.definition.nep
         case .urd: return self.properties.definition.urd
         }
+    }
+    
+    private func getDefinition(of language: Language) -> NSAttributedString? {
+        getDefinitionContent(of: language).map { $0.toAttributedString(withLocale: language.code) }
     }
     
     var pronunciationType: String? {
@@ -175,15 +179,15 @@ struct CandidateEntry {
             .nonEmptyOrNil
     }
     
-    var mainLanguage: String? {
+    var mainLanguage: NSAttributedString? {
         getDefinition(of: Settings.cached.languageState.main)
     }
     
-    var fallbackLanguage: String? {
+    var fallbackLanguage: NSAttributedString? {
         getDefinition(of: .eng)
     }
     
-    var mainOrFallbackLanguage: String? {
+    var mainOrFallbackLanguage: NSAttributedString? {
         mainLanguage ?? (Settings.cached.languageState.has(.eng) ? fallbackLanguage : nil)
     }
     
@@ -196,7 +200,7 @@ struct CandidateEntry {
             .nonEmptyOrNil
     }
     
-    var otherLanguages: [String]? {
+    var otherLanguages: [NSAttributedString]? {
         if canonicalReference != nil { return nil }
         let main = Settings.cached.languageState.main
         let shouldExcludeEnglish = mainLanguage == nil
@@ -207,7 +211,7 @@ struct CandidateEntry {
             .nonEmptyOrNil
     }
     
-    var otherLanguagesWithNames: [(name: String, value: String)]? {
+    var otherLanguagesWithNames: [(name: String, value: NSAttributedString)]? {
         let main = Settings.cached.languageState.main
         return Settings.cached.languageState.selected
             .compactMap({
@@ -221,8 +225,8 @@ struct CandidateEntry {
         formattedLabels?.joined(separator: " ")
     }
     
-    var otherLanguagesOrLabels: [String]? {
-        isDictionaryEntry ? otherLanguages : formattedLabels
+    var otherLanguagesOrLabels: [NSAttributedString]? {
+        isDictionaryEntry ? otherLanguages : formattedLabels?.map(\.toHKAttributedString)
     }
     
     var isDictionaryEntry: Bool {

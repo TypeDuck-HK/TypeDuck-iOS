@@ -65,9 +65,6 @@ class KeyHintLayer: CATextLayer {
     }
     
     private func addAttributeToString(_ attribute: NSAttributedString.Key, _ value: Any) {
-        guard let attributedString = string as? NSAttributedString else { return }
-        let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
-        mutableAttributedString.addAttribute(attribute, value: value, range: NSMakeRange(0, attributedString.length))
-        string = mutableAttributedString
+        string = (string as? NSAttributedString)?.withAttribute(attribute, value)
     }
 }

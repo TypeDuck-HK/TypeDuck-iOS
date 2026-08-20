@@ -114,9 +114,7 @@ class WrappableStackView: UIStackView {
                         } else {
                             let paragraphStyle = NSMutableParagraphStyle()
                             paragraphStyle.firstLineHeadIndent = currOffset
-                            let mutableAttributedString = NSMutableAttributedString(attributedString: attributedText)
-                            mutableAttributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedText.length))
-                            label.attributedText = mutableAttributedString
+                            label.attributedText = attributedText.withAttribute(.paragraphStyle, paragraphStyle)
                         }
                     }
                     lineStack.removeFromSuperview()

@@ -208,17 +208,17 @@ class CandidateCell: UICollectionViewCell {
             let targetStack = mode == .row ? mainStack : textStack
             targetStack!.addArrangedSubview(label)
             
-            if let entry = entry, let mainLanguage = entry.canonicalReference ?? info.allEngTranslations ?? (entry.isDictionaryEntry || mode == .table ? entry.mainOrFallbackLanguage : entry.joinedLabels) {
+            if let entry = entry, let mainLanguage = entry.canonicalReference?.toHKAttributedString ?? info.allEngTranslations?.toHKAttributedString ?? (entry.isDictionaryEntry || mode == .table ? entry.mainOrFallbackLanguage : entry.joinedLabels?.toHKAttributedString) {
                 let translationLabel = self.translationLabel ?? UILabel()
                 translationLabel.textAlignment = mode == .row ? .center : .left
                 if Settings.cached.languageState.shouldDisplayEngTag,
                    entry.canonicalReference == nil,
                    info.allEngTranslations != nil || entry.isDictionaryEntry && entry.mainLanguage == nil {
                     let attributedString = NSMutableAttributedString(string: "en: ", attributes: String.HKAttributed(withForegroundColor: ButtonColor.keyHintColor))
-                    attributedString.append(mainLanguage.toHKAttributedString(withForegroundColor: ButtonColor.keyForegroundColor))
+                    attributedString.append(mainLanguage)
                     translationLabel.attributedText = attributedString
                 } else {
-                    translationLabel.attributedText = mainLanguage.toHKAttributedString
+                    translationLabel.attributedText = mainLanguage
                     translationLabel.textColor = entry.canonicalReference == nil && (info.allEngTranslations != nil || entry.isDictionaryEntry) ? ButtonColor.keyForegroundColor : ButtonColor.keyHintColor
                 }
                 targetStack!.addArrangedSubview(translationLabel)
@@ -234,7 +234,7 @@ class CandidateCell: UICollectionViewCell {
                 for (i, language) in otherLanguages.enumerated() {
                     let commentLabel = self.commentLabels[weak: i] ?? UILabel()
                     commentLabel.textAlignment = .left
-                    commentLabel.attributedText = language.toHKAttributedString
+                    commentLabel.attributedText = language
                     commentLabel.textColor = entry.isDictionaryEntry ? ButtonColor.keyForegroundColor : ButtonColor.keyHintColor
                     commentStack!.addArrangedSubview(commentLabel)
                     self.commentLabels[weak: i] = commentLabel
@@ -451,19 +451,24 @@ class CandidateCell: UICollectionViewCell {
         }
         
         let entry = info.entry
-        if let entry = entry, var mainLanguage = entry.canonicalReference ?? info.allEngTranslations ?? (entry.isDictionaryEntry || mode == .table ? entry.mainOrFallbackLanguage : entry.joinedLabels) {
+        if let entry = entry, let mainLanguage = entry.canonicalReference?.toHKAttributedString ?? info.allEngTranslations?.toHKAttributedString ?? (entry.isDictionaryEntry || mode == .table ? entry.mainOrFallbackLanguage : entry.joinedLabels?.toHKAttributedString) {
+            var attributedString: NSMutableAttributedString
             if Settings.cached.languageState.shouldDisplayEngTag,
                entry.canonicalReference == nil,
                info.allEngTranslations != nil || entry.isDictionaryEntry && entry.mainLanguage == nil {
-                mainLanguage = "en: " + mainLanguage
+                attributedString = NSMutableAttributedString(string: "en: ", attributes: String.HKAttributed(withForegroundColor: ButtonColor.keyHintColor))
+                attributedString.append(mainLanguage)
+            } else {
+                attributedString = NSMutableAttributedString(attributedString: mainLanguage)
             }
-            let commentWidth = mainLanguage.size(withFont: UIFont.systemFont(ofSize: mode == .row ? candidateCommentFontSize : candidateFontSize)).width
+            attributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: mode == .row ? candidateCommentFontSize : candidateFontSize), range: NSMakeRange(0, attributedString.length))
+            let commentWidth = attributedString.size().width
             cellWidth = mode == .row ? max(cellWidth, min(cellWidth + 70, commentWidth)) : cellWidth + Self.paddingText + commentWidth
         }
         
         if mode == .table, let otherLanguages = entry?.otherLanguagesOrLabels {
             let commentWidth = otherLanguages.reduce(-Self.paddingComment) { sum, language in
-                sum + Self.paddingComment + language.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
+                sum + Self.paddingComment + language.withAttribute(.font, UIFont.systemFont(ofSize: candidateCommentFontSize)).size().width
             }
             cellWidth = max(cellWidth, commentWidth)
         }

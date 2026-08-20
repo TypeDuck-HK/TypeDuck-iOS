@@ -184,6 +184,16 @@ public enum Language: String, Codable, Comparable, CaseIterable {
         }
     }
     
+    var code: String {
+        switch self {
+        case .eng: return "en"
+        case .hin: return "hi"
+        case .ind: return "id"
+        case .nep: return "ne"
+        case .urd: return "ur"
+        }
+    }
+    
     public static func <(lhs: Language, rhs: Language) -> Bool {
         return lhs.order < rhs.order
     }

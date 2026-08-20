@@ -37,10 +37,8 @@ class PronunciationLabel: UILabel {
         super.layoutSubviews()
         
         guard let attributedText = attributedText, let font = font else { return }
-        let mutableAttributedString = NSMutableAttributedString(attributedString: attributedText)
-        mutableAttributedString.addAttribute(.font, value: font, range: NSMakeRange(0, attributedText.length))
         
-        let textStorage = NSTextStorage(attributedString: mutableAttributedString)
+        let textStorage = NSTextStorage(attributedString: attributedText.withAttribute(.font, font))
         let layoutManager = NSLayoutManager()
         textStorage.addLayoutManager(layoutManager)
         

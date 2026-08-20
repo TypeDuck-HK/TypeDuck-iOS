@@ -38,7 +38,7 @@ struct CandidateInfo {
             var translations: [(honzi: String, eng: String)] = []
             for entry in entries {
                 if entry.matchInputBuffer == "1", let honzi = entry.honzi, let eng = entry.fallbackLanguage, !translations.contains(where: { $0.honzi == honzi }) {
-                    translations.append((honzi, eng))
+                    translations.append((honzi, eng.string))
                 }
             }
             if !translations.isEmpty {

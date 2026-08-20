@@ -77,10 +77,9 @@ extension String {
         }
     }
     
-    // Render the string in HK Chinese style. (標點置中)
-    static func HKAttributed(withFont font: UIFont? = nil, withForegroundColor foregroundColor: UIColor? = nil, withParagraphStyle paragraphStyle: NSMutableParagraphStyle? = nil) -> [NSAttributedString.Key : Any] {
+    static func attributed(withLocale locale: String, withFont font: UIFont? = nil, withForegroundColor foregroundColor: UIColor? = nil, withParagraphStyle paragraphStyle: NSMutableParagraphStyle? = nil) -> [NSAttributedString.Key : Any] {
         var attributes: [NSAttributedString.Key : Any] = [:]
-        attributes[NSAttributedString.Key(kCTLanguageAttributeName as String)] = "zh-HK"
+        attributes[NSAttributedString.Key(kCTLanguageAttributeName as String)] = locale
         
         if let font = font {
             attributes[.font] = font
@@ -97,8 +96,17 @@ extension String {
         return attributes
     }
     
+    func toAttributedString(withLocale locale: String, withFont font: UIFont? = nil, withForegroundColor foregroundColor: UIColor? = nil, withParagraphStyle paragraphStyle: NSMutableParagraphStyle? = nil) -> NSAttributedString {
+        NSAttributedString(string: self, attributes: Self.attributed(withLocale: locale, withFont: font, withForegroundColor: foregroundColor, withParagraphStyle: paragraphStyle))
+    }
+    
+    // Render the string in HK Chinese style. (標點置中)
+    static func HKAttributed(withFont font: UIFont? = nil, withForegroundColor foregroundColor: UIColor? = nil, withParagraphStyle paragraphStyle: NSMutableParagraphStyle? = nil) -> [NSAttributedString.Key : Any] {
+        attributed(withLocale: "zh-HK", withFont: font, withForegroundColor: foregroundColor, withParagraphStyle: paragraphStyle)
+    }
+    
     func toHKAttributedString(withFont font: UIFont? = nil, withForegroundColor foregroundColor: UIColor? = nil, withParagraphStyle paragraphStyle: NSMutableParagraphStyle? = nil) -> NSAttributedString {
-        NSAttributedString(string: self, attributes: Self.HKAttributed(withFont: font, withForegroundColor: foregroundColor, withParagraphStyle: paragraphStyle))
+        toAttributedString(withLocale: "zh-HK", withFont: font, withForegroundColor: foregroundColor, withParagraphStyle: paragraphStyle)
     }
     
     var toHKAttributedString: NSAttributedString {
@@ -108,5 +116,13 @@ extension String {
     func char(at: Int) -> Character? {
         guard 0 <= at && at < count else { return nil }
         return self[index(startIndex, offsetBy: at)]
+    }
+}
+
+extension NSAttributedString {
+    func withAttribute(_ attribute: Key, _ value: Any) -> NSMutableAttributedString {
+        let mutableAttributedString = NSMutableAttributedString(attributedString: self)
+        mutableAttributedString.addAttribute(attribute, value: value, range: NSMakeRange(0, length))
+        return mutableAttributedString
     }
 }

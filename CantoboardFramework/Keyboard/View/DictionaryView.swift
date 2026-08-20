@@ -176,10 +176,10 @@ class DictionaryEntryView: UIStackView {
                 }
             }
         }
-        if let definition = entry.canonicalReference ?? entry.mainLanguage {
+        if let definition = entry.canonicalReference?.toHKAttributedString ?? entry.mainLanguage {
             let definitionLabel = UILabel(color: entry.canonicalReference == nil ? ButtonColor.dictionaryViewForegroundColor : ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .body))
             definitionLabel.numberOfLines = 0
-            definitionLabel.attributedText = definition.toHKAttributedString
+            definitionLabel.attributedText = definition
             definitionStackElements.append(definitionLabel)
         }
         if !definitionStackElements.isEmpty {
@@ -201,15 +201,20 @@ class DictionaryEntryView: UIStackView {
         }
     }
     
-    private static func createKeyValueStackView(_ data: [(String, String)]) -> UIStackView {
+    private static func createKeyValueStackView(_ data: [(String, Any)]) -> UIStackView {
         var firstKeyLabel: UILabel?
         var layoutConstraints = [NSLayoutConstraint]()
         let stack = UIStackView(arrangedSubviews: data.map {
             let keyLabel = UILabel(text: $0.0, color: ButtonColor.dictionaryViewGrayedColor, font: .preferredFont(forTextStyle: .headline))
-            let valueLabel = UILabel(text: $0.1, font: .preferredFont(forTextStyle: .body))
+            let valueLabel = UILabel(font: .preferredFont(forTextStyle: .body))
             keyLabel.textAlignment = .right
             keyLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
             valueLabel.numberOfLines = 0
+            if let text = $0.1 as? String {
+                valueLabel.attributedText = text.toHKAttributedString
+            } else if let attributedText = $0.1 as? NSAttributedString {
+                valueLabel.attributedText = attributedText
+            }
             let stack = SidedStackView(spacing: 12 * Settings.cached.candidateFontSize.scale, alignment: .firstBaseline, arrangedSubviews: [keyLabel, valueLabel])
             if let firstKeyLabel = firstKeyLabel {
                 layoutConstraints.append(keyLabel.widthAnchor.constraint(equalTo: firstKeyLabel.widthAnchor))
