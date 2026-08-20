@@ -244,15 +244,6 @@ struct CandidateEntry {
         }
         return false
     }
-    
-    var isCompound: Bool {
-        properties.label?
-            .split(separator: "|")
-            .contains(where: {
-                $0.split(separator: "_").contains("composition")
-            })
-            ?? false
-    }
 }
 
 extension CandidateEntry {

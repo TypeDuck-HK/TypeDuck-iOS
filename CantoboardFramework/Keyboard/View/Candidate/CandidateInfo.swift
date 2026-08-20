@@ -34,7 +34,7 @@ struct CandidateInfo {
         entry = entries.first { $0.matchInputBuffer == "1" }
         hasDictionaryEntry = entries.contains { $0.isDictionaryEntry }
         romanization = entry?.jyutping ?? (isReverseLookup ? "" : note)
-        if Settings.cached.languageState.has(.eng) && entries.contains(where: \.isCompound) {
+        if Settings.cached.languageState.has(.eng) && entry?.mainOrFallbackLanguage == nil {
             var translations: [(honzi: String, eng: String)] = []
             for entry in entries {
                 if entry.matchInputBuffer == "1", let honzi = entry.honzi, let eng = entry.fallbackLanguage, !translations.contains(where: { $0.honzi == honzi }) {
