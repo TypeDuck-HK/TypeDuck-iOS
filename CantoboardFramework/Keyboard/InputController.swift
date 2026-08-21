@@ -102,14 +102,20 @@ struct KeyboardState: Equatable {
         reverseLookupSchema != nil && Settings.cached.showCodeInReverseLookup
     }
     
+    var showTranslations: Bool {
+        Settings.cached.languageState.main != nil
+    }
+    
     var numLinesInCandidateBar: CGFloat {
-        // Main text occupies 2 lines and translation occupies 1 line.
-        3 + (showRomanization ? 1 : 0) + (showCodeInReverseLookup ? 1 : 0)
+        // Main text occupies 2 unit height and each supplementary info occupies 1 unit height.
+        // Clamped so that the actual height of the candidate bar/cell won't be too short
+        max(2 + (showRomanization ? 1 : 0) + (showCodeInReverseLookup ? 1 : 0) + (showTranslations ? 1 : 0), 3)
     }
     
     var numLinesInCandidateList: CGFloat {
         // In table mode, romanization and reverse lookup code are shown on the same line.
-        3 + (showRomanization || showCodeInReverseLookup ? 1 : 0)
+        // Clamped so that the actual height of the candidate bar/cell won't be too short
+        max(2 + (showRomanization || showCodeInReverseLookup ? 1 : 0) + (showTranslations ? 1 : 0), 3)
     }
     
     func numLines(for mode: CandidatePaneView.Mode) -> CGFloat {
@@ -117,6 +123,11 @@ struct KeyboardState: Equatable {
         case .row: return numLinesInCandidateBar
         case .table: return numLinesInCandidateList
         }
+    }
+    
+    var showLanguageNameTagForFallbackTranslation: Bool {
+        // Prepend an "en: " tag to English fallback translations to better distinguish them from Indonesian because both are written in the Latin script.
+        Settings.cached.languageState.main == .ind
     }
     
     init() {

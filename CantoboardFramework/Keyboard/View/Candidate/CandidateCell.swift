@@ -160,7 +160,7 @@ class CandidateCell: UICollectionViewCell {
         self.info = info
         let entry = info.entry
         
-        if isFilterCell {
+        if isFilterCell || !keyboardState.showRomanization && !keyboardState.showCodeInReverseLookup && !keyboardState.showTranslations {
             mainStack!.isSided = false
             mainStack!.contentView.alignment = .center
             mainStack!.addArrangedSubview(label)
@@ -208,10 +208,10 @@ class CandidateCell: UICollectionViewCell {
             let targetStack = mode == .row ? mainStack : textStack
             targetStack!.addArrangedSubview(label)
             
-            if let entry = entry, let mainLanguage = entry.canonicalReference?.toHKAttributedString ?? info.allEngTranslations?.toHKAttributedString ?? (entry.isDictionaryEntry || mode == .table ? entry.mainOrFallbackLanguage : entry.joinedLabels?.toHKAttributedString) {
+            if keyboardState.showTranslations, let entry = entry, let mainLanguage = entry.canonicalReference?.toHKAttributedString ?? info.allEngTranslations?.toHKAttributedString ?? (entry.isDictionaryEntry || mode == .table ? entry.mainOrFallbackLanguage : entry.joinedLabels?.toHKAttributedString) {
                 let translationLabel = self.translationLabel ?? UILabel()
                 translationLabel.textAlignment = mode == .row ? .center : .left
-                if Settings.cached.languageState.shouldDisplayEngTag,
+                if keyboardState.showLanguageNameTagForFallbackTranslation,
                    entry.canonicalReference == nil,
                    info.allEngTranslations != nil || entry.isDictionaryEntry && entry.mainLanguage == nil {
                     let attributedString = NSMutableAttributedString(string: "en: ", attributes: String.HKAttributed(withForegroundColor: ButtonColor.keyHintColor))
@@ -229,7 +229,7 @@ class CandidateCell: UICollectionViewCell {
                 self.translationLabel = nil
             }
             
-            if mode == .table, let entry = entry {
+            if keyboardState.showTranslations, mode == .table, let entry = entry {
                 let otherLanguages = entry.otherLanguagesOrLabels ?? []
                 for (i, language) in otherLanguages.enumerated() {
                     let commentLabel = self.commentLabels[weak: i] ?? UILabel()
@@ -375,7 +375,7 @@ class CandidateCell: UICollectionViewCell {
                 bounds = bounds.insetBy(dx: 4, dy: 0)
                 if mode == .row {
                     bounds.size.width += bounds.height * heightRatio - 2
-                } else {
+                } else if keyboardState?.showTranslations ?? true {
                     bounds.size.width -= 4
                 }
             } else if keyHintLayer == nil {
@@ -447,13 +447,13 @@ class CandidateCell: UICollectionViewCell {
         
         switch mode {
         case .row: cellWidth = max(cellWidth, noteWidth, romanizationWidth)
-        case .table: cellWidth = max(cellWidth, noteWidth + (info.note.isEmpty || info.romanization.isEmpty ? 0 : Self.paddingComment) + romanizationWidth)
+        case .table: cellWidth = max(cellWidth, noteWidth + (!keyboardState.showCodeInReverseLookup || info.note.isEmpty || !keyboardState.showRomanization || info.romanization.isEmpty ? 0 : Self.paddingComment) + romanizationWidth)
         }
         
         let entry = info.entry
-        if let entry = entry, let mainLanguage = entry.canonicalReference?.toHKAttributedString ?? info.allEngTranslations?.toHKAttributedString ?? (entry.isDictionaryEntry || mode == .table ? entry.mainOrFallbackLanguage : entry.joinedLabels?.toHKAttributedString) {
+        if keyboardState.showTranslations, let entry = entry, let mainLanguage = entry.canonicalReference?.toHKAttributedString ?? info.allEngTranslations?.toHKAttributedString ?? (entry.isDictionaryEntry || mode == .table ? entry.mainOrFallbackLanguage : entry.joinedLabels?.toHKAttributedString) {
             var attributedString: NSMutableAttributedString
-            if Settings.cached.languageState.shouldDisplayEngTag,
+            if keyboardState.showLanguageNameTagForFallbackTranslation,
                entry.canonicalReference == nil,
                info.allEngTranslations != nil || entry.isDictionaryEntry && entry.mainLanguage == nil {
                 attributedString = NSMutableAttributedString(string: "en: ", attributes: String.HKAttributed(withForegroundColor: ButtonColor.keyHintColor))
@@ -466,7 +466,7 @@ class CandidateCell: UICollectionViewCell {
             cellWidth = mode == .row ? max(cellWidth, min(cellWidth + 70, commentWidth)) : cellWidth + Self.paddingText + commentWidth
         }
         
-        if mode == .table, let otherLanguages = entry?.otherLanguagesOrLabels {
+        if keyboardState.showTranslations, mode == .table, let otherLanguages = entry?.otherLanguagesOrLabels {
             let commentWidth = otherLanguages.reduce(-Self.paddingComment) { sum, language in
                 sum + Self.paddingComment + language.withAttribute(.font, UIFont.systemFont(ofSize: candidateCommentFontSize)).size().width
             }
