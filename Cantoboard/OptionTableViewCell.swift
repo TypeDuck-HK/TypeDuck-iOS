@@ -33,6 +33,38 @@ class OptionTableViewCell: UITableViewCell {
         }
         contentView.addSubview(accessory)
         
+        setup(option: option)
+    }
+    
+    convenience init(option: Option, optionViews: [UIView]) {
+        self.init()
+        
+        var optionViews = optionViews
+        for view in optionViews {
+            view.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        if option.description != nil || option.videoUrl != nil {
+            let button = UIButton()
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.setImage(CellImage.faq, for: .normal)
+            button.isUserInteractionEnabled = false
+            optionViews.append(button)
+        } else {
+            selectionStyle = .none
+        }
+        
+        let stackView = UIStackView(arrangedSubviews: optionViews)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.spacing = 8
+        accessory = stackView
+        
+        contentView.addSubview(accessory)
+        
+        setup(option: option)
+    }
+    
+    private func setup(option: Option) {
         titleLabel = UILabel()
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.font = UIFont.preferredFont(forTextStyle: .body)

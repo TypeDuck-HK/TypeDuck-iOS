@@ -143,10 +143,7 @@ private class IntStepper<T: BinaryInteger>: Option {
         valueLabel = UILabel()
         valueLabel.attributedText = String(value).toHKAttributedString
         
-        let stackView = UIStackView(arrangedSubviews: [valueLabel, control])
-        stackView.spacing = 5
-        
-        return OptionTableViewCell(option: self, optionView: stackView)
+        return OptionTableViewCell(option: self, optionViews: [valueLabel, control])
     }
     
     func cellDidSelect() {}
