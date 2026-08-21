@@ -180,7 +180,7 @@ struct CandidateEntry {
     }
     
     var mainLanguage: NSAttributedString? {
-        getDefinition(of: Settings.cached.languageState.main)
+        Settings.cached.languageState.main.flatMap(getDefinition(of:))
     }
     
     var fallbackLanguage: NSAttributedString? {

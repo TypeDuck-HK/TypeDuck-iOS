@@ -107,8 +107,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         case 1: return nil
         case 2: return nil
         case 3: return LocalizedStrings.testKeyboard
-        case 4: return LocalizedStrings.displayLanguages
-        case 5: return settings.languageState.deselected.isEmpty ? nil : LocalizedStrings.moreLanguages
+        case 4: return settings.languageState.selected.isEmpty ? nil : LocalizedStrings.displayLanguages
+        case 5: return settings.languageState.selected.isEmpty ? LocalizedStrings.displayLanguages : settings.languageState.deselected.isEmpty ? nil : LocalizedStrings.moreLanguages
         default: return sections[section - 6].header
         }
     }
@@ -116,7 +116,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
         case 0: return LocalizedStrings.installTypeDuck_description
-        case 4: return LocalizedStrings.displayLanguages_description
+        case 4: return settings.languageState.selected.isEmpty ? nil : LocalizedStrings.displayLanguages_description
         default: return nil
         }
     }
@@ -128,8 +128,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         case 2: return interfaceLanguageOption.dequeueCell(with: self)
         case 3: return InputTableViewCell(tableView: tableView)
         case 4: return LanguageTableViewCell(languageName: Self.languageName(of: settings.languageState.selected[indexPath.row]),
-                                             checked: settings.languageState.selected[indexPath.row] == settings.languageState.main,
-                                             isEnabled: settings.languageState.selected.count > 1)
+                                             checked: settings.languageState.selected[indexPath.row] == settings.languageState.main)
         case 5: return LanguageTableViewCell(languageName: Self.languageName(of: settings.languageState.deselected[indexPath.row]))
         default: return sections[indexPath.section - 6].options[indexPath.row].dequeueCell(with: self)
         }
@@ -146,7 +145,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         case 2: break
         case 3: (tableView.cellForRow(at: indexPath) as? InputTableViewCell)?.showKeyboard()
         case 4:
-            if let index = settings.languageState.selected.firstIndex(of: settings.languageState.main) {
+            if let index = settings.languageState.main.flatMap(settings.languageState.selected.firstIndex(of:)) {
                 tableView.cellForRow(at: IndexPath(row: index, section: 4))?.editingAccessoryType = .none
             }
             tableView.cellForRow(at: indexPath)?.editingAccessoryType = .checkmark
@@ -184,7 +183,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         switch editingStyle {
         case .delete:
-            guard settings.languageState.selected.count > 1 else { return }
             let element = settings.languageState.selected[indexPath.row]
             let index = settings.languageState.delete(at: indexPath.row)
             tableView.cellForRow(at: indexPath)?.selectionStyle = .none
@@ -193,26 +191,52 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             tableView.moveRow(at: indexPath, to: newIndexPath)
             tableView.endUpdates()
             let firstSelectedCell = tableView.cellForRow(at: IndexPath(row: 0, section: 4))
-            if settings.languageState.main == element,
-               let firstSelectedLanguage = settings.languageState.selected.first {
-                settings.languageState.main = firstSelectedLanguage
+            if settings.languageState.main == element {
+                settings.languageState.main = settings.languageState.selected.first
                 tableView.cellForRow(at: newIndexPath)?.editingAccessoryType = .none
                 firstSelectedCell?.editingAccessoryType = .checkmark
             }
             Settings.save(settings)
-            (firstSelectedCell as? LanguageTableViewCell)?.isEnabled = settings.languageState.selected.count > 1
-            tableView.headerView(forSection: 5)?.isHidden = settings.languageState.deselected.isEmpty
+            refreshHeaderFooterViewsOfLanguageSections()
         case .insert:
             let index = settings.languageState.insert(at: indexPath.row)
-            Settings.save(settings)
             tableView.cellForRow(at: indexPath)?.selectionStyle = .default
-            (tableView.cellForRow(at: IndexPath(row: 0, section: 4)) as? LanguageTableViewCell)?.isEnabled = settings.languageState.selected.count > 1
             tableView.beginUpdates()
             tableView.moveRow(at: indexPath, to: IndexPath(row: index, section: 4))
             tableView.endUpdates()
-            tableView.headerView(forSection: 5)?.isHidden = settings.languageState.deselected.isEmpty
+            let firstSelectedCell = tableView.cellForRow(at: IndexPath(row: 0, section: 4))
+            if settings.languageState.main == nil {
+                settings.languageState.main = settings.languageState.selected.first
+                firstSelectedCell?.editingAccessoryType = .checkmark
+            }
+            Settings.save(settings)
+            refreshHeaderFooterViewsOfLanguageSections()
         default: break
         }
+    }
+    
+    /// Shows/Updates/Hides the label texts, accounts for the changed heights and forces a refresh of the label displays
+    private func refreshHeaderFooterViewsOfLanguageSections() {
+        if let view = tableView.headerView(forSection: 4) {
+            tableView(tableView, willDisplayHeaderView: view, forSection: 4)
+            view.invalidateIntrinsicContentSize()
+            view.layoutIfNeeded()
+            view.layoutSubviews()
+        }
+        if let view = tableView.footerView(forSection: 4) {
+            tableView(tableView, willDisplayFooterView: view, forSection: 4)
+            view.invalidateIntrinsicContentSize()
+            view.layoutIfNeeded()
+            view.layoutSubviews()
+        }
+        if let view = tableView.headerView(forSection: 5) {
+            tableView(tableView, willDisplayHeaderView: view, forSection: 5)
+            view.invalidateIntrinsicContentSize()
+            view.layoutIfNeeded()
+            view.layoutSubviews()
+        }
+        tableView.layoutIfNeeded()
+        tableView.layoutSubviews()
     }
     
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {

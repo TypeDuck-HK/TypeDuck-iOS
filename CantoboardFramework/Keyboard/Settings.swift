@@ -214,7 +214,7 @@ public enum Language: String, Codable, Comparable, CaseIterable {
 public struct LanguageState: Codable, Equatable {
     public var selected: [Language]
     public var deselected: [Language]
-    public var main: Language
+    public var main: Language?
     
     public init() {
         selected = [.eng]
@@ -229,21 +229,23 @@ public struct LanguageState: Codable, Equatable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         var languages = try container.decodeIfPresent([Language].self, forKey: .languages) ?? [.eng]
-        if languages.isEmpty {
-            languages = [.eng]
+        if !languages.isEmpty {
+            let main = languages.removeFirst()
+            self.main = main
+            languages.insert(main, at: languages.binarySearch(element: main))
         }
-        main = languages.removeFirst()
-        languages.insert(main, at: languages.binarySearch(element: main))
         selected = languages
         deselected = Language.allCases.filter { !languages.contains($0) }
     }
     
     public func encode(to encoder: Encoder) throws {
         var languages = selected
-        if let index = languages.firstIndex(of: main) {
-            languages.remove(at: index)
+        if let main = main {
+            if let index = languages.firstIndex(of: main) {
+                languages.remove(at: index)
+            }
+            languages.insert(main, at: 0)
         }
-        languages.insert(main, at: 0)
         
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(languages, forKey: .languages)
@@ -265,10 +267,6 @@ public struct LanguageState: Codable, Equatable {
     
     public func has(_ language: Language) -> Bool {
         selected.contains { $0 == language }
-    }
-    
-    public var shouldDisplayEngTag: Bool {
-        main == .ind
     }
 }
 
