@@ -35,6 +35,9 @@ class LocalizedStrings {
     static var displayLanguages_description: String { localizedString("displayLanguages.description") }
     static var moreLanguages: String { localizedString("moreLanguages") }
     
+    static var enableDictionaryPanel: String { localizedString("enableDictionaryPanel") }
+    static var enableDictionaryPanel_description: String { localizedString("enableDictionaryPanel.description") }
+    
     static var inputMethodSettings: String { localizedString("inputMethodSettings") }
     static var mixedMode: String { localizedString("inputMethodSettings.mixedMode") }
     static var longPressSymbolKeys: String { localizedString("inputMethodSettings.longPressSymbolKeys") }

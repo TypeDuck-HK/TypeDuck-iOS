@@ -117,7 +117,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         switch section {
         case 0: return LocalizedStrings.installTypeDuck_description
         case 4: return settings.languageState.selected.isEmpty ? nil : LocalizedStrings.displayLanguages_description
-        default: return nil
+        case 1, 2, 3, 5: return nil
+        default: return sections[section - 6].footer
         }
     }
     

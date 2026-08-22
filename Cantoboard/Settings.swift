@@ -11,10 +11,12 @@ import CantoboardFramework
 struct Section {
     var header: String?
     var options: [Option]
+    var footer: String?
     
-    fileprivate init(_ header: String? = nil, _ options: [Option] = []) {
+    fileprivate init(_ header: String? = nil, _ options: [Option] = [], _ footer: String? = nil) {
         self.header = header
         self.options = options
+        self.footer = footer
     }
 }
 
@@ -345,6 +347,8 @@ extension Settings {
         )
         
         return [
+            Section(nil, [Switch(LocalizedStrings.enableDictionaryPanel, \.enableDictionaryPanel)],
+                    Settings.cached.enableDictionaryPanel ? LocalizedStrings.enableDictionaryPanel_description : nil),
             Section(LocalizedStrings.inputMethodSettings, inputMethodOptions.compactMap({ $0 })),
             isPad ? padSection : nil,
             Section(

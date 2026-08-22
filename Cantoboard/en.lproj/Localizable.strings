@@ -31,6 +31,9 @@ Due to iOS limitations, if the TypeDuck option disappears or becomes unavailable
 "displayLanguages.description" = "Click on an item to set as the main language.";
 "moreLanguages" = "More Languages";
 
+"enableDictionaryPanel" = "Dictionary panel";
+"enableDictionaryPanel.description" = "An ⓘ icon indicates that entry details are available for a candidate. Swipe down to view them. In the expanded candidate window, simply click on ⓘ.";
+
 "inputMethodSettings" = "Input Method Settings";
 "inputMethodSettings.mixedMode" = "Bilingual hybrid input";
 "inputMethodSettings.longPressSymbolKeys" = "Numbers and symbols on letter keys";
@@ -155,7 +158,7 @@ Confirm that they are turned off and use the following settings.";
 "accessibilitySettings.speechFeedbackEnabledForWords" = "Speak inserted words";
 "accessibilitySettings.speechFeedbackEnabledForDictionaryOpening" = "Speak candidates when opening dictionary";
 
-"other.onboarding" = "Onboarding Screen";
+"other.onboarding" = "Introduction to Basic Features";
 "other.about" = "About";
 
 "onboarding.skip" = "Skip";
