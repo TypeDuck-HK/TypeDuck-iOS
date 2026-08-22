@@ -32,7 +32,7 @@ struct CandidateInfo {
             : []
         
         entry = entries.first { $0.matchInputBuffer == "1" }
-        hasDictionaryEntry = entries.contains { $0.isDictionaryEntry }
+        hasDictionaryEntry = Settings.cached.enableDictionaryPanel && entries.contains { $0.isDictionaryEntry }
         romanization = entry?.jyutping ?? (isReverseLookup ? "" : note)
         if Settings.cached.languageState.has(.eng) && entry?.mainOrFallbackLanguage == nil {
             var translations: [(honzi: String, eng: String)] = []

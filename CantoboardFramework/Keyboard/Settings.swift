@@ -214,7 +214,7 @@ public enum Language: String, Codable, Comparable, CaseIterable {
 public struct LanguageState: Codable, Equatable {
     public var selected: [Language]
     public var deselected: [Language]
-    public var main: Language
+    public var main: Language?
     
     public init() {
         selected = [.eng]
@@ -229,21 +229,23 @@ public struct LanguageState: Codable, Equatable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         var languages = try container.decodeIfPresent([Language].self, forKey: .languages) ?? [.eng]
-        if languages.isEmpty {
-            languages = [.eng]
+        if !languages.isEmpty {
+            let main = languages.removeFirst()
+            self.main = main
+            languages.insert(main, at: languages.binarySearch(element: main))
         }
-        main = languages.removeFirst()
-        languages.insert(main, at: languages.binarySearch(element: main))
         selected = languages
         deselected = Language.allCases.filter { !languages.contains($0) }
     }
     
     public func encode(to encoder: Encoder) throws {
         var languages = selected
-        if let index = languages.firstIndex(of: main) {
-            languages.remove(at: index)
+        if let main = main {
+            if let index = languages.firstIndex(of: main) {
+                languages.remove(at: index)
+            }
+            languages.insert(main, at: 0)
         }
-        languages.insert(main, at: 0)
         
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(languages, forKey: .languages)
@@ -265,10 +267,6 @@ public struct LanguageState: Codable, Equatable {
     
     public func has(_ language: Language) -> Bool {
         selected.contains { $0 == language }
-    }
-    
-    public var shouldDisplayEngTag: Bool {
-        main == .ind
     }
 }
 
@@ -406,6 +404,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultQuick3CandidateMode: Quick3CandidateMode = .fixedOrder
     private static let defaultQuick3FixedOrderNumPopularCandidates: UInt8 = 3
     private static let defaultLanguageState: LanguageState = LanguageState()
+    private static let defaultEnableDictionaryPanel: Bool = true
     private static let defaultJyutpingInitialFinalLayoutSettings: JyutpingInitialFinalLayoutSettings = JyutpingInitialFinalLayoutSettings()
     private static let defaultAccessibilitySettings: AccessibilitySettings = AccessibilitySettings()
 
@@ -447,6 +446,7 @@ public struct Settings: Codable, Equatable {
     public var quick3CandidateMode: Quick3CandidateMode
     public var quick3FixedOrderNumPopularCandidates: UInt8
     public var languageState: LanguageState
+    public var enableDictionaryPanel: Bool
     public var jyutpingInitialFinalLayoutSettings: JyutpingInitialFinalLayoutSettings
     public var accessibilitySettings: AccessibilitySettings
     
@@ -496,6 +496,7 @@ public struct Settings: Codable, Equatable {
         quick3CandidateMode = Self.defaultQuick3CandidateMode
         quick3FixedOrderNumPopularCandidates = Self.defaultQuick3FixedOrderNumPopularCandidates
         languageState = Self.defaultLanguageState
+        enableDictionaryPanel = Self.defaultEnableDictionaryPanel
         jyutpingInitialFinalLayoutSettings = Self.defaultJyutpingInitialFinalLayoutSettings
         accessibilitySettings = Self.defaultAccessibilitySettings
     }
@@ -540,6 +541,7 @@ public struct Settings: Codable, Equatable {
         self.quick3CandidateMode = try container.decodeIfPresent(Quick3CandidateMode.self, forKey: .quick3CandidateMode) ?? Settings.defaultQuick3CandidateMode
         self.quick3FixedOrderNumPopularCandidates = try container.decodeIfPresent(UInt8.self, forKey: .quick3FixedOrderNumPopularCandidates) ?? Settings.defaultQuick3FixedOrderNumPopularCandidates
         self.languageState = try container.decodeIfPresent(LanguageState.self, forKey: .languageState) ?? Settings.defaultLanguageState
+        self.enableDictionaryPanel = try container.decodeIfPresent(Bool.self, forKey: .enableDictionaryPanel) ?? Settings.defaultEnableDictionaryPanel
         self.jyutpingInitialFinalLayoutSettings = try container.decodeIfPresent(JyutpingInitialFinalLayoutSettings.self, forKey: .jyutpingInitialFinalLayoutSettings) ?? Settings.defaultJyutpingInitialFinalLayoutSettings
         self.accessibilitySettings = try container.decodeIfPresent(AccessibilitySettings.self, forKey: .accessibilitySettings) ?? Settings.defaultAccessibilitySettings
     }

@@ -33,6 +33,9 @@
 Click on an item to set as the main language.";
 "moreLanguages" = "更多語言 More Languages";
 
+"enableDictionaryPanel" = "辭典版面";
+"enableDictionaryPanel.description" = "ⓘ 標記代表候選詞帶有詞條詳細資訊，向下掃一下即可查閲。於展開候選畫面內則只需按一下 ⓘ 。";
+
 "inputMethodSettings" = "輸入法設定";
 "inputMethodSettings.mixedMode" = "粵英混合輸入";
 "inputMethodSettings.longPressSymbolKeys" = "輔助符號及數字鍵";
@@ -157,7 +160,7 @@ vxq: 按一下 v/x/q 輸入 1/2/3 聲；
 "accessibilitySettings.speechFeedbackEnabledForWords" = "朗讀輸入字詞";
 "accessibilitySettings.speechFeedbackEnabledForDictionaryOpening" = "開啟辭典時朗讀候選詞";
 
-"other.onboarding" = "開始畫面";
+"other.onboarding" = "基本功能介紹";
 "other.about" = "關於";
 
 "onboarding.skip" = "略過";
