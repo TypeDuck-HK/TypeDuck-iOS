@@ -334,15 +334,6 @@ extension Settings {
                         LocalizedStrings.cangjieKeyCapMode_cangjieRoot: .cangjieRoot,
                     ]
                 ),
-                Segment(LocalizedStrings.quick3CandidateMode, \.quick3CandidateMode, [
-                        LocalizedStrings.quick3CandidateMode_sortByFreq: .sortByFreq,
-                        LocalizedStrings.quick3CandidateMode_fixedOrder: .fixedOrder,
-                    ],
-                    LocalizedStrings.quick3CandidateMode_description
-                ),
-                IntStepper(LocalizedStrings.quick3FixedOrderNumPopularCandidates, \.quick3FixedOrderNumPopularCandidates,
-                           minimumValue: 0, maximumValue: 9, stepValue: 1,
-                           LocalizedStrings.quick3FixedOrderNumPopularCandidates_description),
             ]
         )
         

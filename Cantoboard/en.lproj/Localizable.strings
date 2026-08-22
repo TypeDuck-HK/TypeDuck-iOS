@@ -129,15 +129,6 @@ Long press: Press and hold one of the six keys in the middle of the keyboard to 
 "reverseLookupSettings.cangjieKeyCapMode" = "Cangjie/Quick keycap";
 "reverseLookupSettings.cangjieKeyCapMode.letter" = "letter";
 "reverseLookupSettings.cangjieKeyCapMode.cangjieRoot" = "Cangjie root";
-"reverseLookupSettings.quick3CandidateMode" = "Quick 3 single-character ordering";
-"reverseLookupSettings.quick3CandidateMode.sortByFreq" = "frequency";
-"reverseLookupSettings.quick3CandidateMode.fixedOrder" = "fixed";
-"reverseLookupSettings.quick3CandidateMode.description" =
-"Frequency: characters are dynamically sorted by usage frequency.
-Fixed: less frequently used characters follow the legacy Windows Quick order.
-Phrases are always sorted by usage frequency. This settings item only affects Quick 3.";
-"reverseLookupSettings.quick3FixedOrderNumPopularCandidates" = "Popular Quick 3 characters";
-"reverseLookupSettings.quick3FixedOrderNumPopularCandidates.description" = "In fixed mode, this many frequently used characters are shown first. Remaining characters follow the legacy Windows Quick order. This settings item only affects Quick 3.";
 
 "englishInputSettings" = "English Input Settings";
 "englishInputSettings.autoCap" = "Auto-capitalization";

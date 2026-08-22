@@ -124,12 +124,6 @@ class LocalizedStrings {
     static var cangjieKeyCapMode: String { localizedString("reverseLookupSettings.cangjieKeyCapMode") }
     static var cangjieKeyCapMode_letter: String { localizedString("reverseLookupSettings.cangjieKeyCapMode.letter") }
     static var cangjieKeyCapMode_cangjieRoot: String { localizedString("reverseLookupSettings.cangjieKeyCapMode.cangjieRoot") }
-    static var quick3CandidateMode: String { localizedString("reverseLookupSettings.quick3CandidateMode") }
-    static var quick3CandidateMode_sortByFreq: String { localizedString("reverseLookupSettings.quick3CandidateMode.sortByFreq") }
-    static var quick3CandidateMode_fixedOrder: String { localizedString("reverseLookupSettings.quick3CandidateMode.fixedOrder") }
-    static var quick3CandidateMode_description: String { localizedString("reverseLookupSettings.quick3CandidateMode.description") }
-    static var quick3FixedOrderNumPopularCandidates: String { localizedString("reverseLookupSettings.quick3FixedOrderNumPopularCandidates") }
-    static var quick3FixedOrderNumPopularCandidates_description: String { localizedString("reverseLookupSettings.quick3FixedOrderNumPopularCandidates.description") }
     
     static var englishInputSettings: String { localizedString("englishInputSettings") }
     static var autoCap: String { localizedString("englishInputSettings.autoCap") }
