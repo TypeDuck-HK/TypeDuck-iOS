@@ -199,5 +199,7 @@ This input method is developed by the Department of Linguistics and Modern Langu
 "about.learnduckSite" = "LearnDuck 粵拼打字入門";
 "about.jyutpingSite" = "粵拼 Jyutping";
 "about.sourceCode" = "TypeDuck 原始碼";
-"about.cantoboard" = "Cantoboard 原始碼";
+"about.engine" = "TypeDuck RIME 輸入法引擎";
+"about.schema" = "TypeDuck 詞表及方案";
+"about.schema.description" = "感謝第三方項目提供反查資料，其內容及列表置於「TypeDuck 詞表及方案」內。";
 "about.credit" = "鳴謝";

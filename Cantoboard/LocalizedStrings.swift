@@ -173,6 +173,8 @@ class LocalizedStrings {
     static var about_learnduckSite: String { localizedString("about.learnduckSite") }
     static var about_jyutpingSite: String { localizedString("about.jyutpingSite") }
     static var about_sourceCode: String { localizedString("about.sourceCode") }
-    static var about_cantoboard: String { localizedString("about.cantoboard") }
+    static var about_engine: String { localizedString("about.engine") }
+    static var about_schema: String { localizedString("about.schema") }
+    static var about_schema_description: String { localizedString("about.schema.description") }
     static var about_credit: String { localizedString("about.credit") }
 }

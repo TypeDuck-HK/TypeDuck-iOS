@@ -14,19 +14,12 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
             (CellImage.externalLink, LocalizedStrings.about_learnduckSite, "https://learn.typeduck.hk"),
             (CellImage.externalLink, LocalizedStrings.about_jyutpingSite, "https://lshk.org/jyutping-scheme/"),
             (CellImage.sourceCode, LocalizedStrings.about_sourceCode, "https://github.com/TypeDuck-HK/TypeDuck-iOS"),
-            (CellImage.sourceCode, LocalizedStrings.about_cantoboard, "https://github.com/Cantoboard/Cantoboard"),
+            (CellImage.sourceCode, LocalizedStrings.about_engine, "https://github.com/TypeDuck-HK/librime"),
+            (CellImage.repository, LocalizedStrings.about_schema, "https://github.com/TypeDuck-HK/schema"),
         ],
         [
-            (CellImage.repository, "Rime Input Method Engine", "https://github.com/TypeDuck-HK/librime"),
-            /*
-            (CellImage.repository, "Rime Cantonese Input Schema", "https://github.com/rime/rime-cantonese"),
-            (CellImage.repository, "Rime 倉頡三代", "https://github.com/Arthurmcarthur/Cangjie3-Plus"),
-            (CellImage.repository, "Rime 倉頡五代", "https://github.com/Jackchows/Cangjie5"),
-            (CellImage.repository, "Rime 速成", "https://github.com/rime/rime-quick"),
-            (CellImage.repository, "Rime 筆劃", "https://github.com/rime/rime-stroke"),
-            */
-            (CellImage.repository, "Open Chinese Convert (OpenCC)", "https://github.com/BYVoid/OpenCC"),
-            (CellImage.repository, "ISEmojiView", "https://github.com/isaced/ISEmojiView"),
+            (CellImage.sourceCode, "Cantoboard", "https://github.com/CanCLID/Cantoboard"),
+            (CellImage.sourceCode, "ISEmojiView", "https://github.com/isaced/ISEmojiView"),
         ],
         /*
         [
@@ -62,8 +55,19 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        switch section {
+        case 1: return LocalizedStrings.about_schema_description
+        default: return nil
+        }
+    }
+    
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         (view as? UITableViewHeaderFooterView)?.textLabel?.attributedText = self.tableView(tableView, titleForHeaderInSection: section)?.toHKAttributedString
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        (view as? UITableViewHeaderFooterView)?.textLabel?.attributedText = self.tableView(tableView, titleForFooterInSection: section)?.toHKAttributedString
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

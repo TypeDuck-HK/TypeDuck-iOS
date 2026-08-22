@@ -197,5 +197,7 @@ This input method is developed by the Department of Linguistics and Modern Langu
 "about.learnduckSite" = "LearnDuck: Introduction to Cantonese Jyutping Typing";
 "about.jyutpingSite" = "粵拼 Jyutping";
 "about.sourceCode" = "TypeDuck Source Code";
-"about.cantoboard" = "Cantoboard Source Code";
+"about.engine" = "TypeDuck RIME Input Method Engine";
+"about.schema" = "TypeDuck Lexicon & Schema";
+"about.schema.description" = "Thank you to the third-party projects that provided the reverse lookup data. Their contents can be found at “TypeDuck Lexicon & Schema” along with a list of these projects.";
 "about.credit" = "Acknowledgements";
