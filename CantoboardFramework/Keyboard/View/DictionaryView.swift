@@ -64,6 +64,9 @@ class DictionaryView: UIScrollView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
+        if #available(iOS 26.0, *) {
+            topEdgeEffect.isHidden = true
+        }
         
         entryStack = UIStackView()
         entryStack.translatesAutoresizingMaskIntoConstraints = false
