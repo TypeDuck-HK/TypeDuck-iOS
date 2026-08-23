@@ -10,13 +10,19 @@ import AVFoundation
 import AVKit
 
 class DescriptionViewController: UIViewController {
-    static let videoAspectRatio: CGFloat = 390 / 306
-    static let stackViewInset = UIEdgeInsets(top: 10, left: 0, bottom: 15, right: 0)
+    static let stackViewInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
     
-    var option: Option!
-    var stackView: UIStackView!
-    var playerView: UIView?
-    var playerLooper: AVPlayerLooper?
+    private static let videoAspectRatio: CGFloat = 390 / 306
+    private static let titleTrailingInset: CGFloat = 40
+    private static let stackSpacing: CGFloat = 20
+    private static let videoMaximumHeight: CGFloat = 400
+    
+    private var option: Option!
+    private var stackView: UIStackView!
+    private var titleLabel: UILabel!
+    private var descriptionLabel: UILabel!
+    private var playerView: UIView?
+    private var playerLooper: AVPlayerLooper?
     
     convenience init(option: Option) {
         self.init()
@@ -30,14 +36,14 @@ class DescriptionViewController: UIViewController {
         }
         playerLooper = nil
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(dismissDescription))
         view.backgroundColor = .systemBackground
         
-        let titleLabel = UILabel()
+        titleLabel = UILabel()
         titleLabel.attributedText = option.title.toHKAttributedString
         titleLabel.font = .systemFont(ofSize: 24, weight: .semibold)
         titleLabel.numberOfLines = 0
@@ -50,7 +56,7 @@ class DescriptionViewController: UIViewController {
             titleView.topAnchor.constraint(equalTo: titleLabel.topAnchor),
             titleView.bottomAnchor.constraint(equalTo: titleLabel.bottomAnchor),
             titleView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            titleView.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 40),
+            titleView.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: Self.titleTrailingInset),
         ])
         
         if let videoUrlName = option.videoUrl,
@@ -72,30 +78,30 @@ class DescriptionViewController: UIViewController {
             playerView?.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        let label = UILabel()
-        label.attributedText = option.description?.toHKAttributedString
-        label.font = .preferredFont(forTextStyle: .body)
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
+        descriptionLabel = UILabel()
+        descriptionLabel.attributedText = option.description?.toHKAttributedString
+        descriptionLabel.font = .preferredFont(forTextStyle: .body)
+        descriptionLabel.numberOfLines = 0
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        stackView = UIStackView(arrangedSubviews: [titleView, playerView, label].compactMap { $0 })
+        stackView = UIStackView(arrangedSubviews: [titleView, playerView, descriptionLabel].compactMap { $0 })
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.alignment = .center
-        stackView.spacing = 20
-        stackView.setCustomSpacing(10, after: titleView)
+        stackView.spacing = Self.stackSpacing
         view.addSubview(stackView)
         
-        let safeArea = view.safeAreaLayoutGuide
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 20),
-            stackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -20),
-            stackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -15),
-            stackView.topAnchor.constraint(greaterThanOrEqualTo: safeArea.topAnchor, constant: -36),
+            stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: Self.stackViewInset.top),
+            stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Self.stackViewInset.bottom),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Self.stackViewInset.left),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Self.stackViewInset.right),
+            
             titleView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
             titleView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
-            label.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
+            
+            descriptionLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
+            descriptionLabel.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
         ])
         
         if let playerView = playerView {            
@@ -109,9 +115,22 @@ class DescriptionViewController: UIViewController {
                 leadingConstraint,
                 trailingConstraint,
                 playerView.widthAnchor.constraint(equalTo: playerView.heightAnchor, multiplier: Self.videoAspectRatio),
-                playerView.heightAnchor.constraint(lessThanOrEqualToConstant: 400),
+                playerView.heightAnchor.constraint(lessThanOrEqualToConstant: Self.videoMaximumHeight),
             ])
         }
+    }
+    
+    func stackViewHeight(fitting width: CGFloat) -> CGFloat {
+        let titleWidth = max(0, width - Self.titleTrailingInset)
+        let titleHeight = titleLabel.sizeThatFits(CGSize(width: titleWidth, height: .greatestFiniteMagnitude)).height
+        let descriptionHeight = descriptionLabel.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude)).height
+        var height = titleHeight + Self.stackSpacing + descriptionHeight
+        
+        if playerView != nil {
+            height += min(width / Self.videoAspectRatio, Self.videoMaximumHeight) + Self.stackSpacing
+        }
+        
+        return ceil(height)
     }
     
     @objc func dismissDescription() {

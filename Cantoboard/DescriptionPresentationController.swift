@@ -27,11 +27,11 @@ class DescriptionPresentationController: UIPresentationController {
         
         presentedController.view.layoutIfNeeded()
         
-        var height = presentedController.view.safeAreaInsets.top +
-            DescriptionViewController.stackViewInset.top +
-            descriptionViewController.stackView.bounds.height +
-            DescriptionViewController.stackViewInset.bottom +
-            presentedController.view.safeAreaInsets.bottom
+        let stackViewInset = DescriptionViewController.stackViewInset
+        let stackViewWidth = bounds.width - stackViewInset.left - stackViewInset.right
+        let stackViewHeight = descriptionViewController.stackViewHeight(fitting: stackViewWidth)
+        
+        var height = stackViewInset.top + stackViewHeight + stackViewInset.bottom
         
         height = min(height, containerView.bounds.height)
         return CGRect(x: 0, y: bounds.height - height, width: bounds.width, height: height)
