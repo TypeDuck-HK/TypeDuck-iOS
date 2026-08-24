@@ -224,7 +224,6 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         pagesScrollView.addSubview(pagesStackView)
         
         view.addSubview(pagesScrollView)
-        view.layoutMargins = UIEdgeInsets(top: 20, left: 10, bottom: 20, right: 10)
         
         let numberOfPages = pages.count - 1
         pageControl = UIPageControl()
@@ -236,21 +235,29 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         view.addSubview(pageControl)
         
         let safeArea = view.safeAreaLayoutGuide
+        let insetLayoutGuide = UILayoutGuide()
+        view.addLayoutGuide(insetLayoutGuide)
+        
         NSLayoutConstraint.activate([
-            safeArea.bottomAnchor.constraint(equalTo: pageControl.bottomAnchor, constant: 24),
-            safeArea.trailingAnchor.constraint(equalTo: pageControl.trailingAnchor),
+            insetLayoutGuide.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 10),
+            insetLayoutGuide.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -10),
+            insetLayoutGuide.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 10),
+            insetLayoutGuide.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -10),
             
-            pagesScrollView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
-            pagesScrollView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor),
-            pagesScrollView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
-            pagesScrollView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
+            insetLayoutGuide.bottomAnchor.constraint(equalTo: pageControl.bottomAnchor, constant: 20),
+            insetLayoutGuide.trailingAnchor.constraint(equalTo: pageControl.trailingAnchor),
             
-            pageControl.topAnchor.constraint(equalTo: pagesStackView.bottomAnchor, constant: 16),
-            pageControl.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            pagesScrollView.topAnchor.constraint(equalTo: insetLayoutGuide.topAnchor),
+            pagesScrollView.bottomAnchor.constraint(equalTo: insetLayoutGuide.bottomAnchor),
+            pagesScrollView.leadingAnchor.constraint(equalTo: insetLayoutGuide.leadingAnchor),
+            pagesScrollView.trailingAnchor.constraint(equalTo: insetLayoutGuide.trailingAnchor),
             
-            pagesStackView.topAnchor.constraint(equalTo: safeArea.topAnchor),
+            pageControl.topAnchor.constraint(equalTo: pagesStackView.bottomAnchor, constant: 20),
+            pageControl.leadingAnchor.constraint(equalTo: insetLayoutGuide.leadingAnchor),
+            
+            pagesStackView.topAnchor.constraint(equalTo: insetLayoutGuide.topAnchor),
             pagesStackView.leadingAnchor.constraint(equalTo: pagesScrollView.leadingAnchor),
-            pagesStackView.widthAnchor.constraint(equalTo: view.layoutMarginsGuide.widthAnchor, multiplier: CGFloat(numberOfPages)),
+            pagesStackView.widthAnchor.constraint(equalTo: insetLayoutGuide.widthAnchor, multiplier: CGFloat(numberOfPages)),
         ])
         
         setPagesDirection(pageSize: view.bounds.size)
