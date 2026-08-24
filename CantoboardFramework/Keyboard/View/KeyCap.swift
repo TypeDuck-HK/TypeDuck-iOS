@@ -75,7 +75,7 @@ enum KeyCapType {
 enum ContextualKey: Equatable, ExpressibleByStringLiteral {
     case symbol
     case extraSymbol
-    case url
+    case padKeyboardType(KeyboardType)
     case character(String)
     
     public init(stringLiteral value: String) {
@@ -376,11 +376,15 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
-    var buttonLeftHint: String? {
+    var rawButtonHints: KeyCapHints? {
         switch self {
-        case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _, _): return hints?.leftHint
+        case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _, _): return hints
         default: return nil
         }
+    }
+    
+    var buttonLeftHint: String? {
+        rawButtonHints?.leftHint
     }
     
     var buttonRightHint: String? {
@@ -399,10 +403,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     }
     
     var buttonBottomHint: String? {
-        switch self {
-        case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _, _): return hints?.bottomHint
-        default: return nil
-        }
+        rawButtonHints?.bottomHint
     }
     
     var barHint: String? {
@@ -668,6 +669,9 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .character(",", KeyCapHints(rightHint: "符"), _): return "." // Contextual sym key in English mode
         case .character("，", KeyCapHints(rightHint: "符"), _): return "。" // Contextual sym key in Chinese mode
         case .character(".", KeyCapHints(rightHint: "/"), _): return nil // Contextual sym key in url mode
+        case .character(".com", nil, _?): return "." + SessionState.main.localDomain // Contextual sym key in url mode in iPad
+        case .rime(.delimiter, KeyCapHints(rightHint: ".com"), _?): return ".com" // Contextual sym key when composing in url mode in iPad
+        case .rime(.delimiter, _?, let keyCaps?): return keyCaps[safe: 1]?.character.map(String.init) // Contextual sym key when composing
         default: return self.buttonText
         }
     }

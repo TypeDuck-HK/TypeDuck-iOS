@@ -16,11 +16,12 @@ enum KeyboardEnableState: Equatable {
 }
 
 indirect enum ContextualType: Equatable {
-    case english, chinese, rime(languageContext: ContextualType), url
+    case english, chinese, url(languageContext: ContextualType)
     
     var halfWidthSymbol: Bool {
+        // Always show halfwidth symbols in URL
         switch self {
-        case .chinese, .rime(.chinese): return false
+        case .chinese: return false
         default: return true
         }
     }
@@ -82,6 +83,13 @@ struct KeyboardState: Equatable {
             return true
         }
         return false
+    }
+    
+    var shouldDisplayRimeDelimiterKey: Bool {
+        switch keyboardContextualType {
+        case .chinese, .url(.chinese): return isComposing
+        default: return false
+        }
     }
     
     var tenKeysState: TenKeysState
@@ -1071,31 +1079,26 @@ class InputController: NSObject {
         guard let textDocumentProxy = textDocumentProxy else { return }
         let symbolShape = Settings.cached.symbolShape
         
-        if textDocumentProxy.keyboardType == .URL || textDocumentProxy.keyboardType == .webSearch {
-            state.keyboardContextualType = .url
-            return
-        } else {
-            state.specialSymbolShapeOverride.removeAll()
-            switch symbolShape {
-            case .smart:
-                switch state.inputMode {
-                case .chinese: state.keyboardContextualType = .chinese
-                case .english: state.keyboardContextualType = .english
-                default:
-                    let isEnglish = isUserTypingEnglish(documentContextBeforeInput: documentContextBeforeInput)
-                    state.keyboardContextualType = isEnglish ? .english : .chinese
-                    
-                    for specialSymbol in SpecialSymbol.allCases {
-                        let symbolShape = specialSymbol.determineSymbolShape(textBefore: documentContextBeforeInput)
-                        state.specialSymbolShapeOverride[specialSymbol] = symbolShape
-                    }
+        state.specialSymbolShapeOverride.removeAll()
+        switch symbolShape {
+        case .smart:
+            switch state.inputMode {
+            case .chinese: state.keyboardContextualType = .chinese
+            case .english: state.keyboardContextualType = .english
+            default:
+                let isEnglish = isUserTypingEnglish(documentContextBeforeInput: documentContextBeforeInput)
+                state.keyboardContextualType = isEnglish ? .english : .chinese
+                
+                for specialSymbol in SpecialSymbol.allCases {
+                    let symbolShape = specialSymbol.determineSymbolShape(textBefore: documentContextBeforeInput)
+                    state.specialSymbolShapeOverride[specialSymbol] = symbolShape
                 }
-            case .half: state.keyboardContextualType = .english
-            case .full: state.keyboardContextualType = .chinese
             }
+        case .half: state.keyboardContextualType = .english
+        case .full: state.keyboardContextualType = .chinese
         }
-        if inputEngine.isComposing {
-            state.keyboardContextualType = .rime(languageContext: state.keyboardContextualType)
+        if textDocumentProxy.keyboardType == .URL || textDocumentProxy.keyboardType == .webSearch {
+            state.keyboardContextualType = .url(languageContext: state.keyboardContextualType)
         }
     }
     
@@ -1162,7 +1165,6 @@ class InputController: NSObject {
         case .english: newAutoSuggestionType = .halfWidthPunctuation
         case .chinese: newAutoSuggestionType = .fullWidthPunctuation
         case .url: newAutoSuggestionType = .domain
-        default: ()
         }
     }
 }

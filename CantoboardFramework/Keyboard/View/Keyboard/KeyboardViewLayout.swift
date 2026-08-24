@@ -32,18 +32,19 @@ class CommonContextualKeys {
     static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap? {
         switch key {
         case .symbol:
-            let keyHint = KeyCapHints(rightHint: "符")
-            switch keyboardState.keyboardContextualType {
-            case .chinese: return .character("，", keyHint, ["，", "。", "？", "！", "、", ".", ",", KeyCap(rime: .sym)])
-            case .english: return .character(",", keyHint, [",", ".", "?", "!", "。", "，", KeyCap(rime: .sym)])
-            case .rime: return .rime(.delimiter, keyHint, [KeyCap(rime: .delimiter), ".", ",", "?", "!"])
-            case .url:
-                var children: [KeyCap] = ["/", ".", ".com", ".net", ".org", ".edu"]
-                if (keyboardState.isComposing) {
-                    children.append(KeyCap(rime: .delimiter))
+            let keyCap: KeyCap = {
+                switch keyboardState.keyboardContextualType {
+                case .chinese: return .character("，", KeyCapHints(rightHint: "符"), ["，", "。", "？", "！", "、", ".", ",", KeyCap(rime: .sym)])
+                case .english: return .character(",", KeyCapHints(rightHint: "符"), [",", ".", "?", "!", "。", "，", KeyCap(rime: .sym)])
+                case .url: return .character(".", KeyCapHints(rightHint: "/"), ["/", ".", ".com", ".net", ".org", ".edu"])
                 }
-                return .character(".", KeyCapHints(rightHint: "/"), children)
+            }()
+            if keyboardState.shouldDisplayRimeDelimiterKey {
+                var childrenKeyCaps = keyCap.childrenKeyCaps
+                childrenKeyCaps.insert(KeyCap(rime: .delimiter), at: 0)
+                return .rime(.delimiter, keyCap.rawButtonHints, childrenKeyCaps)
             }
+            return keyCap
         case .extraSymbol:
             switch keyboardState.keyboardType {
             case .alphabetic: return keyboardState.keyboardContextualType.halfWidthSymbol ? "." : "。"
@@ -51,9 +52,18 @@ class CommonContextualKeys {
             }
         case ",": return keyboardState.keyboardContextualType.halfWidthSymbol ? "," : "，"
         case ".": return keyboardState.keyboardContextualType.halfWidthSymbol ? "." : "。"
-        case .url: // For iPads
-            let domains = [".net", ".org", ".edu", ".com", String("." + SessionState.main.localDomain), ".hk", ".tw", ".mo", ".cn", ".uk", ".jp"].unique()
-            return .character(".com", nil, domains.map{ .character($0, nil, nil) })
+        case .padKeyboardType(let type):
+            switch keyboardState.keyboardContextualType {
+            case .url:
+                let domains = [".com", "." + SessionState.main.localDomain, ".hk", ".tw", ".mo", ".cn", ".uk", ".jp", ".kr", ".net", ".edu", ".org"].unique()
+                var childrenKeyCaps = domains.map(KeyCap.init(_:))
+                if keyboardState.shouldDisplayRimeDelimiterKey {
+                    childrenKeyCaps.insert(KeyCap(rime: .delimiter), at: 0)
+                    return .rime(.delimiter, KeyCapHints(rightHint: ".com"), childrenKeyCaps)
+                }
+                return .character(".com", nil, childrenKeyCaps)
+            default: return keyboardState.shouldDisplayRimeDelimiterKey ? KeyCap(rime: .delimiter) : .keyboardType(type)
+            }
         default: return nil
         }
     }

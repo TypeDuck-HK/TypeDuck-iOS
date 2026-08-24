@@ -406,15 +406,15 @@ class KeyboardView: UIView, BaseKeyboardView {
             }
             return .character(keyChar, keyCapHints, childrenKeyCaps)
         case .shift: return .shift(shiftState)
-        case .keyboardType where groupId == 2 && state.keyboardIdiom.isPad:
-            switch state.keyboardContextualType {
-            case .rime: return CommonContextualKeys.getContextualKeys(key: .symbol, keyboardState: state)
-            case .url: return CommonContextualKeys.getContextualKeys(key: .url, keyboardState: state)
-            default: return keyCap
-            }
+        case .keyboardType(let type) where groupId == 2 && state.keyboardIdiom.isPad:
+            return CommonContextualKeys.getContextualKeys(key: .padKeyboardType(type), keyboardState: state)
         case .contextual:
+            #if DEBUG
+            fatalError("Contextual key wasn't translated properly. \(keyCap) \(state)")
+            #else
             DDLogError("Contextual key wasn't translated properly: \(keyCap) \(state)")
             return keyCap // Return the key as-is as a fallback
+            #endif
         default: return keyCap
         }
     }
