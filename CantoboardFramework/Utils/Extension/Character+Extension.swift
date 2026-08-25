@@ -17,41 +17,40 @@ extension Character {
     }
     
     var isEnglishLetterOrDigit: Bool {
-        isEnglishLetter || isDigit || isOpeningBracket
+        isEnglishLetter || isDigit
     }
     
-    var isOpeningBracket: Bool {
-        self == "(" || self == "{" || self == "[" || self == "<"
-    }
-    
-    var isOpeningQuote: Bool {
-        self == "“" || self == "‘"
-    }
-    
-    var isPunctuation: Bool {
-        self == ":" || self == ";" || self == "." || self == "," || self == "?" || self == "!" // || isFullShapePunctuation
-    }
-    
-    var isFullShapePunctuation: Bool {
-        self == "：" || self == "；" || self == "。" || self == "，" || self == "？" || self == "！"
-    }
-    
-    var isHalfShapeTerminalPunctuation: Bool {
+    var isHalfwidthSentenceTerminal: Bool {
         // TODO Distingish apostrophe & single quote.
-        self == "." || self == "?" || self == "!"
+        isSentenceTerminal && unicodeScalars.first?.isHalfwidth ?? false
     }
     
-    var isFullShapeTerminalPunctuation: Bool {
-        self == "。" || self == "？" || self == "！"
+    var isFullwidthSentenceTerminal: Bool {
+        isSentenceTerminal && unicodeScalars.first?.isFullwidth ?? false
+    }
+    
+    var isSentenceTerminal: Bool {
+        unicodeScalars.first?.properties.isSentenceTerminal ?? false
     }
     
     var isTerminalPunctuation: Bool {
-        isHalfShapeTerminalPunctuation || isFullShapeTerminalPunctuation
+        unicodeScalars.first?.properties.isTerminalPunctuation ?? false
+    }
+    
+    var couldBeFollowedBySmartFullStop: Bool {
+        !isWhitespace && !isTerminalPunctuation && self != "-"
     }
     
     var couldBeFollowedBySmartSpace: Bool {
-        self != ":" && self != ";" && self != "." && self != "," && self != "?" && self != "!" && self != " " &&
-        self != "，" && self != "。" && self != "？" && self != "！"
+        if isTerminalPunctuation { return false }
+        switch unicodeScalars.first?.properties.generalCategory {
+        case .closePunctuation, .finalPunctuation: return false
+        default: ()
+        }
+        switch self {
+        case "'", "-", "/": return false
+        default: return true
+        }
     }
     
     var lowercasedChar: Character {
@@ -65,11 +64,6 @@ extension Character {
     }
     
     var isChineseChar: Bool {
-        !isASCII && self.unicodeScalars.first?.isFullwidth ?? false /* TODO if char is in CJK range */
-    }
-    
-    var isVowel: Bool {
-        return self == "a" || self == "e" || self == "i" || self == "o" || self == "u" ||
-            self == "A" || self == "E" || self == "I" || self == "O" || self == "U"
+        unicodeScalars.first?.properties.isIdeographic ?? false
     }
 }

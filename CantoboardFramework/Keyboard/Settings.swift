@@ -411,7 +411,6 @@ public struct Settings: Codable, Equatable {
     public var interfaceLanguage: InterfaceLanguage
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
-    public var isSmartEnglishSpaceEnabled: Bool
     public var isSmartFullStopEnabled: Bool
     public var candidateFontSize: CandidateFontSize
     public var candidateGap: CandidateGap
@@ -461,7 +460,6 @@ public struct Settings: Codable, Equatable {
         interfaceLanguage = Self.defaultInterfaceLanguage
         isMixedModeEnabled = Self.defaultMixedModeEnabled
         isAutoCapEnabled = Self.defaultAutoCapEnabled
-        isSmartEnglishSpaceEnabled = Self.defaultSmartEnglishSpaceEnabled
         isSmartFullStopEnabled = Self.defaultSmartFullStopEnabled
         candidateFontSize = Self.defaultCandidateFontSize
         candidateGap = Self.defaultCandidateGap
@@ -507,7 +505,6 @@ public struct Settings: Codable, Equatable {
         self.isMixedModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .isMixedModeEnabled) ?? Settings.defaultMixedModeEnabled
         self.isAutoCapEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAutoCapEnabled) ?? Settings.defaultAutoCapEnabled
         self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.defaultSmartFullStopEnabled
-        self.isSmartEnglishSpaceEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartEnglishSpaceEnabled) ?? Settings.defaultSmartEnglishSpaceEnabled
         self.candidateFontSize = try container.decodeIfPresent(CandidateFontSize.self, forKey: .candidateFontSize) ?? Settings.defaultCandidateFontSize
         self.candidateGap = try container.decodeIfPresent(CandidateGap.self, forKey: .candidateGap) ?? Settings.defaultCandidateGap
         self.candidateSelectMode = try container.decodeIfPresent(CandidateSelectMode.self, forKey: .candidateSelectMode) ?? Settings.defaultCandidateSelectMode
