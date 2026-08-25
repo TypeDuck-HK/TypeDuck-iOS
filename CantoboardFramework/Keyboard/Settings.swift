@@ -198,7 +198,7 @@ public enum Language: String, Codable, Comparable, CaseIterable {
     
     var code: String {
         switch self {
-        case .eng: return "en"
+        case .eng: return "zh-HK" // English definitions may reference Chinese words. Render the glyphs in Hong Kong font
         case .hin: return "hi"
         case .ind: return "id"
         case .nep: return "ne"
