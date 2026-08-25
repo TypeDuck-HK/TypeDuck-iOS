@@ -346,7 +346,12 @@ class InputController: NSObject {
         let quote: String
         if keyboardViewController?.textDocumentProxy.smartQuotesType ?? .default == .no {
             quote = isDoubleQuote ? "\"" : "'"
-        } else if !isDoubleQuote && !(textBeforeInput.last?.isWhitespace ?? true) {
+        } else if !isDoubleQuote && !(
+            (hasInsertedAutoSpace && textBeforeInput.last == " " ?
+             // If the last character is an automatically inserted smart space, ignore it and use the second-to-last character as the norm
+             textBeforeInput.suffix(2).first :
+             textBeforeInput.last
+            )?.isWhitespace ?? true) {
             // iOS default keyboard uses right single quote as apostrophe
             quote = String(closingChar)
         } else if lastOpenCharIndex != nil && lastClosingCharIndex == nil {
