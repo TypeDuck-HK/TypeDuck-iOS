@@ -371,6 +371,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultAutoCapEnabled: Bool = true
     private static let defaultSmartEnglishSpaceEnabled: Bool = true
     private static let defaultSmartFullStopEnabled: Bool = true
+    private static let defaultSmartQuoteEnabled: Bool = true
     private static let defaultCandidateFontSize: CandidateFontSize = .normal
     private static let defaultCandidateGap: CandidateGap = .normal
     private static let defaultCandidateSelectMode: CandidateSelectMode = .expandDownward
@@ -412,6 +413,7 @@ public struct Settings: Codable, Equatable {
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
     public var isSmartFullStopEnabled: Bool
+    public var isSmartQuoteEnabled: Bool
     public var candidateFontSize: CandidateFontSize
     public var candidateGap: CandidateGap
     public var candidateSelectMode: CandidateSelectMode
@@ -461,6 +463,7 @@ public struct Settings: Codable, Equatable {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
         isAutoCapEnabled = Self.defaultAutoCapEnabled
         isSmartFullStopEnabled = Self.defaultSmartFullStopEnabled
+        isSmartQuoteEnabled = Self.defaultSmartQuoteEnabled
         candidateFontSize = Self.defaultCandidateFontSize
         candidateGap = Self.defaultCandidateGap
         candidateSelectMode = Self.defaultCandidateSelectMode
@@ -505,6 +508,7 @@ public struct Settings: Codable, Equatable {
         self.isMixedModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .isMixedModeEnabled) ?? Settings.defaultMixedModeEnabled
         self.isAutoCapEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAutoCapEnabled) ?? Settings.defaultAutoCapEnabled
         self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.defaultSmartFullStopEnabled
+        self.isSmartQuoteEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartQuoteEnabled) ?? Settings.defaultSmartQuoteEnabled
         self.candidateFontSize = try container.decodeIfPresent(CandidateFontSize.self, forKey: .candidateFontSize) ?? Settings.defaultCandidateFontSize
         self.candidateGap = try container.decodeIfPresent(CandidateGap.self, forKey: .candidateGap) ?? Settings.defaultCandidateGap
         self.candidateSelectMode = try container.decodeIfPresent(CandidateSelectMode.self, forKey: .candidateSelectMode) ?? Settings.defaultCandidateSelectMode

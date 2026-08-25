@@ -134,6 +134,8 @@ vxq: 按一下 v/x/q 輸入 1/2/3 聲；
 
 "englishInputSettings" = "英文輸入設定";
 "englishInputSettings.autoCap" = "自動大階";
+"englishInputSettings.smartQuote" = "智慧型引號";
+"englishInputSettings.smartQuote.description" = "啟用後，按 ’ 或 ” 鍵會按情況輸入左引號或右引號，而停用後則會輸入直引號（' 或 \"）。你亦可以隨時長按按鍵選擇引號款式。";
 "englishInputSettings.englishLocale" = "英文詞典";
 "englishInputSettings.englishLocale.au" = "澳洲";
 "englishInputSettings.englishLocale.ca" = "加拿大";

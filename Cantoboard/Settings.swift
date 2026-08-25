@@ -396,6 +396,8 @@ extension Settings {
                 LocalizedStrings.englishInputSettings,
                 [
                     Switch(LocalizedStrings.autoCap, \.isAutoCapEnabled),
+                    Switch(LocalizedStrings.smartQuote, \.isSmartQuoteEnabled,
+                           LocalizedStrings.smartQuote_description),
                     Segment(LocalizedStrings.englishLocale, \.englishLocale, [
                             LocalizedStrings.englishLocale_au: .au,
                             LocalizedStrings.englishLocale_ca: .ca,

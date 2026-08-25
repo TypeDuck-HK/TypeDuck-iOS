@@ -344,7 +344,8 @@ class InputController: NSObject {
         let lastClosingCharIndex = textBeforeInput.lastIndex(of: closingChar)
 
         let quote: String
-        if keyboardViewController?.textDocumentProxy.smartQuotesType ?? .default == .no {
+        if keyboardViewController?.textDocumentProxy.smartQuotesType ?? .default == .no ||
+            !Settings.cached.isSmartQuoteEnabled {
             quote = isDoubleQuote ? "\"" : "'"
         } else if !isDoubleQuote && !(
             (hasInsertedAutoSpace && textBeforeInput.last == " " ?

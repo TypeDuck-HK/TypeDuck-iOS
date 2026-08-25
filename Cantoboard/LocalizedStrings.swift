@@ -132,6 +132,8 @@ class LocalizedStrings {
     static var englishLocale_ca: String { localizedString("englishInputSettings.englishLocale.ca") }
     static var englishLocale_gb: String { localizedString("englishInputSettings.englishLocale.gb") }
     static var englishLocale_us: String { localizedString("englishInputSettings.englishLocale.us") }
+    static var smartQuote: String { localizedString("englishInputSettings.smartQuote") }
+    static var smartQuote_description: String { localizedString("englishInputSettings.smartQuote.description") }
     
     static var accessibilitySettings: String { localizedString("accessibilitySettings") }
     static var speechFeedbackEnabledForCharacters: String { localizedString("accessibilitySettings.speechFeedbackEnabledForCharacters") }

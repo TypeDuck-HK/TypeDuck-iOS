@@ -132,6 +132,8 @@ Long press: Press and hold one of the six keys in the middle of the keyboard to 
 
 "englishInputSettings" = "English Input Settings";
 "englishInputSettings.autoCap" = "Auto-capitalization";
+"englishInputSettings.smartQuote" = "Smart quotes";
+"englishInputSettings.smartQuote.description" = "When enabled, tapping the ’ or ” key inserts an opening or closing quotation mark as appropriate. When disabled, it inserts a straight quote (' or \"). You can always press and hold the key to choose a quotation mark style.";
 "englishInputSettings.englishLocale" = "English dictionary";
 "englishInputSettings.englishLocale.au" = "AU";
 "englishInputSettings.englishLocale.ca" = "CA";
