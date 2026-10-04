@@ -13,6 +13,7 @@ let fonts = [
     NSFont(name: "PingFang HK", size: 12)!,
     NSFont(name: "PingFang TC", size: 12)!,
     NSFont(name: "PingFang SC", size: 12)!,
+    NSFont(name: "Apple Color Emoji", size: 12)!,
     // NSFont(name: "Heiti TC", size: 12)!,
     // NSFont(name: "Heiti SC", size: 12)!
 ]
